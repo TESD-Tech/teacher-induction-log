@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { formStore } from '../../stores/formStore';
+  import { formStore, formConfigStore } from '../../stores/formStore';
+  import DateInput from '../ui/DateInput.svelte';
 </script>
 
 <div class="signature-section">
@@ -7,22 +8,39 @@
   
   <div class="signature-row">
     <div class="signature-field">
-      <input type="text" id="mentor-teacher" bind:value={$formStore.signatures.mentorTeacher} />
+      {#if $formConfigStore.editable.signatures}
+        <input type="text" id="mentor-teacher" bind:value={$formStore.signatures.mentorTeacher} />
+      {:else}
+        <div class="readonly-field" id="mentor-teacher">{$formStore.signatures.mentorTeacher}</div>
+      {/if}
       <label for="mentor-teacher">Mentor Teacher</label>
     </div>
     <div class="signature-field">
-      <input type="text" id="building-principal" bind:value={$formStore.signatures.buildingPrincipal} />
+      {#if $formConfigStore.editable.signatures}
+        <input type="text" id="building-principal" bind:value={$formStore.signatures.buildingPrincipal} />
+      {:else}
+        <div class="readonly-field" id="building-principal">{$formStore.signatures.buildingPrincipal}</div>
+      {/if}
       <label for="building-principal">Building Principal</label>
     </div>
   </div>
   
   <div class="signature-row">
     <div class="signature-field">
-      <input type="text" id="superintendent" bind:value={$formStore.signatures.superintendent} />
+      {#if $formConfigStore.editable.signatures}
+        <input type="text" id="superintendent" bind:value={$formStore.signatures.superintendent} />
+      {:else}
+        <div class="readonly-field" id="superintendent">{$formStore.signatures.superintendent}</div>
+      {/if}
       <label for="superintendent">Superintendent</label>
     </div>
     <div class="signature-field">
-      <input type="text" id="signature-date" bind:value={$formStore.signatures.date} />
+      <div id="signature-date">
+        <DateInput 
+          bind:value={$formStore.signatures.date} 
+          readonly={!$formConfigStore.editable.signatures} 
+        />
+      </div>
       <label for="signature-date">Date</label>
     </div>
   </div>
@@ -56,13 +74,23 @@
     font-weight: bold;
   }
 
-  input[type="text"] {
+  input[type="text"], .readonly-field {
     border: none;
     border-bottom: 1px solid #000;
     padding: 5px;
     width: 100%;
     font-family: inherit;
     background: transparent;
+    box-sizing: border-box;
+    display: block;
+    margin: 0;
+    height: 30px;
+  }
+  
+  .readonly-field {
+    background-color: #f8f8f8;
+    display: flex;
+    align-items: center;
   }
 
   .note {

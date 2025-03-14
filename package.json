@@ -1,23 +1,30 @@
 {
   "name": "teacher-induction-log",
   "private": true,
-  "version": "25.03.25",
+  "version": "25.03.37",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
+    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tesd-tech/ps-package": "^24.11.9",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/svelte": "^5.2.7",
+    "@testing-library/user-event": "^14.6.1",
     "@tsconfig/svelte": "^5.0.4",
     "@types/node": "^22.13.10",
+    "jsdom": "^26.0.0",
     "svelte": "^5.20.2",
     "svelte-check": "^4.1.4",
     "typescript": "~5.7.2",
-    "vite": "^6.2.0"
-  },
-  "dependencies": {}
+    "vite": "^6.2.0",
+    "vitest": "^3.0.8"
+  }
 }

@@ -1,13 +1,14 @@
 <script lang="ts">
   export let headers: string[] = [];
   export let showActions: boolean = true;
+  export let columnWidths: string[] = [];
 </script>
 
 <table>
   <thead>
     <tr>
-      {#each headers as header}
-        <th>{header}</th>
+      {#each headers as header, i}
+        <th style={columnWidths[i] ? `width: ${columnWidths[i]}` : ''}>{header}</th>
       {/each}
       {#if showActions}
         <th class="actions-column">Actions</th>
@@ -24,6 +25,7 @@
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    table-layout: fixed;
   }
 
   th {

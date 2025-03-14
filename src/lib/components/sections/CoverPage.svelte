@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formStore } from '../../stores/formStore';
+  import { formStore, formConfigStore } from '../../stores/formStore';
   import FormRow from '../ui/FormRow.svelte';
 </script>
 
@@ -12,27 +12,51 @@
 
   <div class="inductee-info">
     <FormRow label="Inductee" let:id>
-      <input type="text" id={id} bind:value={$formStore.inductee} />
+      {#if $formConfigStore.editable.inductee}
+        <input type="text" id={id} bind:value={$formStore.inductee} />
+      {:else}
+        <div class="readonly-field" id={id}>{$formStore.inductee}</div>
+      {/if}
     </FormRow>
     
     <FormRow label="Building" let:id>
-      <input type="text" id={id} bind:value={$formStore.building} />
+      {#if $formConfigStore.editable.building}
+        <input type="text" id={id} bind:value={$formStore.building} />
+      {:else}
+        <div class="readonly-field" id={id}>{$formStore.building}</div>
+      {/if}
     </FormRow>
     
     <FormRow label="Assignment" let:id>
-      <input type="text" id={id} bind:value={$formStore.assignment} />
+      {#if $formConfigStore.editable.assignment}
+        <input type="text" id={id} bind:value={$formStore.assignment} />
+      {:else}
+        <div class="readonly-field" id={id}>{$formStore.assignment}</div>
+      {/if}
     </FormRow>
     
     <FormRow label="Mentor Teacher" let:id>
-      <input type="text" id={id} bind:value={$formStore.mentorTeacher} />
+      {#if $formConfigStore.editable.mentorTeacher}
+        <input type="text" id={id} bind:value={$formStore.mentorTeacher} />
+      {:else}
+        <div class="readonly-field" id={id}>{$formStore.mentorTeacher}</div>
+      {/if}
     </FormRow>
     
     <FormRow label="School Year (Year 1)" let:id>
-      <input type="text" id={id} bind:value={$formStore.schoolYearOne} />
+      {#if $formConfigStore.editable.schoolYearOne}
+        <input type="text" id={id} bind:value={$formStore.schoolYearOne} />
+      {:else}
+        <div class="readonly-field" id={id}>{$formStore.schoolYearOne}</div>
+      {/if}
     </FormRow>
     
     <FormRow label="School Year (Year 2)" let:id>
-      <input type="text" id={id} bind:value={$formStore.schoolYearTwo} />
+      {#if $formConfigStore.editable.schoolYearTwo}
+        <input type="text" id={id} bind:value={$formStore.schoolYearTwo} />
+      {:else}
+        <div class="readonly-field" id={id}>{$formStore.schoolYearTwo}</div>
+      {/if}
     </FormRow>
   </div>
 </div>
@@ -45,6 +69,18 @@
   .header {
     text-align: center;
     margin-bottom: 30px;
+  }
+  
+  .readonly-field {
+    padding: 0.6em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    height: 30px;
+    margin: 0;
   }
 
   .header h1 {

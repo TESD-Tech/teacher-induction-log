@@ -1,17 +1,26 @@
 <script lang="ts">
-  // Import all section components
+  // Import section components
   import CoverPage from './components/sections/CoverPage.svelte';
-  import SummerAcademy from './components/sections/SummerAcademy.svelte';
-  import InductionSeminars from './components/sections/InductionSeminars.svelte';
-  import MentorMeetings from './components/sections/MentorMeetings.svelte';
-  import TeamMeetings from './components/sections/TeamMeetings.svelte';
-  import ClassroomVisits from './components/sections/ClassroomVisits.svelte';
-  import OtherActivities from './components/sections/OtherActivities.svelte';
+  import GenericSection from './components/sections/GenericSection.svelte';
   import Signatures from './components/sections/Signatures.svelte';
   import VerificationNote from './components/sections/VerificationNote.svelte';
   
   // Import UI components
   import ActionsBar from './components/ui/ActionsBar.svelte';
+  
+  // Import section configurations
+  import { sectionConfigs } from './config/sectionConfigs';
+  
+  // Import form store and types
+  import { formConfigStore, formStore, setFormConfig, type FormConfig } from './stores/formStore';
+  
+  // Props: form configuration can be passed in from parent component
+  export let config: FormConfig | undefined = undefined;
+  
+  // Initialize the form configuration if provided
+  if (config) {
+    setFormConfig(config);
+  }
 </script>
 
 <div class="induction-log">
@@ -20,12 +29,9 @@
   <CoverPage />
   
   <div class="log-content">
-    <SummerAcademy />
-    <InductionSeminars />
-    <MentorMeetings />
-    <TeamMeetings />
-    <ClassroomVisits />
-    <OtherActivities />
+    {#each sectionConfigs as sectionConfig}
+      <GenericSection config={sectionConfig} />
+    {/each}
     <Signatures />
     <VerificationNote />
   </div>
@@ -34,8 +40,8 @@
 <style>
   /* General styles */
   .induction-log {
-    font-family: Times New Roman, serif;
-    max-width: 8.5in;
+    font-family: 'Open Sans', sans-serif;
+    max-width: 95%;
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;

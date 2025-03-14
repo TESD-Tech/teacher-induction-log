@@ -11,8 +11,9 @@
   .log-section {
     margin-bottom: 30px;
     border: 1px solid #000;
-    padding: 15px;
+    padding: 15px 20px;
     page-break-inside: avoid;
+    width: 100%;
   }
 
   h3 {

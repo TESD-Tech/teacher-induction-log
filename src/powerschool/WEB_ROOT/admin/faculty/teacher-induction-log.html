@@ -78,11 +78,19 @@
   ~[wc:admin_navigation_frame_css]
 
   <div class="box-round">
-    <teacher-induction-log-app></teacher-induction-log-app>
+    <teacher-induction-log-app id="induction-log-app"></teacher-induction-log-app>
   </div>
 
   <!-- Load the Svelte component -->
-  <script type="module" src="/teacher-induction-log/index.js"></script>
+  <script type="module">
+    // Import the custom element definition
+    import '/teacher-induction-log/index.js';
+    
+    // Wait for the module to load and the DOM to be ready
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Teacher Induction Log initialized');
+    });
+  </script>
 
   ~[wc:admin_footer_frame_css]
 </body>
