@@ -1,0 +1,12 @@
+{
+  "pages": [
+    {
+      "htmlID": "navPsTeacherInductionLog",
+      "title": "Teacher Induction Log",
+      "version": "25.03.25",
+      "districtLevelContext": 0,
+      "pageURL": "/admin/faculty/teacher-induction-log.html",
+      "parentHTMLID": "navStaffStaffDetails"
+    }
+  ]
+}

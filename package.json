@@ -1,7 +1,7 @@
 {
   "name": "teacher-induction-log",
   "private": true,
-  "version": "25.03.20",
+  "version": "25.03.25",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -19,6 +19,5 @@
     "typescript": "~5.7.2",
     "vite": "^6.2.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

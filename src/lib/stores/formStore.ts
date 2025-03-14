@@ -194,7 +194,8 @@ export function printForm() {
 }
 
 export function saveForm() {
-  let currentValue: FormData;
+  // Initialize with default empty form data to avoid 'used before assigned' error
+  let currentValue: FormData = { ...initialFormData };
   
   // Get the current value from the store
   const unsubscribe = formStore.subscribe(value => {
