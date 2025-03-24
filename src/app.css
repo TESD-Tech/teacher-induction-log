@@ -11,7 +11,7 @@
   /* Force light mode only */
   color-scheme: light;
   color: rgba(0, 0, 0, 0.87);
-  background-color: #ffffff;
+  background-color: #E99300; /* Adjusted goldenrod background */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -22,6 +22,7 @@
 /* Force light mode */
 :global(html) {
   color-scheme: light;
+  background-color: #FFD700; /* Gold background */
 }
 
 a {
@@ -79,7 +80,7 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: #FFD700; /* Gold background */
   }
   a:hover {
     color: #747bff;
