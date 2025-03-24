@@ -30,7 +30,7 @@ function createCustomElementClass(
       
       // Inject global styles
       const styleElement = document.createElement('style');
-      styleElement.textContent = styles;
+      styleElement.textContent = styles + "\n:host { background-color: #F8F1E5; }\n:root { background-color: #F8F1E5; }";
       this.shadow.appendChild(styleElement);
       
       // Create container

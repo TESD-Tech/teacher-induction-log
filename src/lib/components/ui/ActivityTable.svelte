@@ -26,20 +26,43 @@
     border-collapse: collapse;
     margin-bottom: 20px;
     table-layout: fixed;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--table-border);
+    border-radius: 6px;
+    overflow: hidden;
   }
 
   th {
-    border: 1px solid #000;
-    padding: 8px;
+    padding: 12px 10px;
     text-align: left;
-    font-weight: bold;
-    background-color: #f2f2f2;
+    font-weight: 600;
+    background-color: var(--header-bg);
+    border-bottom: 2px solid var(--table-border);
+    color: #495057;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Actions column specific styling */
+  .actions-column {
+    width: 100px;
+    text-align: center;
   }
 
   /* Print-specific styles */
   @media print {
     .actions-column {
       display: none;
+    }
+    
+    table {
+      box-shadow: none;
+      border: 1px solid #000;
+    }
+    
+    th {
+      border-bottom: 1px solid #000;
     }
   }
 </style>

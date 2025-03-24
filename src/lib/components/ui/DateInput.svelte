@@ -65,23 +65,33 @@
 
 <style>
   .date-input {
-    border: none;
-    border-bottom: 1px solid #000;
-    padding: 5px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    padding: 8px;
     width: 100%;
     font-family: inherit;
-    background: transparent;
+    background: white;
     box-sizing: border-box;
     display: block;
     margin: 0;
-    height: 30px;
+    height: 36px;
+    font-size: 0.95rem;
+    color: var(--text-color);
+  }
+  
+  .date-input:focus {
+    outline: none;
+    border-color: var(--focus-color);
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
   }
   
   .readonly-field {
-    background-color: #f8f8f8;
+    background-color: #f8f9fa;
     display: flex;
     align-items: center;
-    height: 30px;
-    padding: 0 5px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 4px;
+    border: 1px solid #eee;
   }
 </style>

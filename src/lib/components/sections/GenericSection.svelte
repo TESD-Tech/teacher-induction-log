@@ -5,6 +5,8 @@
   import Button from '../ui/Button.svelte';
   import DateInput from '../ui/DateInput.svelte';
   import type { SectionConfig } from '../../config/sectionConfigs';
+  import Add from "carbon-icons-svelte/lib/Add.svelte";
+  import TrashCan from "carbon-icons-svelte/lib/TrashCan.svelte";
   
   // Props
   export let config: SectionConfig;
@@ -83,6 +85,7 @@
               confirmMessage={config.actions.remove.confirmMessage} 
               on:click={() => getActionHandler(config.actions.remove.handler)(i)}
             >
+              <span class="icon"><TrashCan size={16} /></span>
               Remove
             </Button>
           </td>
@@ -96,6 +99,7 @@
       variant="add" 
       on:click={getActionHandler(config.actions.add.handler)}
     >
+      <span class="icon"><Add size={16} /></span>
       {config.actions.add.label}
     </Button>
   {/if}
@@ -104,26 +108,48 @@
 <style>
   input[type="text"], .readonly-field, .static-field {
     border: none;
-    border-bottom: 1px solid #000;
-    padding: 5px;
+    border-bottom: 1px solid var(--input-border);
+    padding: 8px;
     width: 100%;
     font-family: inherit;
     background: transparent;
     box-sizing: border-box;
     display: block;
     margin: 0;
-    height: 30px;
+    height: 36px;
+    font-size: 0.95rem;
+  }
+  
+  input[type="text"]:focus {
+    outline: none;
+    border-bottom: 2px solid var(--focus-color);
   }
   
   .readonly-field, .static-field {
-    background-color: #f8f8f8;
+    background-color: #f8f9fa;
     display: flex;
     align-items: center;
+    border-radius: 4px;
+    padding-left: 8px;
+  }
+  
+  .static-field {
+    font-weight: 500;
   }
   
   td {
-    border: 1px solid #000;
-    padding: 8px;
+    padding: 10px;
     vertical-align: middle;
+  }
+
+  .icon {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 0.25rem;
+    vertical-align: middle;
+  }
+  
+  .icon :global(svg) {
+    fill: currentColor;
   }
 </style>
