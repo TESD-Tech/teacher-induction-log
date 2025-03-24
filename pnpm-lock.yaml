@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      carbon-icons-svelte:
+        specifier: ^13.3.0
+        version: 13.3.0
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5.0.3
@@ -558,6 +562,9 @@ packages:
   calver@24.1.0:
     resolution: {integrity: sha512-ohts3WtGGbQ2a9FBmpmh6vSdd9t414i1NPOmz2wx3f17Q+KWNO9WEWQ5YwAtWNIJXVsVOlbRqbsOlLutxCq8cA==}
     hasBin: true
+
+  carbon-icons-svelte@13.3.0:
+    resolution: {integrity: sha512-pwOVRMYyct0KyzLPCwB7BdeO50lo3I3FclasSPgJiADm49YjYClewHnBsQOM2luu2JCLTdBnadtbVvWSpv+k+Q==}
 
   chai@5.2.0:
     resolution: {integrity: sha512-mCuXncKXk5iCLhfhwTc0izo0gtEmpz5CtG2y8GiOINBlMVS6v8TMRc5TaLWKS6692m9+dVVfzgeVxR5UxWHTYw==}
@@ -1790,6 +1797,8 @@ snapshots:
   calver@24.1.0:
     dependencies:
       commander: 12.1.0
+
+  carbon-icons-svelte@13.3.0: {}
 
   chai@5.2.0:
     dependencies:
