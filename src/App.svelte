@@ -141,4 +141,7 @@
     margin: 0;
     padding: 0;
   }
+  
+  /* Import enhanced form styling */
+  @import './form-improvements.css';
 </style>
