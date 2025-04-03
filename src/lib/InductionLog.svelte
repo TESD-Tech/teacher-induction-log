@@ -31,13 +31,9 @@
     
     <div class="log-content">
       {#each sectionConfigs as sectionConfig}
-        <div class="form-section">
-          <GenericSection config={sectionConfig} />
-        </div>
+        <GenericSection config={sectionConfig} />
       {/each}
-      <div class="form-section">
-        <Signatures />
-      </div>
+      <Signatures />
       <VerificationNote />
     </div>
   </div>
@@ -46,42 +42,35 @@
 <style>
   /* General styles */
   .induction-log {
-    font-family: 'Open Sans', sans-serif;
-    max-width: 95%;
+    max-width: 1200px;
+    width: 94%;
     margin: 0 auto;
-    padding: 20px;
+    padding: 20px 0;
     box-sizing: border-box;
-    line-height: 1.6;
     color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fbca28;
   }
   
   .form-container {
-    background-color: rgba(255, 255, 255, 0.92);
+    width: 100%;
+    background-color: transparent;
     border-radius: 10px;
-    padding: 2.5rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+    padding: 0;
     margin-bottom: 2rem;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .log-content {
     margin-top: 2rem;
-  }
-  
-  /* Container for the entire form */
-  :global(.form-section) {
-    margin-bottom: 2rem;
-  }
-  
-  /* Table specific styling to ensure consistent widths */
-  :global(table) {
-    table-layout: fixed;
-  }
-  
-  :global(th), :global(td) {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   /* Print-specific styles */
@@ -89,12 +78,21 @@
     .induction-log {
       padding: 0;
       max-width: 100%;
+      width: 100%;
     }
     
     .form-container {
       background-color: transparent;
       box-shadow: none;
       padding: 0;
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media screen and (max-width: 768px) {
+    .induction-log {
+      width: 98%;
+      padding: 10px 0;
     }
   }
 </style>

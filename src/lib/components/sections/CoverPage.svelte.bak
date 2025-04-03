@@ -64,15 +64,11 @@
 <style>
   .cover-page {
     page-break-after: always;
-    max-width: 800px; /* Add max-width to reduce blank space */
-    margin: 0 auto; /* Center the content */
-    padding: 0 15px; /* Add some side padding */
   }
   
   .header {
     text-align: center;
     margin-bottom: 30px;
-    width: 100%; /* Ensure full width */
   }
   
   .readonly-field {
@@ -91,13 +87,11 @@
     font-size: 20px;
     margin-bottom: 5px;
     font-weight: bold;
-    line-height: 1.2; /* Improve line height */
   }
 
   .header h2, .header h3 {
     font-size: 18px;
     margin: 5px 0;
-    line-height: 1.2; /* Improve line height */
   }
 
   input[type="text"] {
@@ -107,20 +101,5 @@
     width: 100%;
     font-family: inherit;
     background: transparent;
-  }
-
-  /* Responsive adjustments */
-  @media screen and (max-width: 600px) {
-    .cover-page {
-      padding: 0 10px;
-    }
-    
-    .header h1 {
-      font-size: 18px;
-    }
-    
-    .header h2, .header h3 {
-      font-size: 16px;
-    }
   }
 </style>

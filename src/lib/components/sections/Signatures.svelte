@@ -1,101 +1,195 @@
 <script lang="ts">
   import { formStore, formConfigStore } from '../../stores/formStore';
-  import DateInput from '../ui/DateInput.svelte';
+  import LogSection from '../ui/LogSection.svelte';
+  import type { Signatures } from '../../stores/formStore';
+  
+  // Computed properties for editable state
+  $: editable = $formConfigStore.editable.signatures;
 </script>
 
-<div class="signature-section">
-  <p>These signatures certify that the above named inductee has completed the requirements of the Tredyffrin/Easttown New Staff Induction Program.</p>
-  
-  <div class="signature-row">
-    <div class="signature-field">
-      {#if $formConfigStore.editable.signatures}
-        <input type="text" id="mentor-teacher" bind:value={$formStore.signatures.mentorTeacher} />
-      {:else}
-        <div class="readonly-field" id="mentor-teacher">{$formStore.signatures.mentorTeacher}</div>
-      {/if}
-      <label for="mentor-teacher">Mentor Teacher</label>
-    </div>
-    <div class="signature-field">
-      {#if $formConfigStore.editable.signatures}
-        <input type="text" id="building-principal" bind:value={$formStore.signatures.buildingPrincipal} />
-      {:else}
-        <div class="readonly-field" id="building-principal">{$formStore.signatures.buildingPrincipal}</div>
-      {/if}
-      <label for="building-principal">Building Principal</label>
-    </div>
-  </div>
-  
-  <div class="signature-row">
-    <div class="signature-field">
-      {#if $formConfigStore.editable.signatures}
-        <input type="text" id="superintendent" bind:value={$formStore.signatures.superintendent} />
-      {:else}
-        <div class="readonly-field" id="superintendent">{$formStore.signatures.superintendent}</div>
-      {/if}
-      <label for="superintendent">Superintendent</label>
-    </div>
-    <div class="signature-field">
-      <div id="signature-date">
-        <DateInput 
-          bind:value={$formStore.signatures.date} 
-          readonly={!$formConfigStore.editable.signatures} 
-        />
+<section class="signatures-container">
+  <div class="signatures-wrapper">
+    <p class="signature-intro">
+      These signatures certify that the above named inductee has completed the requirements of the Tredyffrin/Easttown New Staff Induction Program.
+    </p>
+    
+    <div class="signatures-grid">
+      <div class="signature-field">
+        {#if editable}
+          <input type="text" bind:value={$formStore.signatures.mentorTeacher} id="mentor-teacher-signature" />
+          <div class="signature-line"></div>
+          <label for="mentor-teacher-signature">Mentor Teacher</label>
+        {:else}
+          <div class="readonly-field" aria-label="Mentor Teacher Signature">{$formStore.signatures.mentorTeacher}</div>
+          <div class="signature-line"></div>
+          <div class="signature-label">Mentor Teacher</div>
+        {/if}
       </div>
-      <label for="signature-date">Date</label>
+      
+      <div class="signature-field">
+        {#if editable}
+          <input type="text" bind:value={$formStore.signatures.buildingPrincipal} id="building-principal-signature" />
+          <div class="signature-line"></div>
+          <label for="building-principal-signature">Building Principal</label>
+        {:else}
+          <div class="readonly-field" aria-label="Building Principal Signature">{$formStore.signatures.buildingPrincipal}</div>
+          <div class="signature-line"></div>
+          <div class="signature-label">Building Principal</div>
+        {/if}
+      </div>
+      
+      <div class="signature-field">
+        {#if editable}
+          <input type="text" bind:value={$formStore.signatures.superintendent} id="superintendent-signature" />
+          <div class="signature-line"></div>
+          <label for="superintendent-signature">Superintendent</label>
+        {:else}
+          <div class="readonly-field" aria-label="Superintendent Signature">{$formStore.signatures.superintendent}</div>
+          <div class="signature-line"></div>
+          <div class="signature-label">Superintendent</div>
+        {/if}
+      </div>
+      
+      <div class="signature-field signature-date">
+        {#if editable}
+          <input type="date" bind:value={$formStore.signatures.date} id="signature-date" />
+          <div class="signature-line"></div>
+          <label for="signature-date">Date</label>
+        {:else}
+          <div class="readonly-field" aria-label="Signature Date">{$formStore.signatures.date}</div>
+          <div class="signature-line"></div>
+          <div class="signature-label">Date</div>
+        {/if}
+      </div>
+    </div>
+    
+    <div class="signature-notes">
+      <p>
+        This completed log must be returned to the Staff Development Office at the Tredyffrin/Easttown School District Administration Offices.
+      </p>
+      <p>
+        On the date of each activity, this log must be initialed by the mentor teacher, principal or seminar coordinator.
+      </p>
     </div>
   </div>
-  
-  <p class="note">This completed log must be returned to the Staff Development Office at the Tredyffrin/Easttown School District Administration Offices.</p>
-</div>
+</section>
 
 <style>
-  .signature-section {
-    margin-top: 30px;
-    border: 1px solid #000;
-    padding: 15px;
-    page-break-inside: avoid;
+  .signatures-container {
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    width: 100%;
   }
-
-  .signature-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
+  
+  .signatures-wrapper {
+    width: 100%;
+    max-width: 100%;
   }
-
+  
+  .signature-intro {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  .signatures-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
   .signature-field {
-    width: 45%;
     display: flex;
     flex-direction: column;
+    margin-bottom: 1.5rem;
   }
-
-  .signature-field label {
-    text-align: center;
-    margin-top: 5px;
-    font-weight: bold;
-  }
-
-  input[type="text"], .readonly-field {
-    border: none;
-    border-bottom: 1px solid #000;
-    padding: 5px;
+  
+  .signature-line {
+    height: 1px;
+    background-color: #000;
+    margin: 0.75rem 0 0.25rem 0;
     width: 100%;
-    font-family: inherit;
+  }
+  
+  .signature-field label,
+  .signature-label {
+    font-weight: 500;
+    text-align: center;
+  }
+  
+  .signature-field input {
+    border: none;
     background: transparent;
-    box-sizing: border-box;
-    display: block;
-    margin: 0;
-    height: 30px;
+    text-align: center;
+    font-size: 1rem;
+    padding: 0.5rem;
+    width: 100%;
+  }
+  
+  .signature-field input:focus {
+    outline: none;
+    background-color: rgba(0, 123, 255, 0.05);
   }
   
   .readonly-field {
-    background-color: #f8f8f8;
+    text-align: center;
+    min-height: 2.5rem;
     display: flex;
     align-items: center;
+    justify-content: center;
   }
-
-  .note {
-    font-style: italic;
-    margin-top: 20px;
+  
+  .signature-notes {
+    margin-top: 2rem;
     text-align: center;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .signature-notes p {
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Print-specific styles */
+  @media print {
+    .signatures-container {
+      box-shadow: none;
+      border: 1px solid #000;
+      padding: 1rem;
+      page-break-inside: avoid;
+    }
+    
+    .signature-line {
+      background-color: #000;
+    }
+    
+    .signature-notes {
+      color: #000;
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media screen and (max-width: 768px) {
+    .signatures-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .signatures-container {
+      padding: 1rem;
+    }
+    
+    .signature-intro {
+      font-size: 0.95rem;
+    }
+    
+    .signature-notes {
+      font-size: 0.85rem;
+    }
   }
 </style>

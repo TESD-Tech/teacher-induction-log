@@ -7,11 +7,9 @@ vi.mock('./lib/InductionLog.svelte', () => ({
   default: vi.fn()
 }));
 
-// Mock the document.createElement to track custom element creation
-const originalCreateElement = document.createElement;
-
-describe('TeacherInductionLog Custom Element', () => {
-  let TeacherInductionLog: any;
+describe('SvelteAppElement Custom Element', () => {
+  let SvelteAppElement: any;
+  const originalCreateElement = document.createElement;
   let mockCreateElement: any;
   
   beforeEach(async () => {
@@ -73,7 +71,7 @@ describe('TeacherInductionLog Custom Element', () => {
     
     // Import the custom element module
     const customElementModule = await import('./custom-element');
-    TeacherInductionLog = customElementModule.TeacherInductionLog;
+    SvelteAppElement = customElementModule.SvelteAppElement;
   });
   
   afterEach(() => {
@@ -82,33 +80,28 @@ describe('TeacherInductionLog Custom Element', () => {
   });
 
   it('should define the custom element', () => {
-    expect(TeacherInductionLog).toBeDefined();
-    expect(typeof TeacherInductionLog).toBe('function');
+    expect(SvelteAppElement).toBeDefined();
+    expect(typeof SvelteAppElement).toBe('function');
   });
 
   it('should initialize with default configuration when no attributes are provided', () => {
-    // Create an instance of the custom element
-    const element = new TeacherInductionLog();
-    
-    // Check the form config store
+    const element = new SvelteAppElement();
     const formConfig = get(formConfigStore);
-    expect(formConfig.userRole).toBe('admin');
     
-    // Verify editable properties for admin
-    expect(formConfig.editable.verifications.summerAcademy).toBe(true);
-    expect(formConfig.editable.verifications.inductionSeminars).toBe(true);
-    expect(formConfig.editable.verifications.mentorMeetings).toBe(true);
-    expect(formConfig.editable.verifications.teamMeetings).toBe(true);
-    expect(formConfig.editable.verifications.classroomVisits).toBe(true);
-    expect(formConfig.editable.verifications.otherActivities).toBe(true);
+    expect(formConfig.userRole).toBe('teacher');
+    
+    expect(formConfig.editable.verifications.summerAcademy).toBe(false);
+    expect(formConfig.editable.verifications.inductionSeminars).toBe(false);
+    expect(formConfig.editable.verifications.mentorMeetings).toBe(false);
+    expect(formConfig.editable.verifications.teamMeetings).toBe(false);
+    expect(formConfig.editable.verifications.classroomVisits).toBe(false);
+    expect(formConfig.editable.verifications.otherActivities).toBe(false);
   });
 
-  it('should update configuration when attributes are set', () => {
-    // Create an instance of the custom element
-    const element = new TeacherInductionLog();
+  it('should update configuration when data is available', () => {
+    const element = new SvelteAppElement();
     
-    // Create test data
-    const testData = {
+    formStore.set({
       inductee: 'John Doe',
       building: 'Main School',
       assignment: 'Math Teacher',
@@ -129,66 +122,78 @@ describe('TeacherInductionLog Custom Element', () => {
         superintendent: '',
         date: ''
       }
-    };
+    });
     
-    const testEditable = {
-      inductee: false,
-      building: false,
-      assignment: false,
-      mentorTeacher: false,
-      schoolYearOne: false,
-      schoolYearTwo: false,
-      summerAcademy: false,
-      inductionSeminars: false,
-      mentorMeetings: false,
-      teamMeetings: false,
-      classroomVisits: false,
-      otherActivities: false,
-      signatures: false,
-      verifications: {
-        summerAcademy: false,
-        inductionSeminars: false,
-        mentorMeetings: false,
-        teamMeetings: false,
-        classroomVisits: false,
-        otherActivities: false
-      }
-    };
-    
-    // Set attributes
-    element.setAttribute('data', JSON.stringify(testData));
-    element.setAttribute('editable', JSON.stringify(testEditable));
-    element.setAttribute('user-role', 'teacher');
-    
-    // Check if the form store was updated
     const formData = get(formStore);
     expect(formData.inductee).toBe('John Doe');
     expect(formData.building).toBe('Main School');
-    
-    // Check if the form config store was updated
-    const formConfig = get(formConfigStore);
-    expect(formConfig.userRole).toBe('teacher');
-    expect(formConfig.editable.inductee).toBe(false);
-    expect(formConfig.editable.building).toBe(false);
-    
-    // Verify verification fields are not editable for teacher
-    expect(formConfig.editable.verifications.summerAcademy).toBe(false);
-    expect(formConfig.editable.verifications.inductionSeminars).toBe(false);
-    expect(formConfig.editable.verifications.mentorMeetings).toBe(false);
-    expect(formConfig.editable.verifications.teamMeetings).toBe(false);
-    expect(formConfig.editable.verifications.classroomVisits).toBe(false);
-    expect(formConfig.editable.verifications.otherActivities).toBe(false);
   });
 
   it('should handle JSON parsing errors gracefully', () => {
-    // Create an instance of the custom element
-    const element = new TeacherInductionLog();
+    const element = new SvelteAppElement();
+    const consoleErrorSpy = vi.spyOn(console, 'error');
     
-    // Set invalid JSON data
     element.setAttribute('data', '{invalid-json}');
     
-    // The form store should not be affected by invalid JSON
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    
     const formData = get(formStore);
     expect(formData.inductee).toBe('');
+  });
+
+  it('should update editable configuration via attribute', () => {
+    const element = new SvelteAppElement();
+    
+    const editableConfig = JSON.stringify({
+      inductee: false,
+      building: false,
+      verifications: {
+        summerAcademy: true,
+        inductionSeminars: true
+      }
+    });
+    
+    element.setAttribute('editable', editableConfig);
+    
+    const formConfig = get(formConfigStore);
+    expect(formConfig.editable.inductee).toBe(false);
+    expect(formConfig.editable.building).toBe(false);
+    expect(formConfig.editable.verifications.summerAcademy).toBe(true);
+    expect(formConfig.editable.verifications.inductionSeminars).toBe(true);
+  });
+
+  it('should update user role via attribute', () => {
+    const element = new SvelteAppElement();
+    
+    element.setAttribute('user-role', 'admin');
+    
+    const formConfig = get(formConfigStore);
+    expect(formConfig.userRole).toBe('admin');
+  });
+
+  it('should handle multiple attribute updates', () => {
+    const element = new SvelteAppElement();
+    
+    // First update data
+    const data = JSON.stringify({
+      inductee: 'Jane Smith',
+      building: 'Secondary School'
+    });
+    element.setAttribute('data', data);
+    
+    // Then update editable configuration
+    const editableConfig = JSON.stringify({
+      inductee: false,
+      building: false
+    });
+    element.setAttribute('editable', editableConfig);
+    
+    const formConfig = get(formConfigStore);
+    const formData = get(formStore);
+    
+    expect(formData.inductee).toBe('Jane Smith');
+    expect(formData.building).toBe('Secondary School');
+    expect(formConfig.editable.inductee).toBe(false);
+    expect(formConfig.editable.building).toBe(false);
   });
 });

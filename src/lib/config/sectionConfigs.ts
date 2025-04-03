@@ -39,12 +39,12 @@ export const sectionConfigs: SectionConfig[] = [
     title: 'I. Summer Academy',
     dataKey: 'summerAcademy',
     headers: ['Activity', 'Date (Year 1)', 'Date (Year 2)', 'Verification'],
-    columnWidths: ['25%', '25%', '25%', '25%'],
+    columnWidths: ['25%', '30%', '30%', '15%'],
     fields: [
       { type: 'static', key: 'day' },
       { type: 'date', key: 'dateYearOne' },
       { type: 'date', key: 'dateYearTwo' },
-      { type: 'verification', key: 'verification', placeholder: 'Mentor initials' }
+      { type: 'verification', key: 'verification', placeholder: 'Initials' }
     ],
     actions: {} // No actions for Summer Academy
   },
@@ -53,13 +53,13 @@ export const sectionConfigs: SectionConfig[] = [
     title: 'II. Induction Seminars',
     dataKey: 'inductionSeminars',
     headers: ['Number', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Verification'],
-    columnWidths: ['10%', '40%', '15%', '15%', '20%'],
+    columnWidths: ['10%', '45%', '17%', '17%', '11%'],
     fields: [
       { type: 'static', key: 'number' },
       { type: 'text', key: 'topic' },
       { type: 'date', key: 'dateYearOne' },
       { type: 'date', key: 'dateYearTwo' },
-      { type: 'verification', key: 'verification', placeholder: 'Mentor initials' }
+      { type: 'verification', key: 'verification', placeholder: 'Initials' }
     ],
     actions: {} // No actions for Induction Seminars
   },
@@ -67,14 +67,14 @@ export const sectionConfigs: SectionConfig[] = [
     id: 'mentorMeetings',
     title: 'III. Meetings with mentor teacher',
     dataKey: 'mentorMeetings',
-    headers: ['Date', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Verification'],
-    columnWidths: ['12%', '30%', '12%', '12%', '18%', '16%'],
+    headers: ['Date', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Verification', 'Actions'],
+    columnWidths: ['14%', '32%', '14%', '14%', '11%', '15%'],
     fields: [
       { type: 'date', key: 'date' },
       { type: 'text', key: 'topic' },
       { type: 'date', key: 'dateYearOne' },
       { type: 'date', key: 'dateYearTwo' },
-      { type: 'verification', key: 'verification', placeholder: 'Mentor initials' }
+      { type: 'verification', key: 'verification', placeholder: 'Initials' }
     ],
     actions: {
       add: { handler: 'addMentorMeeting', label: 'Add Meeting' },
@@ -85,14 +85,14 @@ export const sectionConfigs: SectionConfig[] = [
     id: 'teamMeetings',
     title: 'IV. Induction team meetings',
     dataKey: 'teamMeetings',
-    headers: ['Date', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Verification'],
-    columnWidths: ['12%', '30%', '12%', '12%', '18%', '16%'],
+    headers: ['Date', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Verification', 'Actions'],
+    columnWidths: ['14%', '32%', '14%', '14%', '11%', '15%'],
     fields: [
       { type: 'date', key: 'date' },
       { type: 'text', key: 'topic' },
       { type: 'date', key: 'dateYearOne' },
       { type: 'date', key: 'dateYearTwo' },
-      { type: 'verification', key: 'verification', placeholder: 'Mentor initials' }
+      { type: 'verification', key: 'verification', placeholder: 'Initials' }
     ],
     actions: {
       add: { handler: 'addTeamMeeting', label: 'Add Meeting' },
@@ -103,15 +103,15 @@ export const sectionConfigs: SectionConfig[] = [
     id: 'classroomVisits',
     title: 'V. Visits to other classrooms',
     dataKey: 'classroomVisits',
-    headers: ['Date', 'Teacher', 'Subject', 'Date (Year 1)', 'Date (Year 2)', 'Verification'],
-    columnWidths: ['10%', '15%', '15%', '10%', '10%', '15%', '15%'],
+    headers: ['Date', 'Teacher', 'Subject', 'Date (Year 1)', 'Date (Year 2)', 'Verification', 'Actions'],
+    columnWidths: ['12%', '16%', '16%', '12%', '12%', '11%', '15%'],
     fields: [
       { type: 'date', key: 'date' },
       { type: 'text', key: 'teacher' },
       { type: 'text', key: 'subject' },
       { type: 'date', key: 'dateYearOne' },
       { type: 'date', key: 'dateYearTwo' },
-      { type: 'verification', key: 'verification', placeholder: 'Mentor initials' }
+      { type: 'verification', key: 'verification', placeholder: 'Initials' }
     ],
     actions: {
       add: { handler: 'addClassroomVisit', label: 'Add Visit' },
@@ -122,14 +122,14 @@ export const sectionConfigs: SectionConfig[] = [
     id: 'otherActivities',
     title: 'VI. Other: conferences, courses, etc.',
     dataKey: 'otherActivities',
-    headers: ['Date', 'Activity', 'Date (Year 1)', 'Date (Year 2)', 'Verification'],
-    columnWidths: ['12%', '30%', '12%', '12%', '18%', '16%'],
+    headers: ['Date', 'Activity', 'Date (Year 1)', 'Date (Year 2)', 'Verification', 'Actions'],
+    columnWidths: ['14%', '32%', '14%', '14%', '11%', '15%'],
     fields: [
       { type: 'date', key: 'date' },
       { type: 'text', key: 'activity' },
       { type: 'date', key: 'dateYearOne' },
       { type: 'date', key: 'dateYearTwo' },
-      { type: 'verification', key: 'verification', placeholder: 'Mentor initials' }
+      { type: 'verification', key: 'verification', placeholder: 'Initials' }
     ],
     actions: {
       add: { handler: 'addOtherActivity', label: 'Add Activity' },

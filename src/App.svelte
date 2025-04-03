@@ -3,6 +3,8 @@
   import InductionLog from './lib/InductionLog.svelte';
   import type { FormConfig } from './lib/stores/formStore';
   import { setFormConfig } from './lib/stores/formStore';
+  import './assets/global.css';
+  import './assets/print.css';
   
   // State variables
   let config: FormConfig;
@@ -62,19 +64,19 @@
       config = {
         userRole: 'admin',
         editable: {
-          inductee: true,
-          building: true,
-          assignment: true,
+          inductee: false,
+          building: false,
+          assignment: false,
           mentorTeacher: true,
-          schoolYearOne: true,
-          schoolYearTwo: true,
+          schoolYearOne: false,
+          schoolYearTwo: false,
           summerAcademy: true,
           inductionSeminars: true,
           mentorMeetings: true,
           teamMeetings: true,
           classroomVisits: true,
           otherActivities: true,
-          signatures: true
+          signatures: false
         },
         data: {
           inductee: "Tester, Esther!!!!",
@@ -141,7 +143,4 @@
     margin: 0;
     padding: 0;
   }
-  
-  /* Import enhanced form styling */
-  @import './form-improvements.css';
 </style>

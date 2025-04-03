@@ -36,17 +36,22 @@
     }
     return $formConfigStore.editable[itemType];
   };
+  
+  // Update verification column title to a shorter version
+  $: modifiedHeaders = config.headers.map(header => 
+    header === "Verification" ? "Initials" : header
+  );
 </script>
 
 <LogSection title={config.title}>
   <ActivityTable 
-    headers={config.headers} 
+    headers={modifiedHeaders} 
     columnWidths={config.columnWidths}
     showActions={!!config.actions?.remove}>
     {#each sectionData as item, i}
       <tr>
         {#each config.fields as field}
-          <td>
+          <td class={`field-type-${field.type}`}>
             {#if field.type === 'static'}
               <div class="static-field">{item[field.key]}</div>
             {:else if field.type === 'date'}
@@ -69,7 +74,7 @@
                 <input 
                   type="text" 
                   bind:value={item[field.key]} 
-                  placeholder={field.placeholder || 'Mentor initials'} 
+                  placeholder={field.placeholder || 'Initials'} 
                 />
               {:else}
                 <div class="readonly-field">{item[field.key]}</div>
@@ -79,14 +84,15 @@
         {/each}
         
         {#if config.actions?.remove}
-          <td>
+          <td class="actions-cell">
             <Button 
               variant="remove" 
+              compact={true}
               confirmMessage={config.actions.remove.confirmMessage} 
               on:click={() => getActionHandler(config.actions.remove.handler)(i)}
             >
               <span class="icon"><TrashCan size={16} /></span>
-              Remove
+              <span class="button-text">Remove</span>
             </Button>
           </td>
         {/if}
@@ -108,8 +114,8 @@
 <style>
   input[type="text"], .readonly-field, .static-field {
     border: none;
-    border-bottom: 1px solid var(--input-border);
-    padding: 8px;
+    border-bottom: 1px solid var(--input-border, #ccc);
+    padding: 0.5rem;
     width: 100%;
     font-family: inherit;
     background: transparent;
@@ -122,7 +128,7 @@
   
   input[type="text"]:focus {
     outline: none;
-    border-bottom: 2px solid var(--focus-color);
+    border-bottom: 2px solid var(--focus-color, #007bff);
   }
   
   .readonly-field, .static-field {
@@ -130,7 +136,7 @@
     display: flex;
     align-items: center;
     border-radius: 4px;
-    padding-left: 8px;
+    padding-left: 0.5rem;
   }
   
   .static-field {
@@ -138,8 +144,36 @@
   }
   
   td {
-    padding: 10px;
+    padding: 0.75rem 1rem;
     vertical-align: middle;
+    border-bottom: 1px solid var(--table-border, #eee);
+    background-color: white;
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+  /* Specific styling for different field types */
+  .field-type-static {
+    width: 80px;
+  }
+
+  .field-type-date {
+    width: 160px;
+    min-width: 160px;
+  }
+
+  .field-type-text {
+    min-width: 180px;
+  }
+
+  .field-type-verification {
+    width: 90px;
+  }
+
+  .actions-cell {
+    text-align: center;
+    vertical-align: middle;
+    width: 110px;
   }
 
   .icon {
@@ -151,5 +185,32 @@
   
   .icon :global(svg) {
     fill: currentColor;
+  }
+  
+  /* Responsive adjustments for small screens */
+  @media screen and (max-width: 480px) {
+    .button-text {
+      display: none;
+    }
+    
+    .icon {
+      margin-right: 0;
+    }
+    
+    input[type="text"], .readonly-field, .static-field {
+      font-size: 0.9rem;
+      padding: 0.375rem;
+    }
+
+    td {
+      padding: 0.5rem 0.75rem;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    td {
+      border-bottom: 1px solid #000;
+    }
   }
 </style>

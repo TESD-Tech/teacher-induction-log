@@ -1,11 +1,13 @@
-import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import { expect, afterEach } from 'vitest';
+import { cleanup } from '@testing-library/svelte';
+import * as matchers from '@testing-library/jest-dom/matchers';
 
-// Mock browser APIs if needed
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+// Setup browser environment is handled by the jsdom environment in vitest.config.ts
 
-// Add any other global test setup here
+// Extend Vitest's expect method with methods from @testing-library/jest-dom
+expect.extend(matchers);
+
+// Clean up after each test
+afterEach(() => {
+  cleanup();
+});
