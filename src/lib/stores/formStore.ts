@@ -1,54 +1,65 @@
-import { writable } from 'svelte/store';
+import { writable, get, type Writable } from 'svelte/store';
 
-// Define types for our form data
-export interface SummerAcademyDay {
-  day: string;
+/**
+ * Base activity interface with common properties for all activity types
+ */
+export interface BaseActivity {
   dateYearOne: string;
   dateYearTwo: string;
   verification: string;
 }
 
-export interface InductionSeminar {
+/**
+ * Summer Academy Day activity type
+ */
+export interface SummerAcademyDay extends BaseActivity {
+  day: string; 
+}
+
+/**
+ * Induction Seminar activity type
+ */
+export interface InductionSeminar extends BaseActivity {
   number: number;
   topic: string;
-  dateYearOne: string;
-  dateYearTwo: string;
-  verification: string;
 }
 
-export interface MentorMeeting {
+/**
+ * Mentor Meeting activity type
+ */
+export interface MentorMeeting extends BaseActivity {
   date: string;
   topic: string;
-  dateYearOne: string;
-  dateYearTwo: string;
-  verification: string;
 }
 
-export interface TeamMeeting {
+/**
+ * Team Meeting activity type
+ */
+export interface TeamMeeting extends BaseActivity {
   date: string;
   topic: string;
-  dateYearOne: string;
-  dateYearTwo: string;
-  verification: string;
 }
 
-export interface ClassroomVisit {
+/**
+ * Classroom Visit activity type
+ */
+export interface ClassroomVisit extends BaseActivity {
   date: string;
   teacher: string;
   subject: string;
-  dateYearOne: string;
-  dateYearTwo: string;
-  verification: string;
 }
 
-export interface OtherActivity {
+/**
+ * Other Activity type
+ */
+export interface OtherActivity extends BaseActivity {
   date: string;
   activity: string;
-  dateYearOne: string;
-  dateYearTwo: string;
-  verification: string;
 }
 
+/**
+ * Signatures for the form
+ */
 export interface Signatures {
   mentorTeacher: string;
   buildingPrincipal: string;
@@ -56,6 +67,9 @@ export interface Signatures {
   date: string;
 }
 
+/**
+ * Main form data structure
+ */
 export interface FormData {
   inductee: string;
   building: string;
@@ -72,7 +86,21 @@ export interface FormData {
   signatures: Signatures;
 }
 
-// Define which fields can be edited
+/**
+ * Verification fields configuration
+ */
+export interface VerificationConfig {
+  summerAcademy: boolean;
+  inductionSeminars: boolean;
+  mentorMeetings: boolean;
+  teamMeetings: boolean;
+  classroomVisits: boolean;
+  otherActivities: boolean;
+}
+
+/**
+ * Field editability configuration
+ */
 export interface EditabilityState {
   inductee: boolean;
   building: boolean;
@@ -87,25 +115,36 @@ export interface EditabilityState {
   classroomVisits: boolean;
   otherActivities: boolean;
   signatures: boolean;
-  // Specific verification field editability
-  verifications: {
-    summerAcademy: boolean;
-    inductionSeminars: boolean;
-    mentorMeetings: boolean;
-    teamMeetings: boolean;
-    classroomVisits: boolean;
-    otherActivities: boolean;
-  };
+  verifications: VerificationConfig;
 }
 
-// Combined configuration for the form
+/**
+ * User role types
+ */
+export type UserRole = 'admin' | 'teacher';
+
+/**
+ * Combined configuration for the form
+ */
 export interface FormConfig {
   data: FormData;
   editable: EditabilityState;
-  userRole: 'admin' | 'teacher';
+  userRole: UserRole;
 }
 
-// Initial form data
+/**
+ * Create a new empty activity with initial values
+ */
+function createEmptyActivity<T extends BaseActivity>(additionalProps: Omit<T, keyof BaseActivity>): T {
+  return {
+    dateYearOne: "",
+    dateYearTwo: "",
+    verification: "",
+    ...additionalProps
+  } as T;
+}
+
+// Initial form data with properly typed empty activities
 const initialFormData: FormData = {
   inductee: "",
   building: "",
@@ -114,28 +153,28 @@ const initialFormData: FormData = {
   schoolYearOne: "",
   schoolYearTwo: "",
   summerAcademy: [
-    { day: "Day 1", dateYearOne: "", dateYearTwo: "", verification: "" },
-    { day: "Day 2", dateYearOne: "", dateYearTwo: "", verification: "" },
-    { day: "Day 3", dateYearOne: "", dateYearTwo: "", verification: "" },
-    { day: "Day 4", dateYearOne: "", dateYearTwo: "", verification: "" }
+    createEmptyActivity<SummerAcademyDay>({ day: "Day 1" }),
+    createEmptyActivity<SummerAcademyDay>({ day: "Day 2" }),
+    createEmptyActivity<SummerAcademyDay>({ day: "Day 3" }),
+    createEmptyActivity<SummerAcademyDay>({ day: "Day 4" })
   ],
   inductionSeminars: [
-    { number: 1, topic: "", dateYearOne: "", dateYearTwo: "", verification: "" },
-    { number: 2, topic: "", dateYearOne: "", dateYearTwo: "", verification: "" },
-    { number: 3, topic: "", dateYearOne: "", dateYearTwo: "", verification: "" },
-    { number: 4, topic: "", dateYearOne: "", dateYearTwo: "", verification: "" }
+    createEmptyActivity<InductionSeminar>({ number: 1, topic: "" }),
+    createEmptyActivity<InductionSeminar>({ number: 2, topic: "" }),
+    createEmptyActivity<InductionSeminar>({ number: 3, topic: "" }),
+    createEmptyActivity<InductionSeminar>({ number: 4, topic: "" })
   ],
   mentorMeetings: [
-    { date: "", topic: "", dateYearOne: "", dateYearTwo: "", verification: "" }
+    createEmptyActivity<MentorMeeting>({ date: "", topic: "" })
   ],
   teamMeetings: [
-    { date: "", topic: "", dateYearOne: "", dateYearTwo: "", verification: "" }
+    createEmptyActivity<TeamMeeting>({ date: "", topic: "" })
   ],
   classroomVisits: [
-    { date: "", teacher: "", subject: "", dateYearOne: "", dateYearTwo: "", verification: "" }
+    createEmptyActivity<ClassroomVisit>({ date: "", teacher: "", subject: "" })
   ],
   otherActivities: [
-    { date: "", activity: "", dateYearOne: "", dateYearTwo: "", verification: "" }
+    createEmptyActivity<OtherActivity>({ date: "", activity: "" })
   ],
   signatures: {
     mentorTeacher: "",
@@ -145,7 +184,17 @@ const initialFormData: FormData = {
   }
 };
 
-// Initial editability state - all fields editable by default
+// Default verification config - all verification fields are non-editable for teachers
+const defaultVerificationConfig: VerificationConfig = {
+  summerAcademy: false,
+  inductionSeminars: false,
+  mentorMeetings: false,
+  teamMeetings: false,
+  classroomVisits: false,
+  otherActivities: false
+};
+
+// Initial editability state with verification config
 const initialEditabilityState: EditabilityState = {
   inductee: true,
   building: true,
@@ -160,15 +209,7 @@ const initialEditabilityState: EditabilityState = {
   classroomVisits: true,
   otherActivities: true,
   signatures: true,
-  // By default, verification fields are only editable by admin/mentor
-  verifications: {
-    summerAcademy: false,
-    inductionSeminars: false,
-    mentorMeetings: false,
-    teamMeetings: false,
-    classroomVisits: false,
-    otherActivities: false
-  }
+  verifications: { ...defaultVerificationConfig }
 };
 
 // Initial form configuration
@@ -178,99 +219,139 @@ const initialFormConfig: FormConfig = {
   userRole: 'teacher'
 };
 
-// Create the stores
-export const formConfigStore = writable<FormConfig>(initialFormConfig);
-export const formStore = writable<FormData>(initialFormData);
+// Create the stores with proper types
+export const formConfigStore: Writable<FormConfig> = writable<FormConfig>(initialFormConfig);
+export const formStore: Writable<FormData> = writable<FormData>(initialFormData);
 
-// Helper functions to update the store
-export function addMentorMeeting() {
+/**
+ * Type-safe helper to add a new activity to an array
+ */
+function addActivity<T extends BaseActivity>(
+  currentData: FormData, 
+  activityType: keyof Pick<FormData, 'mentorMeetings' | 'teamMeetings' | 'classroomVisits' | 'otherActivities'>,
+  newActivity: T
+): FormData {
+  return {
+    ...currentData,
+    [activityType]: [...(currentData[activityType] as T[]), newActivity]
+  };
+}
+
+/**
+ * Type-safe helper to remove an activity from an array
+ */
+function removeActivity<T extends BaseActivity>(
+  currentData: FormData,
+  activityType: keyof Pick<FormData, 'mentorMeetings' | 'teamMeetings' | 'classroomVisits' | 'otherActivities'>,
+  index: number
+): FormData {
+  return {
+    ...currentData,
+    [activityType]: (currentData[activityType] as T[]).filter((_, i) => i !== index)
+  };
+}
+
+/**
+ * Add a new mentor meeting to the form
+ */
+export function addMentorMeeting(): void {
   formStore.update(data => {
-    return {
-      ...data,
-      mentorMeetings: [...data.mentorMeetings, { date: "", topic: "", dateYearOne: "", dateYearTwo: "", verification: "" }]
-    };
+    return addActivity<MentorMeeting>(
+      data, 
+      'mentorMeetings',
+      createEmptyActivity<MentorMeeting>({ date: '', topic: '' })
+    );
   });
 }
 
-export function removeMentorMeeting(index: number) {
+/**
+ * Remove a mentor meeting from the form
+ */
+export function removeMentorMeeting(index: number): void {
   formStore.update(data => {
-    return {
-      ...data,
-      mentorMeetings: data.mentorMeetings.filter((_, i) => i !== index)
-    };
+    return removeActivity<MentorMeeting>(data, 'mentorMeetings', index);
   });
 }
 
-export function addTeamMeeting() {
+/**
+ * Add a new team meeting to the form
+ */
+export function addTeamMeeting(): void {
   formStore.update(data => {
-    return {
-      ...data,
-      teamMeetings: [...data.teamMeetings, { date: "", topic: "", dateYearOne: "", dateYearTwo: "", verification: "" }]
-    };
+    return addActivity<TeamMeeting>(
+      data, 
+      'teamMeetings',
+      createEmptyActivity<TeamMeeting>({ date: '', topic: '' })
+    );
   });
 }
 
-export function removeTeamMeeting(index: number) {
+/**
+ * Remove a team meeting from the form
+ */
+export function removeTeamMeeting(index: number): void {
   formStore.update(data => {
-    return {
-      ...data,
-      teamMeetings: data.teamMeetings.filter((_, i) => i !== index)
-    };
+    return removeActivity<TeamMeeting>(data, 'teamMeetings', index);
   });
 }
 
-export function addClassroomVisit() {
+/**
+ * Add a new classroom visit to the form
+ */
+export function addClassroomVisit(): void {
   formStore.update(data => {
-    return {
-      ...data,
-      classroomVisits: [...data.classroomVisits, { date: "", teacher: "", subject: "", dateYearOne: "", dateYearTwo: "", verification: "" }]
-    };
+    return addActivity<ClassroomVisit>(
+      data, 
+      'classroomVisits',
+      createEmptyActivity<ClassroomVisit>({ date: '', teacher: '', subject: '' })
+    );
   });
 }
 
-export function removeClassroomVisit(index: number) {
+/**
+ * Remove a classroom visit from the form
+ */
+export function removeClassroomVisit(index: number): void {
   formStore.update(data => {
-    return {
-      ...data,
-      classroomVisits: data.classroomVisits.filter((_, i) => i !== index)
-    };
+    return removeActivity<ClassroomVisit>(data, 'classroomVisits', index);
   });
 }
 
-export function addOtherActivity() {
+/**
+ * Add a new other activity to the form
+ */
+export function addOtherActivity(): void {
   formStore.update(data => {
-    return {
-      ...data,
-      otherActivities: [...data.otherActivities, { date: "", activity: "", dateYearOne: "", dateYearTwo: "", verification: "" }]
-    };
+    return addActivity<OtherActivity>(
+      data, 
+      'otherActivities',
+      createEmptyActivity<OtherActivity>({ date: '', activity: '' })
+    );
   });
 }
 
-export function removeOtherActivity(index: number) {
+/**
+ * Remove an other activity from the form
+ */
+export function removeOtherActivity(index: number): void {
   formStore.update(data => {
-    return {
-      ...data,
-      otherActivities: data.otherActivities.filter((_, i) => i !== index)
-    };
+    return removeActivity<OtherActivity>(data, 'otherActivities', index);
   });
 }
 
-// Functions for form actions
-export function printForm() {
+/**
+ * Print the form
+ */
+export function printForm(): void {
   window.print();
 }
 
-export function saveForm() {
-  // Initialize with default empty form config to avoid 'used before assigned' error
-  let currentConfig: FormConfig = { ...initialFormConfig };
-  
-  // Get the current value from the store
-  const unsubscribe = formConfigStore.subscribe((value: FormConfig) => {
-    currentConfig = value;
-  });
-  
-  // Unsubscribe to avoid memory leaks
-  unsubscribe();
+/**
+ * Save the form data
+ */
+export function saveForm(): void {
+  // Get the current configuration from the store
+  const currentConfig = get(formConfigStore);
   
   console.log('Form data saved:', currentConfig.data);
   console.log('Form editability state:', currentConfig.editable);
@@ -278,24 +359,12 @@ export function saveForm() {
   // In a real implementation, this would save to a database or file
 }
 
-// Function to set the entire form configuration
-export function setFormConfig(config: FormConfig) {
-  // Ensure verifications object exists
-  if (!config.editable.verifications) {
-    config.editable.verifications = {
-      summerAcademy: false,
-      inductionSeminars: false,
-      mentorMeetings: false,
-      teamMeetings: false,
-      classroomVisits: false,
-      otherActivities: false
-    };
-  }
-  
-  // If user role is admin, enable verification field editing
-  if (config.userRole === 'admin') {
-    // For admin role, enable all editing
-    config.editable.verifications = {
+/**
+ * Get verification config based on user role
+ */
+function getVerificationConfigForRole(role: UserRole): VerificationConfig {
+  if (role === 'admin') {
+    return {
       summerAcademy: true,
       inductionSeminars: true,
       mentorMeetings: true,
@@ -303,36 +372,44 @@ export function setFormConfig(config: FormConfig) {
       classroomVisits: true,
       otherActivities: true
     };
-    
-    // Ensure section editability is set to true for admin
-    config.editable.summerAcademy = true;
-    config.editable.inductionSeminars = true;
-    config.editable.mentorMeetings = true;
-    config.editable.teamMeetings = true;
-    config.editable.classroomVisits = true;
-    config.editable.otherActivities = true;
   } else {
-    // For teachers, verification fields are read-only
-    config.editable.verifications = {
-      summerAcademy: false,
-      inductionSeminars: false,
-      mentorMeetings: false,
-      teamMeetings: false,
-      classroomVisits: false,
-      otherActivities: false
-    };
-    
-    // But ensure section editability is set to true for teachers
-    // This allows them to edit other fields in the rows
-    config.editable.summerAcademy = true;
-    config.editable.inductionSeminars = true;
-    config.editable.mentorMeetings = true;
-    config.editable.teamMeetings = true;
-    config.editable.classroomVisits = true;
-    config.editable.otherActivities = true;
+    return { ...defaultVerificationConfig };
+  }
+}
+
+/**
+ * Update the section editability settings based on user role
+ */
+function updateSectionEditability(editable: EditabilityState, userRole: UserRole): EditabilityState {
+  // For both teachers and admins, ensure section editability is set to true
+  // This allows teachers to edit other fields in the rows, but not verification fields
+  return {
+    ...editable,
+    summerAcademy: true,
+    inductionSeminars: true,
+    mentorMeetings: true,
+    teamMeetings: true,
+    classroomVisits: true,
+    otherActivities: true,
+    verifications: getVerificationConfigForRole(userRole)
+  };
+}
+
+/**
+ * Set the entire form configuration
+ */
+export function setFormConfig(config: FormConfig, preserveVerifications = false): void {
+  // Ensure verifications object exists with proper default values
+  if (!config.editable.verifications) {
+    config.editable.verifications = { ...defaultVerificationConfig };
   }
   
+  // Update editability settings based on user role, unless preserveVerifications is true
+  if (!preserveVerifications) {
+    config.editable = updateSectionEditability(config.editable, config.userRole);
+  }
+  
+  // Update both stores
   formConfigStore.set(config);
-  // Also update the legacy store for backward compatibility
   formStore.set(config.data);
 }
