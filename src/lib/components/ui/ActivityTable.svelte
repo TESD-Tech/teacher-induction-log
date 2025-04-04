@@ -11,9 +11,7 @@
         {#each headers as header, i}
           <th style={columnWidths[i] ? `width: ${columnWidths[i]}` : ''}>{header}</th>
         {/each}
-        {#if showActions}
-          <th class="actions-column">Actions</th>
-        {/if}
+
       </tr>
     </thead>
     <tbody>

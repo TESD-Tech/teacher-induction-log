@@ -4,6 +4,13 @@
 
 This document outlines the approach for testing components in the Teacher Induction Log application, which uses Svelte 5 and the Testing Library.
 
+## Current Testing Status
+
+- Current test coverage: ~50.5% of statements
+- Target test coverage: 80%
+- Components with tests: UI components, Custom Element, App component
+- Components needing tests: lib-components.ts, store functionality
+
 ## Key Changes for Svelte 5 Testing
 
 The following changes were necessary to make the component tests compatible with Svelte 5:
@@ -108,6 +115,42 @@ The following changes were necessary to make the component tests compatible with
    });
    ```
 
+## Testing Forms and Tables
+
+For components that contain forms and tables, use these patterns:
+
+1. **Testing Form Inputs**:
+   ```typescript
+   it('updates when form input changes', async () => {
+     render(FormComponent);
+     
+     // Find the input
+     const input = screen.getByLabelText('First Name');
+     
+     // Change its value
+     await fireEvent.input(input, { target: { value: 'John' } });
+     
+     // Check if value has been updated
+     expect(input).toHaveValue('John');
+   });
+   ```
+
+2. **Testing Table Rows**:
+   ```typescript
+   it('renders correct number of rows', () => {
+     const data = [
+       { id: 1, name: 'Item 1' },
+       { id: 2, name: 'Item 2' }
+     ];
+     
+     render(TableComponent, { props: { items: data } });
+     
+     // Check number of rows (accounting for header row)
+     const rows = screen.getAllByRole('row');
+     expect(rows.length).toBe(data.length + 1);
+   });
+   ```
+
 ## Testing Slots
 
 For components that use slots, there are two main approaches:
@@ -136,6 +179,30 @@ For components that use slots, there are two main approaches:
    });
    ```
 
+## Testing Stores
+
+For testing store functionality:
+
+```typescript
+import { get } from 'svelte/store';
+import { formStore, addMentorMeeting, removeMentorMeeting } from './formStore';
+
+describe('formStore', () => {
+  it('adds a mentor meeting', () => {
+    // Get initial state
+    const initialState = get(formStore);
+    const initialCount = initialState.mentorMeetings.length;
+    
+    // Add a meeting
+    addMentorMeeting();
+    
+    // Check if a meeting was added
+    const updatedState = get(formStore);
+    expect(updatedState.mentorMeetings.length).toBe(initialCount + 1);
+  });
+});
+```
+
 ## Common Issues and Solutions
 
 1. **Mount Not Available on Server**:
@@ -149,6 +216,51 @@ For components that use slots, there are two main approaches:
 
 4. **Date Issues in JSDOM**:
    - Date handling in JSDOM can be problematic. Consider mocking Date functionality or simplifying tests that interact with dates.
+
+5. **Shadow DOM Testing**:
+   - To test components inside Shadow DOM, use `container.shadowRoot.querySelector()` instead of `container.querySelector()`
+
+## Writing Tests for Custom Elements
+
+For testing custom elements:
+
+```typescript
+describe('SvelteAppElement', () => {
+  it('renders correctly', () => {
+    // Create and append the custom element
+    const element = document.createElement('teacher-induction-log-app');
+    document.body.appendChild(element);
+    
+    // Verify it has a shadow root
+    expect(element.shadowRoot).toBeTruthy();
+    
+    // Check if the app container exists in shadow DOM
+    const appContainer = element.shadowRoot?.querySelector('#svelte-app-container');
+    expect(appContainer).toBeTruthy();
+    
+    // Clean up
+    document.body.removeChild(element);
+  });
+});
+```
+
+## Testing Strategy
+
+1. **Component Testing Priority**:
+   - Focus on core UI components first
+   - Test form interactions and data management functionality
+   - Ensure proper rendering based on role permissions
+   - Test print functionality
+
+2. **Integration Testing**:
+   - Test how components interact within the application
+   - Verify data flow between components and stores
+   - Test role-based permissions and visibility
+
+3. **Test Coverage Goals**:
+   - Aim for 80% statement coverage
+   - Focus on critical user paths
+   - Prioritize complex logic and data processing functions
 
 ## Additional Resources
 

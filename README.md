@@ -14,6 +14,10 @@ This web application is a comprehensive tool for tracking and managing teacher i
 - Track Additional Professional Activities
 - Flexible Role-Based Access (Teacher and Admin Roles)
 - Printable and Saveable Documentation
+- Auto-save functionality for form data
+- Date validation for consistent formatting
+- Responsive design for all device sizes
+- Print-optimized stylesheets for PDF generation
 
 ## Technology Stack
 
