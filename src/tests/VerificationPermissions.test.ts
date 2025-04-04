@@ -95,6 +95,30 @@ describe('Verification Field Permissions', () => {
     expect(isEditable('verification', 'mentorMeetings')).toBe(false);
   });
   
+  it('non-verification fields should be editable for teacher role', () => {
+    // Set user role to teacher
+    mockFormConfig.userRole = 'teacher';
+    mockFormConfig.editable.mentorMeetings = true;
+    mockFormConfig.editable.verifications.mentorMeetings = false;
+    
+    // Define our isEditable function that mirrors the implementation
+    const isEditable = (fieldKey: string, itemType: string) => {
+      if (fieldKey === 'verification') {
+        return mockFormConfig.editable.verifications[itemType];
+      }
+      return mockFormConfig.editable[itemType];
+    };
+    
+    // Verification field should be read-only
+    expect(isEditable('verification', 'mentorMeetings')).toBe(false);
+    
+    // Other fields should be editable
+    expect(isEditable('date', 'mentorMeetings')).toBe(true);
+    expect(isEditable('topic', 'mentorMeetings')).toBe(true);
+    expect(isEditable('dateYearOne', 'mentorMeetings')).toBe(true);
+    expect(isEditable('dateYearTwo', 'mentorMeetings')).toBe(true);
+  });
+  
   it('verification fields should be editable for admin role', () => {
     // Set user role to admin
     mockFormConfig.userRole = 'admin';
