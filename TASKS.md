@@ -5,6 +5,7 @@
 ### High Priority
 - [ ] Improve form header layout to reduce blank space on left and right sides
 - [ ] Improve test coverage (current coverage: ~50.5% of statements, target: 80%)
+- [ ] Add comprehensive integration tests for row-level security implementation
 - [ ] Fix lib-components.ts (currently 0% test coverage)
 - [ ] Refactor formStore.ts to improve type safety
 - [ ] Add validation for special fields (email, phone numbers, etc.)
@@ -29,6 +30,10 @@
 - [ ] Create user guide for teachers and administrators
 
 ## Completed Tasks
+
+### April 4, 2025
+- [x] Fix row-level security to ensure verification fields are read-only while other row fields remain editable
+- [x] Add unit tests for verification field permissions
 
 ### April 3, 2025
 - [x] Fix responsive layout issues in ActivityTable component
