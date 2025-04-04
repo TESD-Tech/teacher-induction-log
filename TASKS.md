@@ -3,11 +3,10 @@
 ## Current Tasks
 
 ### High Priority
-- [ ] Improve form header layout to reduce blank space on left and right sides
-- [ ] Improve test coverage (current coverage: ~50.5% of statements, target: 80%)
+- [x] Improve form header layout to reduce blank space on left and right sides
+- [ ] Improve test coverage (current coverage: ~68.18% of statements, target: 80%)
 - [ ] Add comprehensive integration tests for row-level security implementation
 - [ ] Fix lib-components.ts (currently 0% test coverage)
-- [ ] Refactor formStore.ts to improve type safety
 - [ ] Add validation for special fields (email, phone numbers, etc.)
 
 ### Medium Priority
@@ -32,8 +31,12 @@
 ## Completed Tasks
 
 ### April 4, 2025
+- [x] Fix ActivityTable component to properly display actions column
+- [x] Fix custom-element.ts to properly handle attribute updates
+- [x] Refactor formStore.ts to improve type safety
 - [x] Fix row-level security to ensure verification fields are read-only while other row fields remain editable
 - [x] Add unit tests for verification field permissions
+- [x] Improve form header layout to reduce blank space on left and right sides
 
 ### April 3, 2025
 - [x] Fix responsive layout issues in ActivityTable component
@@ -58,11 +61,11 @@
 - [x] Improve table styling with proper borders and alignment
 
 ## Technical Debt
-- [ ] Refactor formStore.ts to improve type safety
+- [x] Refactor formStore.ts to improve type safety
 - [ ] Separate UI logic from data management in components
 - [ ] Standardize event handling across components
 - [ ] Create proper error boundaries for component failures
-- [ ] Improve test coverage (current: 50.5%, target: 80%)
+- [ ] Improve test coverage (current: 68.18%, target: 80%)
 - [ ] Fix lib-components.ts (currently 0% test coverage)
 
 ## Future Enhancements

@@ -42,8 +42,8 @@
 <style>
   /* General styles */
   .induction-log {
-    max-width: 1200px;
-    width: 94%;
+    max-width: 1080px; /* Reduced from 1200px to reduce blank space */
+    width: 97%; /* Increased from 94% to use more screen space */
     margin: 0 auto;
     padding: 20px 0;
     box-sizing: border-box;
@@ -91,7 +91,7 @@
   /* Responsive adjustments */
   @media screen and (max-width: 768px) {
     .induction-log {
-      width: 98%;
+      width: 99%; /* Increased from 98% to use even more space on mobile */
       padding: 10px 0;
     }
   }

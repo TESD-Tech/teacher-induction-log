@@ -68,8 +68,8 @@
   /* Renamed outer class slightly for clarity */
   .cover-page-section {
     /* Removed page-break-after as it might be controlled by the parent */
-    max-width: 800px; /* Adjust as needed */
-    margin: 20px auto; /* Center with some top/bottom margin */
+    max-width: 960px; /* Increased from 800px to better match parent container and reduce blank space */
+    margin: 15px auto; /* Reduced top/bottom margin from 20px to 15px */
     padding: 15px;
     font-family: sans-serif; /* Example font */
     box-sizing: border-box;
@@ -78,7 +78,8 @@
   /* Header styling */
   .header {
     text-align: center;
-    margin-bottom: 40px; /* Increased spacing */
+    margin-bottom: 30px; /* Reduced from 40px to conserve vertical space */
+    width: 100%; /* Ensure header uses full width */
   }
 
   .header h1 {
@@ -154,7 +155,9 @@
 
   @media screen and (max-width: 600px) {
     .cover-page-section { /* Adjusted class name here too */
-      padding: 10px;
+      padding: 10px 5px; /* Reduced horizontal padding from 10px to 5px */
+      width: 98%; /* Ensure near-full width on mobile */
+      max-width: none; /* Remove max-width constraint on mobile */
     }
     .header h1 {
       font-size: 1.2em;
