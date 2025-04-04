@@ -11,7 +11,9 @@
         {#each headers as header, i}
           <th style={columnWidths[i] ? `width: ${columnWidths[i]}` : ''}>{header}</th>
         {/each}
-
+        {#if showActions}
+          <th class="actions-column">Actions</th>
+        {/if}
       </tr>
     </thead>
     <tbody>
@@ -55,7 +57,7 @@
   }
 
   /* Actions column specific styling */
-  .actions-column {
+  :global(.actions-column) {
     width: 110px;
     text-align: center;
   }
@@ -79,7 +81,7 @@
 
   /* Print-specific styles */
   @media print {
-    .actions-column {
+    :global(.actions-column) {
       display: none;
     }
     
