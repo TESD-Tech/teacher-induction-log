@@ -3,8 +3,9 @@ import App from './App.svelte';
 // Import styles but don't apply them to the document
 // We'll manually inject them into the shadow DOM
 import styles from './app.css?inline';
-// Import form configuration types
+// Import form configuration types and store
 import type { FormConfig, FormData, EditabilityState } from './lib/stores/formStore';
+import { setFormConfig, formConfigStore } from './lib/stores/formStore';
 
 // Dynamically determine the package name from the base URL
 function getPackageName(): string {
@@ -19,7 +20,7 @@ function getPackageName(): string {
 export class SvelteAppElement extends HTMLElement {
   private shadow: ShadowRoot;
   private app: any;
-  private formConfig: FormConfig | null = null;
+  private formConfig: FormConfig;
 
   static get observedAttributes() {
     return ['data', 'editable', 'user-role'];
@@ -39,6 +40,13 @@ export class SvelteAppElement extends HTMLElement {
     const appContainer = document.createElement('div');
     appContainer.id = 'svelte-app-container';
     this.shadow.appendChild(appContainer);
+
+    // Initialize with default form configuration
+    this.formConfig = {
+      data: this.getDefaultFormData(),
+      editable: this.getDefaultEditabilityState(),
+      userRole: 'teacher'
+    };
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
@@ -46,38 +54,35 @@ export class SvelteAppElement extends HTMLElement {
     
     try {
       if (name === 'data' && newValue) {
-        const data = JSON.parse(newValue) as FormData;
-        if (!this.formConfig) {
-          this.formConfig = {
-            data,
-            editable: this.getDefaultEditabilityState(),
-            userRole: 'teacher'
-          };
-        } else {
-          this.formConfig.data = data;
-        }
+        const data = JSON.parse(newValue) as Partial<FormData>;
+        // Merge the parsed data with the existing data to ensure all fields are present
+        this.formConfig.data = { ...this.formConfig.data, ...data };
       } else if (name === 'editable' && newValue) {
-        const editable = JSON.parse(newValue) as EditabilityState;
-        if (!this.formConfig) {
-          this.formConfig = {
-            data: this.getDefaultFormData(),
-            editable,
-            userRole: 'teacher'
+        const editable = JSON.parse(newValue) as Partial<EditabilityState>;
+        // Merge with existing editability state to preserve fields not specified
+        this.formConfig.editable = { ...this.formConfig.editable, ...editable };
+        
+        // Ensure verification fields are properly set
+        if (editable.verifications) {
+          this.formConfig.editable.verifications = { 
+            ...this.formConfig.editable.verifications, 
+            ...editable.verifications 
           };
-        } else {
-          this.formConfig.editable = editable;
         }
       } else if (name === 'user-role' && newValue) {
-        const userRole = newValue as 'admin' | 'teacher';
-        if (!this.formConfig) {
-          this.formConfig = {
-            data: this.getDefaultFormData(),
-            editable: this.getDefaultEditabilityState(),
-            userRole
-          };
-        } else {
-          this.formConfig.userRole = userRole;
+        // Only accept valid user roles
+        if (newValue === 'admin' || newValue === 'teacher') {
+          this.formConfig.userRole = newValue;
         }
+      }
+      
+      // Update the store with the modified configuration
+      // When updating via attribute, preserve verification settings
+      setFormConfig(this.formConfig, true);
+      
+      // Update the component if it's already mounted
+      if (this.app) {
+        this.app.formConfig = this.formConfig;
       }
     } catch (error) {
       console.error(`Error parsing attribute ${name}:`, error);
@@ -132,19 +137,22 @@ export class SvelteAppElement extends HTMLElement {
       classroomVisits: true,
       otherActivities: true,
       signatures: true,
-      // Add verification fields editability
+      // Set verification fields editability based on user role
       verifications: {
-        summerAcademy: true,
-        inductionSeminars: true,
-        mentorMeetings: true,
-        teamMeetings: true,
-        classroomVisits: true,
-        otherActivities: true
+        summerAcademy: false,
+        inductionSeminars: false,
+        mentorMeetings: false,
+        teamMeetings: false,
+        classroomVisits: false,
+        otherActivities: false
       }
     };
   }
 
   connectedCallback() {
+    // Initialize the store with the current configuration
+    setFormConfig(this.formConfig);
+    
     // Mount the Svelte app when the element is connected to the DOM
     this.app = mount(App, {
       target: this.shadow.getElementById('svelte-app-container')!,
