@@ -62,20 +62,20 @@
       
       // Create a hardcoded configuration as fallback
       config = {
-        userRole: 'admin',
+        userRole: 'teacher',
         editable: {
           inductee: false,
           building: false,
           assignment: false,
-          mentorTeacher: true,
+          mentorTeacher: false,
           schoolYearOne: false,
           schoolYearTwo: false,
-          summerAcademy: true,
-          inductionSeminars: true,
-          mentorMeetings: true,
-          teamMeetings: true,
-          classroomVisits: true,
-          otherActivities: true,
+          summerAcademy: false,
+          inductionSeminars: false,
+          mentorMeetings: false,
+          teamMeetings: false,
+          classroomVisits: false,
+          otherActivities: false,
           signatures: false
         },
         data: {
