@@ -31,6 +31,7 @@ vi.mock('../lib/stores/formStore', () => {
     setFormConfig: vi.fn((config) => {
       // Simulate the setFormConfig behavior
       if (config.userRole === 'admin') {
+        // Admin role - all fields editable
         config.editable.verifications = {
           summerAcademy: true,
           inductionSeminars: true,
@@ -39,7 +40,16 @@ vi.mock('../lib/stores/formStore', () => {
           classroomVisits: true,
           otherActivities: true
         };
+        
+        // Set section editability to true
+        config.editable.summerAcademy = true;
+        config.editable.inductionSeminars = true;
+        config.editable.mentorMeetings = true;
+        config.editable.teamMeetings = true;
+        config.editable.classroomVisits = true;
+        config.editable.otherActivities = true;
       } else {
+        // Teacher role - verification fields read-only
         config.editable.verifications = {
           summerAcademy: false,
           inductionSeminars: false,
@@ -48,6 +58,14 @@ vi.mock('../lib/stores/formStore', () => {
           classroomVisits: false,
           otherActivities: false
         };
+        
+        // But ensure section editability is still true
+        config.editable.summerAcademy = true;
+        config.editable.inductionSeminars = true;
+        config.editable.mentorMeetings = true;
+        config.editable.teamMeetings = true;
+        config.editable.classroomVisits = true;
+        config.editable.otherActivities = true;
       }
       return config;
     }),
@@ -83,6 +101,7 @@ describe('Verification Field Permissions', () => {
     // Set user role to teacher
     mockFormConfig.userRole = 'teacher';
     mockFormConfig.editable.verifications.mentorMeetings = false;
+    mockFormConfig.editable.mentorMeetings = true; // Section is editable
     
     // Check that isEditable function would return false for verification fields
     const isEditable = (fieldKey: string, itemType: string) => {
@@ -123,6 +142,7 @@ describe('Verification Field Permissions', () => {
     // Set user role to admin
     mockFormConfig.userRole = 'admin';
     mockFormConfig.editable.verifications.mentorMeetings = true;
+    mockFormConfig.editable.mentorMeetings = true;
     
     // Check that isEditable function would return true for verification fields
     const isEditable = (fieldKey: string, itemType: string) => {

@@ -294,6 +294,7 @@ export function setFormConfig(config: FormConfig) {
   
   // If user role is admin, enable verification field editing
   if (config.userRole === 'admin') {
+    // For admin role, enable all editing
     config.editable.verifications = {
       summerAcademy: true,
       inductionSeminars: true,
@@ -302,6 +303,14 @@ export function setFormConfig(config: FormConfig) {
       classroomVisits: true,
       otherActivities: true
     };
+    
+    // Ensure section editability is set to true for admin
+    config.editable.summerAcademy = true;
+    config.editable.inductionSeminars = true;
+    config.editable.mentorMeetings = true;
+    config.editable.teamMeetings = true;
+    config.editable.classroomVisits = true;
+    config.editable.otherActivities = true;
   } else {
     // For teachers, verification fields are read-only
     config.editable.verifications = {
@@ -312,6 +321,15 @@ export function setFormConfig(config: FormConfig) {
       classroomVisits: false,
       otherActivities: false
     };
+    
+    // But ensure section editability is set to true for teachers
+    // This allows them to edit other fields in the rows
+    config.editable.summerAcademy = true;
+    config.editable.inductionSeminars = true;
+    config.editable.mentorMeetings = true;
+    config.editable.teamMeetings = true;
+    config.editable.classroomVisits = true;
+    config.editable.otherActivities = true;
   }
   
   formConfigStore.set(config);
