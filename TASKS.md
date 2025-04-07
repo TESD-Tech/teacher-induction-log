@@ -3,25 +3,7 @@
 ## Current Tasks
 
 ### High Priority
-- [x] Improve form header layout to reduce blank space on left and right sides
-- [x] Improve toolbar with fixed positioning and district name
 - [ ] Improve test coverage (current coverage: ~85.23% of statements, target: 90%)
-- [x] Add comprehensive integration tests for row-level security implementation
-- [x] Fix lib-components.ts (currently 0% test coverage)
-- [x] Add validation for special fields (email, phone numbers, etc.)
-### Security Model Refactor & Role Split
-- [x] **Migrate to new role-based security model**
-  - [x] Define new roles: **Admin**, **Mentor**, **Mentee**
-  - [x] Refactor permissions logic to support new roles
-  - [x] Update UI components to respect new role permissions
-  - [x] Migrate existing "teacher" data to "mentor" and "mentee" roles
-  - [x] Update documentation to reflect new roles and permissions
-  - [x] Test all role-based access controls thoroughly
-    - All tests now pass after debugging permission and UI issues
-- [x] **Split existing "teacher" role into two distinct roles:**
-  - **Mentor**: experienced teacher guiding the inductee
-  - **Mentee**: new teacher undergoing induction
-
 
 ### Medium Priority
 - [ ] Improve accessibility features across all components
@@ -42,59 +24,10 @@
 - [ ] Fix printing layout issues with tables spanning multiple pages
 - [ ] Create user guide for teachers and administrators
 
-## Completed Tasks
-
-### April 7, 2025
-- [x] Improve toolbar with fixed positioning and district name
-- [x] Enhance UI by moving district name to toolbar and improve spacing
-- [x] Fix layout issues with the header to reduce empty space
-- [x] Improve responsive design for mobile devices
-- [x] Add validation functions for special fields (email, phone, building codes)
-- [x] Improve FormRow and Button components with better styling
-- [x] Add loading state to main app for better user experience
-- [x] Add tests for VerificationNote component
-- [x] Create comprehensive onboarding guide (ROO.md)
-- [x] Improve responsive design for mobile devices
-
-### April 4, 2025
-- [x] Fix lib-components.ts (added comprehensive tests)
-- [x] Fix ActivityTable component to properly display actions column
-- [x] Fix custom-element.ts to properly handle attribute updates
-- [x] Refactor formStore.ts to improve type safety
-- [x] Fix row-level security to ensure verification fields are read-only while other row fields remain editable
-- [x] Add unit tests for verification field permissions
-- [x] Improve form header layout to reduce blank space on left and right sides
-
-### April 3, 2025
-- [x] Fix responsive layout issues in ActivityTable component
-- [x] Implement print stylesheet for better PDF generation
-- [x] Add validation for date inputs to ensure proper formatting
-- [x] Implement auto-save functionality for form data
-- [x] Create baseline for testing
-- [x] Fix component testing setup for Svelte 5 compatibility
-- [x] Fix custom element tests
-- [x] Add test coverage reporting with @vitest/coverage-v8
-- [x] Create UI component test files
-- [x] Resolve testing incompatibilities with Svelte 5 and @testing-library
-- [x] Create PLANNING.md documentation
-- [x] Create TASKS.md tracking document
-- [x] Update README.md with improved setup instructions
-
-### Previous Milestones
-- [x] Set up project structure with Svelte 5 and TypeScript
-- [x] Implement Web Components architecture with Shadow DOM
-- [x] Create centralized form store for state management
-- [x] Integrate Carbon Design System icons
-- [x] Improve table styling with proper borders and alignment
-
 ## Technical Debt
-- [x] Refactor formStore.ts to improve type safety
 - [ ] Separate UI logic from data management in components
 - [ ] Standardize event handling across components
 - [ ] Create proper error boundaries for component failures
-- [x] Improve test coverage (current: 85.23%, target: 90%)
-- [x] Fix lib-components.ts (now has 75% test coverage)
-- [x] Add validation functions for special field types
 
 ## Test Coverage Summary (April 7, 2025)
 

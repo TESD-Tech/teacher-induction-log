@@ -1,91 +1,120 @@
 <script lang="ts">
+  // Props
   export let label: string;
   export let id: string = crypto.randomUUID();
+  export let required: boolean = false;
+  export let helpText: string = "";
+  export let errorMessage: string = "";
+  export let hasError: boolean = false;
 </script>
 
-<div class="form-row">
-  <label for={id}>{label}</label>
+<div class="form-row" class:has-error={hasError}>
+  <label for={id} class="form-label">
+    {label}
+    {#if required}<span class="required-indicator">*</span>{/if}
+  </label>
+  
   <div class="input-container">
     <slot {id}></slot>
+    
+    {#if helpText}
+      <div class="help-text">{helpText}</div>
+    {/if}
+    
+    {#if hasError && errorMessage}
+      <div class="error-message">{errorMessage}</div>
+    {/if}
   </div>
 </div>
 
 <style>
   .form-row {
     display: flex;
-    align-items: center;
-    gap: 1.25rem; /* Increased for better spacing */
-    width: 100%;
+    margin-bottom: 0.5rem;
     position: relative;
+    width: 100%;
   }
-
-  /* Add a subtle connector between label and input */
-  .form-row::after {
-    content: '';
-    position: absolute;
-    left: 140px; /* Adjust based on min-width of label */
-    top: 50%;
-    width: 8px;
-    height: 1px;
-    background-color: rgba(0, 0, 0, 0.1);
-    transform: translateY(-50%);
-  }
-
-  label {
-    width: auto;
-    min-width: 150px; /* Slightly wider for better readability */
-    max-width: 220px;
-    flex-shrink: 0;
-    font-weight: bold;
+  
+  /* Enhanced label styling */
+  .form-label {
+    display: block;
+    width: 38%;
+    min-width: 120px;
+    max-width: 180px;
+    padding: 0.6rem 0.75rem 0.6rem 0;
+    color: #333;
+    font-weight: 500;
     text-align: right;
-    color: #333; /* Slightly darker for better readability */
-    transition: color 0.2s ease;
+    flex-shrink: 0;
+    line-height: 1.4;
+    transition: color 0.2s;
   }
-
-  /* Style enhancement for label focus state */
-  .form-row:focus-within label {
-    color: #000;
+  
+  /* Required field indicator */
+  .required-indicator {
+    color: #dc3545;
+    margin-left: 0.25rem;
   }
-
+  
+  /* Enhanced input container */
   .input-container {
     flex-grow: 1;
-    min-width: 0;
+    min-width: 0; /* Ensure container doesn't grow wider than parent */
     position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Help text styling */
+  .help-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    line-height: 1.3;
+  }
+  
+  /* Error state styling */
+  .has-error .form-label {
+    color: #dc3545;
+  }
+  
+  .error-message {
+    font-size: 0.85rem;
+    color: #dc3545;
+    margin-top: 0.25rem;
+    font-weight: 500;
+  }
+  
+  /* Highlight current focused row */
+  .form-row:focus-within .form-label {
+    color: #007bff;
+    font-weight: 600;
   }
   
   /* Responsive adjustments */
-  @media screen and (min-width: 1200px) {
-    label {
-      min-width: 180px;
+  @media screen and (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+      margin-bottom: 1rem;
     }
     
-    .form-row::after {
-      left: 180px;
+    .form-label {
+      width: 100%;
+      max-width: 100%;
+      text-align: left;
+      padding: 0 0 0.35rem 0;
     }
   }
   
-  /* Smaller screens */
-  @media screen and (max-width: 600px) {
+  /* Print styles */
+  @media print {
     .form-row {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+      page-break-inside: avoid;
     }
     
-    .form-row::after {
-      display: none; /* Hide connector on mobile */
-    }
-    
-    label {
-      width: 100%;
-      min-width: 100%;
-      max-width: 100%;
-      text-align: left;
-      margin-bottom: 4px;
-    }
-    
-    .input-container {
-      width: 100%;
+    .help-text {
+      display: none;
     }
   }
 </style>

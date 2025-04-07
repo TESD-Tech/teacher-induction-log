@@ -9,7 +9,9 @@ const LOCAL_STORAGE_KEY = 'teacher-induction-log-data';
 /**
  * Initialize the auto-save functionality
  */
-export function initializeAutoSave(): void {
+import type { Unsubscriber } from 'svelte/store';
+
+export function initializeAutoSave(): Unsubscriber {
   // Load data from local storage on initialization
   loadFromLocalStorage();
   
@@ -30,6 +32,7 @@ function saveToLocalStorage(formConfig: FormConfig): void {
     localStorage.setItem(LOCAL_STORAGE_KEY, serializedData);
     console.log('Form data auto-saved:', new Date().toLocaleTimeString());
   } catch (error) {
+    console.log('[DEBUG] saveToLocalStorage error caught', error);
     console.error('Error saving form data to localStorage:', error);
   }
 }
@@ -47,6 +50,7 @@ function loadFromLocalStorage(): void {
       console.log('Form data loaded from localStorage');
     }
   } catch (error) {
+    console.log('[DEBUG] loadFromLocalStorage error caught', error);
     console.error('Error loading form data from localStorage:', error);
   }
 }
@@ -54,8 +58,8 @@ function loadFromLocalStorage(): void {
 /**
  * Manually save the current form state
  */
-export function manualSave(): void {
-  let currentConfig: FormConfig;
+export function manualSave(): boolean {
+  let currentConfig: FormConfig = {} as FormConfig;
   
   // Get the current configuration from the store
   const unsubscribe = formConfigStore.subscribe((value) => {
@@ -78,6 +82,7 @@ export function clearSavedData(): void {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     console.log('Saved form data cleared');
   } catch (error) {
+    console.log('[DEBUG] clearSavedData error caught', error);
     console.error('Error clearing saved form data:', error);
   }
 }

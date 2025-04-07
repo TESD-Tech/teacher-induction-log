@@ -131,14 +131,17 @@ describe('SvelteAppElement Custom Element', () => {
 
   it('should handle JSON parsing errors gracefully', () => {
     const element = new SvelteAppElement();
-    const consoleErrorSpy = vi.spyOn(console, 'error');
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     
-    element.setAttribute('data', '{invalid-json}');
+    // Use a different invalid JSON to avoid specific error message validation
+    element.setAttribute('data', '{ "test": ');
     
     expect(consoleErrorSpy).toHaveBeenCalled();
     
     const formData = get(formStore);
     expect(formData.inductee).toBe('');
+    
+    consoleErrorSpy.mockRestore();
   });
 
   it('should update editable configuration via attribute', () => {

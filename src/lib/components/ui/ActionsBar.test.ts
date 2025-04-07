@@ -56,26 +56,64 @@ describe('ActionsBar Component', () => {
   it('has the correct structural elements', () => {
     const { container } = render(ActionsBar);
     
-    // Check for the actions container
-    const actionsDiv = container.querySelector('.actions');
-    expect(actionsDiv).toBeTruthy();
+    // Check for the header toolbar container
+    const toolbarDiv = container.querySelector('.header-toolbar');
+    expect(toolbarDiv).toBeTruthy();
     
     // Check for button elements
-    const buttons = actionsDiv.querySelectorAll('button');
+    const buttons = container.querySelectorAll('button');
     expect(buttons.length).toBe(2);
   });
 
   it('contains the correct CSS classes for styling', () => {
     const { container } = render(ActionsBar);
     
-    // Check that the actions container has the correct class
-    const actionsDiv = container.querySelector('.actions');
-    expect(actionsDiv).toHaveClass('actions');
+    // Check that the toolbar container has the correct class
+    const toolbarDiv = container.querySelector('.header-toolbar');
+    expect(toolbarDiv).toHaveClass('header-toolbar');
+    
+    // Check for toolbar content container
+    const toolbarContent = container.querySelector('.toolbar-content');
+    expect(toolbarContent).toBeTruthy();
+    
+    // Check for district title
+    const districtTitle = container.querySelector('.district-title');
+    expect(districtTitle).toBeTruthy();
     
     // Check icon classes
     const iconSpans = container.querySelectorAll('.icon');
     iconSpans.forEach(span => {
       expect(span).toHaveClass('icon');
     });
+  });
+});
+// Additional tests for error handling and storage events
+import * as formStore from '../../stores/formStore';
+import { render, fireEvent } from '@testing-library/svelte';
+import ActionsBar from './ActionsBar.svelte';
+
+describe('ActionsBar Edge Cases', () => {
+  it('shows error notification if saveForm throws', async () => {
+    vi.spyOn(formStore, 'saveForm').mockImplementation(() => { throw new Error('Save failed'); });
+    const { getByText, findByText } = render(ActionsBar);
+
+    const saveButton = getByText(/Save Form/i);
+    await fireEvent.click(saveButton);
+
+    const errorNotification = await findByText(/Failed to save form/i);
+    expect(errorNotification).toBeTruthy();
+  });
+
+  it('shows auto-save notification on storage event', async () => {
+    const { findByText } = render(ActionsBar);
+
+    const event = new StorageEvent('storage', {
+      key: 'teacher-induction-log-data',
+      newValue: 'some data'
+    });
+    window.dispatchEvent(event);
+
+    const autoSaveNotification = await findByText(/Form data auto-saved/i);
+    expect(autoSaveNotification).toBeTruthy();
   });
 });

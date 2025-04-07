@@ -15,7 +15,6 @@
   
   // State for auto-save
   let lastSaveTime = '';
-  let unsubscribeAutoSave: () => void;
 
   // State for scroll effects
   let scrollY = 0;
@@ -24,7 +23,7 @@
   // Initialize auto-save on component mount
   onMount(() => {
     // Initialize auto-save functionality
-    unsubscribeAutoSave = initializeAutoSave();
+    initializeAutoSave();
     
     // Add event listener for storage changes to update UI
     window.addEventListener('storage', handleStorageChange);
@@ -40,9 +39,7 @@
   
   // Clean up subscriptions when component is destroyed
   onDestroy(() => {
-    if (unsubscribeAutoSave) {
-      unsubscribeAutoSave();
-    }
+    // No unsubscribe needed
   });
 
   // Handle scroll events to update toolbar appearance
@@ -51,6 +48,7 @@
   }
   
   // Handle manual save button click
+    console.log('[DEBUG] handleSave called');
   function handleSave() {
     try {
       // First call the original saveForm function
@@ -71,7 +69,9 @@
       setTimeout(() => {
         showSaveNotification.set(false);
       }, 3000);
+    console.log('[DEBUG] handleSave success block executed');
     } catch (error) {
+    console.log('[DEBUG] handleSave error block executed', error);
       console.error('Error saving form:', error);
       
       // Show error notification
@@ -82,6 +82,7 @@
   }
   
   // Handle storage events (when auto-save occurs)
+    console.log('[DEBUG] handleStorageChange called', event);
   function handleStorageChange(event: StorageEvent) {
     if (event.key === 'teacher-induction-log-data') {
       lastSaveTime = new Date().toLocaleTimeString();
@@ -129,11 +130,11 @@
       </div>
       
       <div class="action-buttons">
-        <Button on:click={printForm} class="default compact">
-          <span class="icon"><Printer size={14} /></span> Print Form
+        <Button on:click={printForm} variant="default" compact={true}>
+          <span class="icon"><Printer size={16} /></span> Print Form
         </Button>
-        <Button on:click={handleSave} class="default compact">
-          <span class="icon"><Save size={14} /></span> Save Form
+        <Button on:click={handleSave} variant="default" compact={true}>
+          <span class="icon"><Save size={16} /></span> Save Form
         </Button>
       </div>
     </div>

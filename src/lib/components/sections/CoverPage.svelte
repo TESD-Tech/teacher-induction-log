@@ -1,202 +1,345 @@
 <script lang="ts">
   import { formStore, formConfigStore } from '../../stores/formStore';
-  import FormRow from '../ui/FormRow.svelte'; // Assuming FormRow handles label and input layout
+  import FormRow from '../ui/FormRow.svelte';
 </script>
 
 <div class="cover-page-section">
-  <header class="header">
+  <!-- District Header -->
+  <div class="district-header">
+    <h1>TREDYFFRIN/EASTTOWN SCHOOL DISTRICT</h1>
     <h2>Teacher Induction Log</h2>
-    <h3>Log Sheet</h3>
-  </header>
+  </div>
 
   <fieldset class="inductee-info">
     <legend>Inductee Information</legend>
 
-    <FormRow label="Inductee" let:id>
-      {#if $formConfigStore.editable.inductee}
-        <input type="text" id={id} bind:value={$formStore.inductee} />
-      {:else}
-        <div class="readonly-field" id={id}>{$formStore.inductee || '&nbsp;'}</div>
-      {/if}
-    </FormRow>
+    <div class="info-grid">
+      <!-- Left Column -->
+      <div class="info-column">
+        <FormRow label="Inductee" let:id>
+          {#if $formConfigStore.editable.inductee}
+            <input 
+              type="text" 
+              id={id} 
+              bind:value={$formStore.inductee} 
+              placeholder="Last, First" 
+              aria-label="Inductee Name"
+              class="form-input"
+            />
+          {:else}
+            <div class="readonly-field" id={id}>{$formStore.inductee || ''}</div>
+          {/if}
+        </FormRow>
 
-    <FormRow label="Building" let:id>
-      {#if $formConfigStore.editable.building}
-        <input type="text" id={id} bind:value={$formStore.building} />
-      {:else}
-        <div class="readonly-field" id={id}>{$formStore.building || '&nbsp;'}</div>
-      {/if}
-    </FormRow>
+        <FormRow label="Building" let:id>
+          {#if $formConfigStore.editable.building}
+            <input 
+              type="text" 
+              id={id} 
+              bind:value={$formStore.building} 
+              placeholder="School Building"
+              aria-label="School Building"
+              class="form-input"
+            />
+          {:else}
+            <div class="readonly-field" id={id}>{$formStore.building || ''}</div>
+          {/if}
+        </FormRow>
 
-    <FormRow label="Assignment" let:id>
-      {#if $formConfigStore.editable.assignment}
-        <input type="text" id={id} bind:value={$formStore.assignment} />
-      {:else}
-        <div class="readonly-field" id={id}>{$formStore.assignment || '&nbsp;'}</div>
-      {/if}
-    </FormRow>
+        <FormRow label="Assignment" let:id>
+          {#if $formConfigStore.editable.assignment}
+            <input 
+              type="text" 
+              id={id} 
+              bind:value={$formStore.assignment} 
+              placeholder="Teaching Assignment"
+              aria-label="Teaching Assignment" 
+              class="form-input"
+            />
+          {:else}
+            <div class="readonly-field" id={id}>{$formStore.assignment || ''}</div>
+          {/if}
+        </FormRow>
+      </div>
 
-    <FormRow label="Mentor Teacher" let:id>
-      {#if $formConfigStore.editable.mentorTeacher}
-        <input type="text" id={id} bind:value={$formStore.mentorTeacher} />
-      {:else}
-        <div class="readonly-field" id={id}>{$formStore.mentorTeacher || '&nbsp;'}</div>
-      {/if}
-    </FormRow>
+      <!-- Right Column -->
+      <div class="info-column">
+        <FormRow label="Mentor Teacher" let:id>
+          {#if $formConfigStore.editable.mentorTeacher}
+            <input 
+              type="text" 
+              id={id} 
+              bind:value={$formStore.mentorTeacher} 
+              placeholder="Last, First"
+              aria-label="Mentor Teacher Name"
+              class="form-input"
+            />
+          {:else}
+            <div class="readonly-field" id={id}>{$formStore.mentorTeacher || ''}</div>
+          {/if}
+        </FormRow>
 
-    <FormRow label="School Year (Year 1)" let:id>
-      {#if $formConfigStore.editable.schoolYearOne}
-        <input type="text" id={id} bind:value={$formStore.schoolYearOne} placeholder="YYYY-YYYY" />
-      {:else}
-        <div class="readonly-field" id={id}>{$formStore.schoolYearOne || '&nbsp;'}</div>
-      {/if}
-    </FormRow>
+        <FormRow label="School Year (Year 1)" let:id>
+          {#if $formConfigStore.editable.schoolYearOne}
+            <input 
+              type="text" 
+              id={id} 
+              bind:value={$formStore.schoolYearOne} 
+              placeholder="YYYY-YYYY"
+              aria-label="School Year One"
+              class="form-input year-input"
+              pattern="\d{4}-\d{4}"
+            />
+          {:else}
+            <div class="readonly-field" id={id}>{$formStore.schoolYearOne || ''}</div>
+          {/if}
+        </FormRow>
 
-    <FormRow label="School Year (Year 2)" let:id>
-      {#if $formConfigStore.editable.schoolYearTwo}
-        <input type="text" id={id} bind:value={$formStore.schoolYearTwo} placeholder="YYYY-YYYY" />
-      {:else}
-        <div class="readonly-field" id={id}>{$formStore.schoolYearTwo || '&nbsp;'}</div>
-      {/if}
-    </FormRow>
-
+        <FormRow label="School Year (Year 2)" let:id>
+          {#if $formConfigStore.editable.schoolYearTwo}
+            <input 
+              type="text" 
+              id={id} 
+              bind:value={$formStore.schoolYearTwo} 
+              placeholder="YYYY-YYYY"
+              aria-label="School Year Two"
+              class="form-input year-input"
+              pattern="\d{4}-\d{4}"
+            />
+          {:else}
+            <div class="readonly-field" id={id}>{$formStore.schoolYearTwo || ''}</div>
+          {/if}
+        </FormRow>
+      </div>
+    </div>
   </fieldset>
+
+  <!-- Action Buttons -->
+  <div class="form-actions">
+    <button type="button" class="btn print-btn" on:click={() => window.print()}>
+      <span class="btn-icon">🖨️</span> Print Form
+    </button>
+    <button type="button" class="btn save-btn">
+      <span class="btn-icon">💾</span> Save Form
+    </button>
   </div>
+</div>
 
 <style>
   /* Cover page section styles */
   .cover-page-section {
     max-width: 1200px;
     width: 100%;
-    margin: 0 auto;
+    margin: 0 auto 2rem auto;
     padding: 0;
-    font-family: sans-serif;
+    font-family: var(--font-family, system-ui, sans-serif);
     box-sizing: border-box;
-  }
-
-  /* Header styling */
-  .header {
-    text-align: center;
-    margin-bottom: 20px;
-    width: 100%;
-    position: relative;
-    padding: 10px 0;
-  }
-
-  .header h2 {
-    font-size: 1.6em;
-    margin: 5px 0;
-    font-weight: normal;
-  }
-  
-  .header h3 {
-    font-size: 1.3em;
-    margin: 5px 0;
-    font-weight: normal;
-  }
-
-  /* Form fieldset styling with improved spacing */
-  .inductee-info {
-    border: 1px solid #FFFF;
-    padding: 25px 40px; /* Increased padding for better spacing */
-    margin: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    display: grid;
-    grid-template-columns: 1fr;
-    column-gap: 60px; /* Increased column gap */
-    row-gap: 20px; /* Explicit row gap */
+    background-color: white;
+    overflow: hidden;
+  }
+
+  /* District Header styling */
+  .district-header {
+    text-align: center;
+    background-color: #fbca28; /* District yellow */
+    color: #333;
+    padding: 1.5rem 1rem;
+    border-bottom: 3px solid #444;
+    margin-bottom: 1.5rem;
+  }
+
+  .district-header h1 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .district-header h2 {
+    font-size: 1.25rem;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  /* Form fieldset styling */
+  .inductee-info {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 2rem 2.5rem;
+    margin: 0 1.5rem 1.5rem 1.5rem;
+    position: relative;
   }
 
   .inductee-info legend {
-    font-weight: bold;
-    padding: 0 15px; /* Increased padding around legend text */
-    font-size: 1.1em;
-    margin-left: 15px;
+    font-weight: 600;
+    padding: 0 1rem;
+    color: #333;
+    background-color: white;
+    border-radius: 4px;
+    font-size: 1.1rem;
   }
 
-  /* Improved styling for input fields and readonly fields */
-  input[type="text"],
+  /* Grid layout for information */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* Form inputs styling */
+  .form-input {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #d0d0d0;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+  }
+
+  .form-input::placeholder {
+    color: #aaa;
+    font-style: italic;
+    font-size: 0.9rem;
+  }
+
+  .year-input {
+    font-family: monospace;
+    letter-spacing: 0.5px;
+  }
+
+  /* Readonly fields */
   .readonly-field {
     width: 100%;
-    padding: 10px 12px; /* Slightly increased padding */
-    border: 1px solid #bbb; /* Lighter border */
+    min-height: 42px;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #e5e5e5;
     border-radius: 4px;
-    font-size: 1em;
-    font-family: inherit;
-    box-sizing: border-box;
-    min-height: 40px; /* Slightly taller for better visual presence */
+    background-color: #f8f8f8;
     display: flex;
     align-items: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow for depth */
-    transition: border-color 0.2s; /* Smooth transition for hover/focus */
+  }
+  
+  /* Empty field styles */
+  .readonly-field:empty::after {
+    content: '\00a0'; /* Non-breaking space */
   }
 
-  /* Specific style enhancements for inputs when editable */
-  input[type="text"] {
-    background-color: #fff;
+  /* Action buttons */
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 0 1.5rem 1.5rem 1.5rem;
   }
 
-  input[type="text"]:focus {
-    border-color: #999;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.1);
+  .btn {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s, transform 0.1s;
   }
 
-  /* Specific style enhancements for readonly fields */
-  .readonly-field {
-    background-color: #f8f8f8;
-    color: #444; /* Slightly darker for better contrast */
+  .btn:active {
+    transform: translateY(1px);
   }
 
-  /* Placeholder for empty readonly fields */
-   .readonly-field:empty::after {
-     content: '\00a0';
+  .print-btn {
+    background-color: #6c757d;
+    color: white;
   }
 
-  /* Responsive adjustments with improved breakpoints */
-  @media screen and (min-width: 900px) {
-    .inductee-info {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px 40px;
-    }
+  .print-btn:hover {
+    background-color: #5a6268;
   }
 
-  /* Three-column layout for very wide screens */
-  @media screen and (min-width: 1300px) {
-    .inductee-info {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px 30px;
-    }
+  .save-btn {
+    background-color: #007bff;
+    color: white;
   }
 
-  @media screen and (max-width: 600px) {
+  .save-btn:hover {
+    background-color: #0069d9;
+  }
+
+  .btn-icon {
+    font-size: 1.1rem;
+  }
+
+  /* Print styles */
+  @media print {
     .cover-page-section {
-      padding: 10px 5px;
-      width: 100%;
-      max-width: none;
+      box-shadow: none;
+      margin: 0;
+      padding: 0;
     }
     
-    .header {
-      margin-bottom: 15px;
-      padding: 5px 0;
+    .district-header {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      color-adjust: exact;
     }
     
-    .header h2 {
-      font-size: 1.2em;
+    .form-actions {
+      display: none;
     }
-    
-    .header h3 {
-      font-size: 1.1em;
+  }
+
+  /* Responsive styling */
+  @media screen and (max-width: 900px) {
+    .info-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
     }
     
     .inductee-info {
-      padding: 15px 20px;
+      padding: 1.5rem;
+      margin: 0 1rem 1rem 1rem;
     }
     
-    input[type="text"],
-    .readonly-field {
-      font-size: 0.95em;
-      min-height: 38px;
+    .form-actions {
+      padding: 0 1rem 1rem 1rem;
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media screen and (max-width: 576px) {
+    .district-header h1 {
+      font-size: 1.25rem;
+    }
+    
+    .district-header h2 {
+      font-size: 1.1rem;
+    }
+    
+    .inductee-info {
+      padding: 1rem;
+      margin: 0 0.5rem 0.5rem 0.5rem;
     }
   }
 </style>
