@@ -68,17 +68,25 @@ The application manages data for:
 - Support for different user roles with appropriate permissions
 - Configuration loading from external JSON
 
-## User Roles
+## User Roles and Permissions
 
-### Teacher Role
-- Can edit most form fields
-- Cannot edit verification fields
-- Primary user for data entry
+### Admin
+- Full access to all form fields, including verification and approval sections
+- Can approve, verify, and finalize induction logs
+- Manage user accounts and role assignments
+- Administrative oversight of the entire induction process
 
-### Admin Role
-- Full editing capabilities including verification fields
-- Can approve and verify teacher activities
-- Administrative oversight of the induction process
+### Mentor
+- Can view and comment on mentee's induction activities
+- Can edit mentor-specific sections (e.g., meeting notes, feedback)
+- Cannot approve or verify final submissions
+- Supports and guides mentees through the induction process
+
+### Mentee
+- Primary user for data entry of induction activities
+- Can edit most form fields related to their own progress
+- Cannot edit verification or approval fields
+- Subject to review by mentors and admins
 
 ## Web Component Integration
 

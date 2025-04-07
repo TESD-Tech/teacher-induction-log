@@ -40,16 +40,30 @@ vi.mock('../lib/stores/formStore', () => {
           classroomVisits: true,
           otherActivities: true
         };
-        
-        // Set section editability to true
         config.editable.summerAcademy = true;
         config.editable.inductionSeminars = true;
         config.editable.mentorMeetings = true;
         config.editable.teamMeetings = true;
         config.editable.classroomVisits = true;
         config.editable.otherActivities = true;
-      } else {
-        // Teacher role - verification fields read-only
+      } else if (config.userRole === 'mentor') {
+        // Mentor role - can sign mentor verifications, but not others
+        config.editable.verifications = {
+          summerAcademy: false,
+          inductionSeminars: false,
+          mentorMeetings: true, // mentor can sign their own
+          teamMeetings: false,
+          classroomVisits: false,
+          otherActivities: false
+        };
+        config.editable.summerAcademy = true;
+        config.editable.inductionSeminars = true;
+        config.editable.mentorMeetings = true;
+        config.editable.teamMeetings = true;
+        config.editable.classroomVisits = true;
+        config.editable.otherActivities = true;
+      } else if (config.userRole === 'mentee') {
+        // Mentee role - mostly read-only verifications
         config.editable.verifications = {
           summerAcademy: false,
           inductionSeminars: false,
@@ -58,8 +72,6 @@ vi.mock('../lib/stores/formStore', () => {
           classroomVisits: false,
           otherActivities: false
         };
-        
-        // But ensure section editability is still true
         config.editable.summerAcademy = true;
         config.editable.inductionSeminars = true;
         config.editable.mentorMeetings = true;
@@ -73,7 +85,34 @@ vi.mock('../lib/stores/formStore', () => {
 });
 
 // Mock data
-let mockFormConfig = {
+interface EditableVerifications {
+  mentorMeetings: boolean;
+  summerAcademy: boolean;
+  inductionSeminars: boolean;
+  teamMeetings: boolean;
+  classroomVisits: boolean;
+  otherActivities: boolean;
+  [key: string]: boolean; // allow string indexing
+}
+
+interface EditableConfig {
+  mentorMeetings: boolean;
+  summerAcademy: boolean;
+  inductionSeminars: boolean;
+  teamMeetings: boolean;
+  classroomVisits: boolean;
+  otherActivities: boolean;
+  [key: string]: boolean | EditableVerifications;
+  verifications: EditableVerifications;
+}
+
+interface MockFormConfig {
+  data: any;
+  editable: EditableConfig;
+  userRole: 'mentee' | 'mentor' | 'admin';
+}
+
+let mockFormConfig: MockFormConfig = {
   data: {
     mentorMeetings: [
       { date: "2025-04-01", topic: "Test Meeting", dateYearOne: "2025-04-01", dateYearTwo: "", verification: "BJK" }
@@ -81,11 +120,21 @@ let mockFormConfig = {
   },
   editable: {
     mentorMeetings: true,
+    summerAcademy: true,
+    inductionSeminars: true,
+    teamMeetings: true,
+    classroomVisits: true,
+    otherActivities: true,
     verifications: {
-      mentorMeetings: false // Default for teacher role
+      mentorMeetings: false,
+      summerAcademy: false,
+      inductionSeminars: false,
+      teamMeetings: false,
+      classroomVisits: false,
+      otherActivities: false
     }
   },
-  userRole: 'teacher' as 'teacher' | 'admin'
+  userRole: 'mentee'
 };
 
 describe('Verification Field Permissions', () => {
@@ -97,41 +146,34 @@ describe('Verification Field Permissions', () => {
     cleanup();
   });
   
-  it('verification fields should be read-only for teacher role', () => {
-    // Set user role to teacher
-    mockFormConfig.userRole = 'teacher';
+  it('verification fields should be read-only for mentee role', () => {
+    mockFormConfig.userRole = 'mentee';
     mockFormConfig.editable.verifications.mentorMeetings = false;
-    mockFormConfig.editable.mentorMeetings = true; // Section is editable
-    
-    // Check that isEditable function would return false for verification fields
+    mockFormConfig.editable.mentorMeetings = true;
+
     const isEditable = (fieldKey: string, itemType: string) => {
       if (fieldKey === 'verification') {
         return mockFormConfig.editable.verifications[itemType];
       }
       return mockFormConfig.editable[itemType];
     };
-    
+
     expect(isEditable('verification', 'mentorMeetings')).toBe(false);
   });
   
-  it('non-verification fields should be editable for teacher role', () => {
-    // Set user role to teacher
-    mockFormConfig.userRole = 'teacher';
+  it('non-verification fields should be editable for mentee role', () => {
+    mockFormConfig.userRole = 'mentee';
     mockFormConfig.editable.mentorMeetings = true;
     mockFormConfig.editable.verifications.mentorMeetings = false;
-    
-    // Define our isEditable function that mirrors the implementation
+
     const isEditable = (fieldKey: string, itemType: string) => {
       if (fieldKey === 'verification') {
         return mockFormConfig.editable.verifications[itemType];
       }
       return mockFormConfig.editable[itemType];
     };
-    
-    // Verification field should be read-only
+
     expect(isEditable('verification', 'mentorMeetings')).toBe(false);
-    
-    // Other fields should be editable
     expect(isEditable('date', 'mentorMeetings')).toBe(true);
     expect(isEditable('topic', 'mentorMeetings')).toBe(true);
     expect(isEditable('dateYearOne', 'mentorMeetings')).toBe(true);
@@ -139,52 +181,79 @@ describe('Verification Field Permissions', () => {
   });
   
   it('verification fields should be editable for admin role', () => {
-    // Set user role to admin
     mockFormConfig.userRole = 'admin';
     mockFormConfig.editable.verifications.mentorMeetings = true;
     mockFormConfig.editable.mentorMeetings = true;
-    
-    // Check that isEditable function would return true for verification fields
+
     const isEditable = (fieldKey: string, itemType: string) => {
       if (fieldKey === 'verification') {
         return mockFormConfig.editable.verifications[itemType];
       }
       return mockFormConfig.editable[itemType];
     };
-    
+
     expect(isEditable('verification', 'mentorMeetings')).toBe(true);
+  });
+
+  it('mentor should be able to edit mentorMeetings verification but not others', () => {
+    mockFormConfig.userRole = 'mentor';
+    mockFormConfig.editable.verifications.mentorMeetings = true;
+    mockFormConfig.editable.verifications.summerAcademy = false;
+
+    const isEditable = (fieldKey: string, itemType: string) => {
+      if (fieldKey === 'verification') {
+        return mockFormConfig.editable.verifications[itemType];
+      }
+      return mockFormConfig.editable[itemType];
+    };
+
+    expect(isEditable('verification', 'mentorMeetings')).toBe(true);
+    expect(isEditable('verification', 'summerAcademy')).toBe(false);
+  });
+
+  it('mentee should not be able to edit any verification fields', () => {
+    mockFormConfig.userRole = 'mentee';
+    mockFormConfig.editable.verifications.mentorMeetings = false;
+    mockFormConfig.editable.verifications.summerAcademy = false;
+
+    const isEditable = (fieldKey: string, itemType: string) => {
+      if (fieldKey === 'verification') {
+        return mockFormConfig.editable.verifications[itemType];
+      }
+      return mockFormConfig.editable[itemType];
+    };
+
+    expect(isEditable('verification', 'mentorMeetings')).toBe(false);
+    expect(isEditable('verification', 'summerAcademy')).toBe(false);
   });
   
   it('setFormConfig should configure verification fields based on role', () => {
     const setFormConfig = vi.mocked(formStoreModule.setFormConfig);
-    
-    // Create a test config with admin role
+
     const adminConfig = {
       data: {} as any,
-      editable: {
-        verifications: {} as any
-      } as any,
-      userRole: 'admin' as 'admin' | 'teacher'
+      editable: { verifications: {} as any } as any,
+      userRole: 'admin' as 'admin' | 'mentor' | 'mentee'
     };
-    
-    // Call the mocked function
     setFormConfig(adminConfig);
-    
-    // Create a test config with teacher role
-    const teacherConfig = {
+
+    const mentorConfig = {
       data: {} as any,
-      editable: {
-        verifications: {} as any
-      } as any,
-      userRole: 'teacher' as 'admin' | 'teacher'
+      editable: { verifications: {} as any } as any,
+      userRole: 'mentor' as 'admin' | 'mentor' | 'mentee'
     };
-    
-    // Call the mocked function
-    setFormConfig(teacherConfig);
-    
-    // Verify the function was called with correct arguments
-    expect(setFormConfig).toHaveBeenCalledTimes(2);
+    setFormConfig(mentorConfig);
+
+    const menteeConfig = {
+      data: {} as any,
+      editable: { verifications: {} as any } as any,
+      userRole: 'mentee' as 'admin' | 'mentor' | 'mentee'
+    };
+    setFormConfig(menteeConfig);
+
+    expect(setFormConfig).toHaveBeenCalledTimes(3);
     expect(setFormConfig).toHaveBeenCalledWith(adminConfig);
-    expect(setFormConfig).toHaveBeenCalledWith(teacherConfig);
+    expect(setFormConfig).toHaveBeenCalledWith(mentorConfig);
+    expect(setFormConfig).toHaveBeenCalledWith(menteeConfig);
   });
 });

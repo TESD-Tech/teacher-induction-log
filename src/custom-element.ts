@@ -7,6 +7,11 @@ import styles from './app.css?inline';
 import type { FormConfig, FormData, EditabilityState } from './lib/stores/formStore';
 import { setFormConfig, formConfigStore } from './lib/stores/formStore';
 
+// Define user role constants
+export const ROLE_ADMIN = 'admin';
+export const ROLE_MENTOR = 'mentor';
+export const ROLE_MENTEE = 'mentee';
+
 // Dynamically determine the package name from the base URL
 function getPackageName(): string {
   // Get the base URL from import.meta
@@ -45,7 +50,7 @@ export class SvelteAppElement extends HTMLElement {
     this.formConfig = {
       data: this.getDefaultFormData(),
       editable: this.getDefaultEditabilityState(),
-      userRole: 'teacher'
+      userRole: ROLE_MENTEE
     };
   }
 
@@ -71,7 +76,7 @@ export class SvelteAppElement extends HTMLElement {
         }
       } else if (name === 'user-role' && newValue) {
         // Only accept valid user roles
-        if (newValue === 'admin' || newValue === 'teacher') {
+        if ([ROLE_ADMIN, ROLE_MENTOR, ROLE_MENTEE].includes(newValue)) {
           this.formConfig.userRole = newValue;
         }
       }

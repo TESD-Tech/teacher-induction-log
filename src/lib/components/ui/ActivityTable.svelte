@@ -1,6 +1,5 @@
 <script lang="ts">
   export let headers: string[] = [];
-  export let showActions: boolean = true;
   export let columnWidths: string[] = [];
 </script>
 

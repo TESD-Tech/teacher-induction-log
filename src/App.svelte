@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import InductionLog from './lib/InductionLog.svelte';
   import type { FormConfig } from './lib/stores/formStore';
-  import { setFormConfig } from './lib/stores/formStore';
+  import { setFormConfig, updateSectionEditability } from './lib/stores/formStore';
   import './assets/global.css';
   import './assets/print.css';
   
@@ -62,22 +62,8 @@
       
       // Create a hardcoded configuration as fallback
       config = {
-        userRole: 'teacher',
-        editable: {
-          inductee: false,
-          building: false,
-          assignment: false,
-          mentorTeacher: false,
-          schoolYearOne: false,
-          schoolYearTwo: false,
-          summerAcademy: false,
-          inductionSeminars: false,
-          mentorMeetings: false,
-          teamMeetings: false,
-          classroomVisits: false,
-          otherActivities: false,
-          signatures: false
-        },
+        userRole: 'mentee',
+        editable: updateSectionEditability({}, 'mentee'),
         data: {
           inductee: "Tester, Esther!!!!",
           building: "HARDCODED SCHOOL",

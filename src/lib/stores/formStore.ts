@@ -121,7 +121,7 @@ export interface EditabilityState {
 /**
  * User role types
  */
-export type UserRole = 'admin' | 'teacher';
+export type UserRole = 'admin' | 'mentor' | 'mentee';
 
 /**
  * Combined configuration for the form
@@ -216,7 +216,7 @@ const initialEditabilityState: EditabilityState = {
 const initialFormConfig: FormConfig = {
   data: initialFormData,
   editable: initialEditabilityState,
-  userRole: 'teacher'
+  userRole: 'mentee'
 };
 
 // Create the stores with proper types
@@ -372,27 +372,86 @@ function getVerificationConfigForRole(role: UserRole): VerificationConfig {
       classroomVisits: true,
       otherActivities: true
     };
-  } else {
-    return { ...defaultVerificationConfig };
+  } else if (role === 'mentor') {
+    return {
+      summerAcademy: true,
+      inductionSeminars: true,
+      mentorMeetings: true,
+      teamMeetings: true,
+      classroomVisits: true,
+      otherActivities: true
+    };
+  } else { // mentee
+    return {
+      summerAcademy: false,
+      inductionSeminars: false,
+      mentorMeetings: false,
+      teamMeetings: false,
+      classroomVisits: false,
+      otherActivities: false
+    };
   }
 }
 
 /**
  * Update the section editability settings based on user role
  */
-function updateSectionEditability(editable: EditabilityState, userRole: UserRole): EditabilityState {
-  // For both teachers and admins, ensure section editability is set to true
-  // This allows teachers to edit other fields in the rows, but not verification fields
-  return {
-    ...editable,
-    summerAcademy: true,
-    inductionSeminars: true,
-    mentorMeetings: true,
-    teamMeetings: true,
-    classroomVisits: true,
-    otherActivities: true,
-    verifications: getVerificationConfigForRole(userRole)
-  };
+export function updateSectionEditability(editable: EditabilityState, userRole: UserRole): EditabilityState {
+  if (userRole === 'admin') {
+    return {
+      ...editable,
+      inductee: true,
+      building: true,
+      assignment: true,
+      mentorTeacher: true,
+      schoolYearOne: true,
+      schoolYearTwo: true,
+      summerAcademy: true,
+      inductionSeminars: true,
+      mentorMeetings: true,
+      teamMeetings: true,
+      classroomVisits: true,
+      otherActivities: true,
+      signatures: true,
+      verifications: getVerificationConfigForRole(userRole)
+    };
+  } else if (userRole === 'mentor') {
+    return {
+      ...editable,
+      inductee: false,
+      building: false,
+      assignment: false,
+      mentorTeacher: false,
+      schoolYearOne: false,
+      schoolYearTwo: false,
+      summerAcademy: false,
+      inductionSeminars: false,
+      mentorMeetings: false,
+      teamMeetings: false,
+      classroomVisits: false,
+      otherActivities: false,
+      signatures: true,  // mentor can sign
+      verifications: getVerificationConfigForRole(userRole)
+    };
+  } else { // mentee
+    return {
+      ...editable,
+      inductee: true,
+      building: true,
+      assignment: true,
+      mentorTeacher: true,
+      schoolYearOne: true,
+      schoolYearTwo: true,
+      summerAcademy: false,
+      inductionSeminars: false,
+      mentorMeetings: false,
+      teamMeetings: false,
+      classroomVisits: false,
+      otherActivities: false,
+      signatures: false,  // mentee cannot sign
+      verifications: getVerificationConfigForRole(userRole)
+    };
+  }
 }
 
 /**

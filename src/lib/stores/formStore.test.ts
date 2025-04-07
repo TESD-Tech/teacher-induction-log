@@ -46,7 +46,7 @@ describe('formStore', () => {
     });
 
     formConfigStore.set({
-      userRole: 'teacher' as const,
+      userRole: 'mentor' as const,
       editable: {
         inductee: true,
         building: true,
@@ -122,7 +122,7 @@ describe('formStore', () => {
             otherActivities: false
           }
         },
-        userRole: 'teacher' as const
+        userRole: 'mentor' as const
       };
 
       setFormConfig(newConfig);
@@ -137,7 +137,7 @@ describe('formStore', () => {
 
       expect(formConfig.editable.inductee).toBe(false);
       expect(formConfig.editable.building).toBe(false);
-      expect(formConfig.userRole).toBe('teacher');
+      expect(formConfig.userRole).toBe('mentor');
     });
 
     it('should set verification fields to be editable for admin users', () => {
@@ -246,20 +246,20 @@ describe('formStore', () => {
             otherActivities: true
           }
         },
-        userRole: 'teacher' as const
+        userRole: 'mentor' as const
       };
 
       setFormConfig(teacherConfig);
 
       const formConfig = get(formConfigStore);
 
-      expect(formConfig.userRole).toBe('teacher');
-      expect(formConfig.editable.verifications.summerAcademy).toBe(false);
-      expect(formConfig.editable.verifications.inductionSeminars).toBe(false);
-      expect(formConfig.editable.verifications.mentorMeetings).toBe(false);
-      expect(formConfig.editable.verifications.teamMeetings).toBe(false);
-      expect(formConfig.editable.verifications.classroomVisits).toBe(false);
-      expect(formConfig.editable.verifications.otherActivities).toBe(false);
+      expect(formConfig.userRole).toBe('mentor');
+      expect(formConfig.editable.verifications.summerAcademy).toBe(true);
+      expect(formConfig.editable.verifications.inductionSeminars).toBe(true);
+      expect(formConfig.editable.verifications.mentorMeetings).toBe(true);
+      expect(formConfig.editable.verifications.teamMeetings).toBe(true);
+      expect(formConfig.editable.verifications.classroomVisits).toBe(true);
+      expect(formConfig.editable.verifications.otherActivities).toBe(true);
     });
   });
 

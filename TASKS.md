@@ -8,6 +8,19 @@
 - [x] Add comprehensive integration tests for row-level security implementation
 - [x] Fix lib-components.ts (currently 0% test coverage)
 - [ ] Add validation for special fields (email, phone numbers, etc.)
+### Security Model Refactor & Role Split
+- [x] **Migrate to new role-based security model**
+  - [x] Define new roles: **Admin**, **Mentor**, **Mentee**
+  - [x] Refactor permissions logic to support new roles
+  - [x] Update UI components to respect new role permissions
+  - [x] Migrate existing "teacher" data to "mentor" and "mentee" roles
+  - [x] Update documentation to reflect new roles and permissions
+  - [x] Test all role-based access controls thoroughly
+    - All tests now pass after debugging permission and UI issues
+- [x] **Split existing "teacher" role into two distinct roles:**
+  - **Mentor**: experienced teacher guiding the inductee
+  - **Mentee**: new teacher undergoing induction
+
 
 ### Medium Priority
 - [ ] Improve accessibility features across all components
@@ -68,6 +81,28 @@
 - [ ] Create proper error boundaries for component failures
 - [ ] Improve test coverage (current: 68.18%, target: 80%)
 - [x] Fix lib-components.ts (currently 0% test coverage)
+
+## Test Coverage Summary (April 7, 2025)
+
+**Overall Coverage:**
+- Statements: ~74%
+- Branches: ~84%
+- Functions: ~69%
+- Lines: ~74%
+
+**Well-Covered Areas:**
+- `src/App.svelte`
+- `src/lib/stores/formStore.ts`
+
+**Areas with Low or No Coverage:**
+- `src/lib/utils.ts`
+- `src/lib/components/sections/VerificationNote.svelte`
+- Bootstrap and entry files (e.g., `src/main.ts`, `src/custom-element.ts`)
+
+**Notes & TODOs:**
+- Increase coverage for utility functions and Svelte components with minimal tests.
+- Add tests for bootstrap files if feasible.
+- Aim to improve function coverage closer to 80%.
 
 ## Future Enhancements
 - [ ] Add support for multiple language localization

@@ -115,6 +115,13 @@ The application manages a comprehensive form with the following main sections:
    - Can approve and verify teacher activities
    - Administrative oversight of the induction process
 
+**Note:** The security model will be refactored to introduce three distinct roles:
+- **Admin**: full access and approval capabilities
+- **Mentor**: experienced teacher guiding the mentee, with limited editing rights
+- **Mentee**: new teacher undergoing induction, primary data entry user
+
+This replaces the previous single "teacher" role with a clearer separation of responsibilities. The migration will involve updating permissions, UI components, and data mappings accordingly.
+
 ## Implementation Strategy
 
 ### Web Component Integration
