@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import InductionLog from './lib/InductionLog.svelte';
   import type { FormConfig } from './lib/stores/formStore';
-  import { setFormConfig, updateSectionEditability } from './lib/stores/formStore';
+  import { setFormConfig } from './lib/stores/formStore';
   import './assets/global.css';
   import './assets/print.css';
   
@@ -63,7 +63,6 @@
       // Create a hardcoded configuration as fallback
       config = {
         userRole: 'mentee',
-        editable: updateSectionEditability({}, 'mentee'),
         data: {
           inductee: "Tester, Esther!!!!",
           building: "HARDCODED SCHOOL",

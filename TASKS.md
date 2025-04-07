@@ -1,6 +1,8 @@
 # Teacher Induction Log - Tasks
 
 ### Next Major Refactor
+- Updated `GenericSection.svelte` to use centralized `canEdit()` function for all field permissions
+
 - Replace nested editability booleans and duplicated role logic with a single centralized `canEdit(role, sectionId, fieldKey)` function
 - Use this function throughout the UI to determine field editability
 - Remove `editable` and `verifications` nested objects

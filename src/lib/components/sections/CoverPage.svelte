@@ -1,5 +1,6 @@
 <script lang="ts">
   import { formStore, formConfigStore } from '../../stores/formStore';
+  import { canEdit } from '../../permissions';
   import FormRow from '../ui/FormRow.svelte';
 </script>
 
@@ -12,7 +13,7 @@
       <!-- Left Column -->
       <div class="info-column">
         <FormRow label="Inductee" let:id>
-          {#if $formConfigStore.editable.inductee}
+          {#if canEdit($formConfigStore.userRole, 'coverPage', 'inductee')}
             <input 
               type="text" 
               id={id} 
@@ -27,7 +28,7 @@
         </FormRow>
 
         <FormRow label="Building" let:id>
-          {#if $formConfigStore.editable.building}
+          {#if canEdit($formConfigStore.userRole, 'coverPage', 'building')}
             <input 
               type="text" 
               id={id} 
@@ -42,7 +43,7 @@
         </FormRow>
 
         <FormRow label="Assignment" let:id>
-          {#if $formConfigStore.editable.assignment}
+          {#if canEdit($formConfigStore.userRole, 'coverPage', 'assignment')}
             <input 
               type="text" 
               id={id} 
@@ -60,7 +61,7 @@
       <!-- Right Column -->
       <div class="info-column">
         <FormRow label="Mentor Teacher" let:id>
-          {#if $formConfigStore.editable.mentorTeacher}
+          {#if canEdit($formConfigStore.userRole, 'coverPage', 'mentorTeacher')}
             <input 
               type="text" 
               id={id} 
@@ -75,7 +76,7 @@
         </FormRow>
 
         <FormRow label="School Year (Year 1)" let:id>
-          {#if $formConfigStore.editable.schoolYearOne}
+          {#if canEdit($formConfigStore.userRole, 'coverPage', 'schoolYearOne')}
             <input 
               type="text" 
               id={id} 
@@ -91,7 +92,7 @@
         </FormRow>
 
         <FormRow label="School Year (Year 2)" let:id>
-          {#if $formConfigStore.editable.schoolYearTwo}
+          {#if canEdit($formConfigStore.userRole, 'coverPage', 'schoolYearTwo')}
             <input 
               type="text" 
               id={id} 

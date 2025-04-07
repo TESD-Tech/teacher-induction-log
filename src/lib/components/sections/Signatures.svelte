@@ -3,9 +3,11 @@
   import LogSection from '../ui/LogSection.svelte';
   import type { Signatures } from '../../stores/formStore';
   
-  // Computed properties for editable state
-  $: editable = $formConfigStore.editable.signatures;
+  import { canEdit } from '../../permissions';
 </script>
+
+
+{#if $formStore.signatures}
 
 <section class="signatures-container">
   <div class="signatures-wrapper">
@@ -15,7 +17,7 @@
     
     <div class="signatures-grid">
       <div class="signature-field">
-        {#if editable}
+        {#if canEdit($formConfigStore.userRole, 'signatures', 'signatures')}
           <input type="text" bind:value={$formStore.signatures.mentorTeacher} id="mentor-teacher-signature" />
           <div class="signature-line"></div>
           <label for="mentor-teacher-signature">Mentor Teacher</label>
@@ -27,7 +29,7 @@
       </div>
       
       <div class="signature-field">
-        {#if editable}
+        {#if canEdit($formConfigStore.userRole, 'signatures', 'signatures')}
           <input type="text" bind:value={$formStore.signatures.buildingPrincipal} id="building-principal-signature" />
           <div class="signature-line"></div>
           <label for="building-principal-signature">Building Principal</label>
@@ -39,7 +41,7 @@
       </div>
       
       <div class="signature-field">
-        {#if editable}
+        {#if canEdit($formConfigStore.userRole, 'signatures', 'signatures')}
           <input type="text" bind:value={$formStore.signatures.superintendent} id="superintendent-signature" />
           <div class="signature-line"></div>
           <label for="superintendent-signature">Superintendent</label>
@@ -51,14 +53,11 @@
       </div>
       
       <div class="signature-field signature-date">
-        {#if editable}
+        {#if canEdit($formConfigStore.userRole, 'signatures', 'signatures')}
           <input type="date" bind:value={$formStore.signatures.date} id="signature-date" />
           <div class="signature-line"></div>
           <label for="signature-date">Date</label>
-        {:else}
           <div class="readonly-field" aria-label="Signature Date">{$formStore.signatures.date}</div>
-          <div class="signature-line"></div>
-          <div class="signature-label">Date</div>
         {/if}
       </div>
     </div>
@@ -73,6 +72,9 @@
     </div>
   </div>
 </section>
+{:else}
+  <div>Loading signatures...</div>
+{/if}
 
 <style>
   .signatures-container {

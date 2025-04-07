@@ -89,34 +89,6 @@ export interface FormData {
 /**
  * Verification fields configuration
  */
-export interface VerificationConfig {
-  summerAcademy: boolean;
-  inductionSeminars: boolean;
-  mentorMeetings: boolean;
-  teamMeetings: boolean;
-  classroomVisits: boolean;
-  otherActivities: boolean;
-}
-
-/**
- * Field editability configuration
- */
-export interface EditabilityState {
-  inductee: boolean;
-  building: boolean;
-  assignment: boolean;
-  mentorTeacher: boolean;
-  schoolYearOne: boolean;
-  schoolYearTwo: boolean;
-  summerAcademy: boolean;
-  inductionSeminars: boolean;
-  mentorMeetings: boolean;
-  teamMeetings: boolean;
-  classroomVisits: boolean;
-  otherActivities: boolean;
-  signatures: boolean;
-  verifications: VerificationConfig;
-}
 
 /**
  * User role types
@@ -128,7 +100,6 @@ export type UserRole = 'admin' | 'mentor' | 'mentee';
  */
 export interface FormConfig {
   data: FormData;
-  editable: EditabilityState;
   userRole: UserRole;
 }
 
@@ -185,37 +156,12 @@ const initialFormData: FormData = {
 };
 
 // Default verification config - all verification fields are non-editable for teachers
-const defaultVerificationConfig: VerificationConfig = {
-  summerAcademy: false,
-  inductionSeminars: false,
-  mentorMeetings: false,
-  teamMeetings: false,
-  classroomVisits: false,
-  otherActivities: false
-};
 
 // Initial editability state with verification config
-const initialEditabilityState: EditabilityState = {
-  inductee: true,
-  building: true,
-  assignment: true,
-  mentorTeacher: true,
-  schoolYearOne: true,
-  schoolYearTwo: true,
-  summerAcademy: true,
-  inductionSeminars: true,
-  mentorMeetings: true,
-  teamMeetings: true,
-  classroomVisits: true,
-  otherActivities: true,
-  signatures: true,
-  verifications: { ...defaultVerificationConfig }
-};
 
 // Initial form configuration
 const initialFormConfig: FormConfig = {
   data: initialFormData,
-  editable: updateSectionEditability(initialEditabilityState, 'mentee'),
   userRole: 'mentee'
 };
 
@@ -362,120 +308,15 @@ export function saveForm(): void {
 /**
  * Get verification config based on user role
  */
-function getVerificationConfigForRole(role: UserRole): VerificationConfig {
-  if (role === 'admin') {
-    return {
-      summerAcademy: true,
-      inductionSeminars: true,
-      mentorMeetings: true,
-      teamMeetings: true,
-      classroomVisits: true,
-      otherActivities: true
-    };
-  } else if (role === 'mentor') {
-    return {
-      summerAcademy: true,
-      inductionSeminars: true,
-      mentorMeetings: true,
-      teamMeetings: true,
-      classroomVisits: true,
-      otherActivities: true
-    };
-  } else { // mentee
-    return {
-      summerAcademy: false,
-      inductionSeminars: false,
-      mentorMeetings: false,
-      teamMeetings: false,
-      classroomVisits: false,
-      otherActivities: false
-    };
-  }
-}
 
 /**
  * Update the section editability settings based on user role
  */
-  export function updateSectionEditability(editable: EditabilityState, userRole: UserRole): EditabilityState {
-    console.log('[DEBUG] updateSectionEditability called for role:', userRole);
-    if (userRole === 'admin') {
-      const perms = {
-        ...editable,
-        inductee: true,
-        building: true,
-        assignment: true,
-        mentorTeacher: true,
-        schoolYearOne: true,
-        schoolYearTwo: true,
-        summerAcademy: true,
-        inductionSeminars: true,
-        mentorMeetings: true,
-        teamMeetings: true,
-        classroomVisits: true,
-        otherActivities: true,
-        signatures: true,
-        verifications: getVerificationConfigForRole(userRole)
-      };
-      console.log('[DEBUG] admin permissions:', perms);
-      return perms;
-    } else if (userRole === 'mentor') {
-      const perms = {
-        ...editable,
-        inductee: false,
-        building: false,
-        assignment: false,
-        mentorTeacher: false,
-        schoolYearOne: false,
-        schoolYearTwo: false,
-        summerAcademy: false,
-        inductionSeminars: false,
-        mentorMeetings: false,
-        teamMeetings: false,
-        classroomVisits: false,
-        otherActivities: false,
-        signatures: true,  // mentor can sign
-        verifications: getVerificationConfigForRole(userRole)
-      };
-      console.log('[DEBUG] mentor permissions:', perms);
-      return perms;
-    } else { // mentee
-      const perms = {
-        ...editable,
-        inductee: true,
-        building: true,
-        assignment: true,
-        mentorTeacher: true,
-        schoolYearOne: true,
-        schoolYearTwo: true,
-        summerAcademy: true,
-        inductionSeminars: true,
-        mentorMeetings: true,
-        teamMeetings: true,
-        classroomVisits: true,
-        otherActivities: true,
-        signatures: false,  // mentee cannot sign
-        verifications: getVerificationConfigForRole(userRole)
-      };
-      console.log('[DEBUG] mentee permissions:', perms);
-      return perms;
-    }
-  }
 
 /**
  * Set the entire form configuration
  */
 export function setFormConfig(config: FormConfig, preserveVerifications = false): void {
-  // Ensure verifications object exists with proper default values
-  if (!config.editable.verifications) {
-    config.editable.verifications = { ...defaultVerificationConfig };
-  }
-  
-  // Update editability settings based on user role, unless preserveVerifications is true
-  if (!preserveVerifications) {
-    config.editable = updateSectionEditability(config.editable, config.userRole);
-  }
-  
-  // Update both stores
   formConfigStore.set(config);
   formStore.set(config.data);
 }

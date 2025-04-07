@@ -1,5 +1,6 @@
 <script lang="ts">
   import { formStore, formConfigStore } from '../../stores/formStore';
+  import { canEdit } from '../../permissions';
   import LogSection from '../ui/LogSection.svelte';
   import ActivityTable from '../ui/ActivityTable.svelte';
   import Button from '../ui/Button.svelte';
@@ -30,12 +31,6 @@
   $: sectionData = $formStore[config.dataKey] || [];
   
   // Check if a field is editable
-  const isEditable = (fieldKey: string, itemType: string) => {
-    if (fieldKey === 'verification') {
-      return $formConfigStore.editable.verifications[itemType];
-    }
-    return $formConfigStore.editable[itemType];
-  };
   
   // Update verification column title to a shorter version
   $: modifiedHeaders = config.headers.map(header => 
@@ -57,11 +52,11 @@
             {:else if field.type === 'date'}
               <DateInput 
                 bind:value={item[field.key]} 
-                readonly={!isEditable(field.key, config.id)} 
+                readonly={!canEdit($formConfigStore.userRole, config.id, field.key)}
               />
             {:else if field.type === 'text'}
-              {#if isEditable(field.key, config.id)}
-                <input 
+              {#if canEdit($formConfigStore.userRole, config.id, field.key)}
+                <input
                   type="text" 
                   bind:value={item[field.key]} 
                   placeholder={field.placeholder || ''} 
@@ -70,8 +65,8 @@
                 <div class="readonly-field">{item[field.key]}</div>
               {/if}
             {:else if field.type === 'verification'}
-              {#if isEditable(field.key, config.id)}
-                <input 
+              {#if canEdit($formConfigStore.userRole, config.id, field.key)}
+                <input
                   type="text" 
                   bind:value={item[field.key]} 
                   placeholder={field.placeholder || 'Initials'} 
