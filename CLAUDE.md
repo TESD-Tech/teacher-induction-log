@@ -132,7 +132,8 @@ WEB_ROOT/
 
 ### Testing
 - Use Testing Library for component testing
-- Current test coverage: 50.5%
+- Current test coverage: 68.18%
+- Added integration tests in `src/tests/VerificationIntegration.test.ts` covering teacher/admin permissions and unauthorized edit attempts
 - Target test coverage: 80%
 - Fix incompatibilities with Svelte 5 testing
 
