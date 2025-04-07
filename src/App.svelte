@@ -119,7 +119,11 @@
 </script>
 
 <main>
-  <InductionLog config={config} />
+  {#if config}
+    <InductionLog config={config} />
+  {:else}
+    <p>Loading...</p>
+  {/if}
 </main>
 
 <style>
