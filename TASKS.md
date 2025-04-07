@@ -1,9 +1,18 @@
 # Teacher Induction Log - Tasks
 
+### Next Major Refactor
+- Replace nested editability booleans and duplicated role logic with a single centralized `canEdit(role, sectionId, fieldKey)` function
+- Use this function throughout the UI to determine field editability
+- Remove `editable` and `verifications` nested objects
+- Simplify `GenericSection.svelte` and other components to call `canEdit()` directly
+- Make permissions composable and override-friendly
+- Add tests for `canEdit()` covering all roles, sections, and fields
+- Document permission rules clearly in one place
+
 ## Current Tasks
 
 ### High Priority
-- [ ] Improve test coverage (current coverage: ~85.23% of statements, target: 90%)
+- [ ] Improve test coverage (current coverage: ~80.5% of statements, target: 90%)
 
 ### Medium Priority
 - [ ] Improve accessibility features across all components
@@ -32,28 +41,26 @@
 ## Test Coverage Summary (April 7, 2025)
 
 **Overall Coverage:**
-- Statements: ~85.23%
-- Branches: ~91.34%
-- Functions: ~87.92%
-- Lines: ~85.23%
+- Statements: ~80.5%
+- Branches: ~86.81%
+- Functions: ~80.35%
+- Lines: ~80.5%
 
 **Well-Covered Areas:**
 - `src/App.svelte`
 - `src/lib/stores/formStore.ts`
+- `src/lib/stores/saveManager.ts` (100% coverage)
 - `src/lib/utils.ts` (100% coverage)
 - `src/lib/config/sectionConfigs.ts`
 - `src/lib/components/sections/VerificationNote.svelte` (100% coverage)
-
+- `src/lib/components/ui/ActionsBar.svelte` (~94.5% coverage)
 **Areas with Low or No Coverage:**
 - `src/main.ts` (0% coverage)
 - `src/lib-components.ts` (75% coverage)
-- `src/lib/Counter.svelte` (0% coverage)
-
 **Notes & TODOs:**
 - Focus on improving coverage for `src/main.ts` and other bootstrap files
 - ✅ Add tests for VerificationNote component functionality 
-- Create tests for `src/lib/Counter.svelte`
-- The overall coverage has surpassed our 80% target (currently 85%), new target is 90%
+- The overall coverage is currently ~80.5%, new target is 90%
 
 ## Future Enhancements
 - [ ] Add support for multiple language localization

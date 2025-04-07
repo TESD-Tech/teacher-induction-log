@@ -4,11 +4,6 @@
 </script>
 
 <div class="cover-page-section">
-  <!-- District Header -->
-  <div class="district-header">
-    <h1>TREDYFFRIN/EASTTOWN SCHOOL DISTRICT</h1>
-    <h2>Teacher Induction Log</h2>
-  </div>
 
   <fieldset class="inductee-info">
     <legend>Inductee Information</legend>
@@ -113,16 +108,6 @@
       </div>
     </div>
   </fieldset>
-
-  <!-- Action Buttons -->
-  <div class="form-actions">
-    <button type="button" class="btn print-btn" on:click={() => window.print()}>
-      <span class="btn-icon">🖨️</span> Print Form
-    </button>
-    <button type="button" class="btn save-btn">
-      <span class="btn-icon">💾</span> Save Form
-    </button>
-  </div>
 </div>
 
 <style>

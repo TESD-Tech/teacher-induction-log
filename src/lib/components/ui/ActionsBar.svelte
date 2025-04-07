@@ -164,7 +164,7 @@
   
   .header-toolbar.full {
     padding: 6px 0;
-    height: 58px;
+    height: 48px;
   }
   
   .header-toolbar.compact {

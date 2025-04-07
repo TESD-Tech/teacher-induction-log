@@ -115,7 +115,7 @@
 </script>
 
 {#if readonly}
-  <div class="readonly-field">{value}</div>
+  <div class="readonly-field">{formatDateForDisplay(value)}</div>
 {:else}
   <div class="date-input-container">
     <input 

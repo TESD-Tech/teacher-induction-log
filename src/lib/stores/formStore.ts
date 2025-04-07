@@ -215,7 +215,7 @@ const initialEditabilityState: EditabilityState = {
 // Initial form configuration
 const initialFormConfig: FormConfig = {
   data: initialFormData,
-  editable: initialEditabilityState,
+  editable: updateSectionEditability(initialEditabilityState, 'mentee'),
   userRole: 'mentee'
 };
 
@@ -233,7 +233,7 @@ function addActivity<T extends BaseActivity>(
 ): FormData {
   return {
     ...currentData,
-    [activityType]: [...(currentData[activityType] as T[]), newActivity]
+    [activityType]: [...(currentData[activityType] as unknown as T[]), newActivity]
   };
 }
 
@@ -247,7 +247,7 @@ function removeActivity<T extends BaseActivity>(
 ): FormData {
   return {
     ...currentData,
-    [activityType]: (currentData[activityType] as T[]).filter((_, i) => i !== index)
+    [activityType]: (currentData[activityType] as unknown as T[]).filter((_, i) => i !== index)
   };
 }
 
@@ -396,63 +396,70 @@ function getVerificationConfigForRole(role: UserRole): VerificationConfig {
 /**
  * Update the section editability settings based on user role
  */
-export function updateSectionEditability(editable: EditabilityState, userRole: UserRole): EditabilityState {
-  if (userRole === 'admin') {
-    return {
-      ...editable,
-      inductee: true,
-      building: true,
-      assignment: true,
-      mentorTeacher: true,
-      schoolYearOne: true,
-      schoolYearTwo: true,
-      summerAcademy: true,
-      inductionSeminars: true,
-      mentorMeetings: true,
-      teamMeetings: true,
-      classroomVisits: true,
-      otherActivities: true,
-      signatures: true,
-      verifications: getVerificationConfigForRole(userRole)
-    };
-  } else if (userRole === 'mentor') {
-    return {
-      ...editable,
-      inductee: false,
-      building: false,
-      assignment: false,
-      mentorTeacher: false,
-      schoolYearOne: false,
-      schoolYearTwo: false,
-      summerAcademy: false,
-      inductionSeminars: false,
-      mentorMeetings: false,
-      teamMeetings: false,
-      classroomVisits: false,
-      otherActivities: false,
-      signatures: true,  // mentor can sign
-      verifications: getVerificationConfigForRole(userRole)
-    };
-  } else { // mentee
-    return {
-      ...editable,
-      inductee: true,
-      building: true,
-      assignment: true,
-      mentorTeacher: true,
-      schoolYearOne: true,
-      schoolYearTwo: true,
-      summerAcademy: false,
-      inductionSeminars: false,
-      mentorMeetings: false,
-      teamMeetings: false,
-      classroomVisits: false,
-      otherActivities: false,
-      signatures: false,  // mentee cannot sign
-      verifications: getVerificationConfigForRole(userRole)
-    };
+  export function updateSectionEditability(editable: EditabilityState, userRole: UserRole): EditabilityState {
+    console.log('[DEBUG] updateSectionEditability called for role:', userRole);
+    if (userRole === 'admin') {
+      const perms = {
+        ...editable,
+        inductee: true,
+        building: true,
+        assignment: true,
+        mentorTeacher: true,
+        schoolYearOne: true,
+        schoolYearTwo: true,
+        summerAcademy: true,
+        inductionSeminars: true,
+        mentorMeetings: true,
+        teamMeetings: true,
+        classroomVisits: true,
+        otherActivities: true,
+        signatures: true,
+        verifications: getVerificationConfigForRole(userRole)
+      };
+      console.log('[DEBUG] admin permissions:', perms);
+      return perms;
+    } else if (userRole === 'mentor') {
+      const perms = {
+        ...editable,
+        inductee: false,
+        building: false,
+        assignment: false,
+        mentorTeacher: false,
+        schoolYearOne: false,
+        schoolYearTwo: false,
+        summerAcademy: false,
+        inductionSeminars: false,
+        mentorMeetings: false,
+        teamMeetings: false,
+        classroomVisits: false,
+        otherActivities: false,
+        signatures: true,  // mentor can sign
+        verifications: getVerificationConfigForRole(userRole)
+      };
+      console.log('[DEBUG] mentor permissions:', perms);
+      return perms;
+    } else { // mentee
+      const perms = {
+        ...editable,
+        inductee: true,
+        building: true,
+        assignment: true,
+        mentorTeacher: true,
+        schoolYearOne: true,
+        schoolYearTwo: true,
+        summerAcademy: true,
+        inductionSeminars: true,
+        mentorMeetings: true,
+        teamMeetings: true,
+        classroomVisits: true,
+        otherActivities: true,
+        signatures: false,  // mentee cannot sign
+        verifications: getVerificationConfigForRole(userRole)
+      };
+      console.log('[DEBUG] mentee permissions:', perms);
+      return perms;
+    }
   }
-}
 
 /**
  * Set the entire form configuration
