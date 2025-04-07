@@ -77,19 +77,22 @@
   }
 
   button.default {
-    background-color: #e6e6f7;
-    border-color: #c3c3e6;
-    color: #2a2a7d;
+    background-color: #f8f8f8;
+    border-color: #ddd;
+    color: #444;
+    font-weight: normal;
   }
   
   button.default:hover {
-    background-color: #d1d1ec;
+    background-color: #f0f0f0;
+    border-color: #ccc;
   }
 
   button.compact {
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.75rem;
     font-size: 0.85rem;
-    height: 32px;
+    height: 30px;
+    margin: 0 0.1rem;
   }
 
   @media print {
@@ -107,7 +110,8 @@
     
     button.compact {
       padding: 0.25rem 0.5rem;
-      height: 30px;
+      height: 28px;
+      font-size: 0.8rem;
     }
   }
 </style>
