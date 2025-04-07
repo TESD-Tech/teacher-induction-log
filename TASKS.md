@@ -4,10 +4,10 @@
 
 ### High Priority
 - [x] Improve form header layout to reduce blank space on left and right sides
-- [ ] Improve test coverage (current coverage: ~68.18% of statements, target: 80%)
+- [x] Improve toolbar with fixed positioning and district name
+- [ ] Improve test coverage (current coverage: ~77.61% of statements, target: 80%)
 - [x] Add comprehensive integration tests for row-level security implementation
 - [x] Fix lib-components.ts (currently 0% test coverage)
-- [ ] Add validation for special fields (email, phone numbers, etc.)
 ### Security Model Refactor & Role Split
 - [x] **Migrate to new role-based security model**
   - [x] Define new roles: **Admin**, **Mentor**, **Mentee**
@@ -42,6 +42,12 @@
 - [ ] Create user guide for teachers and administrators
 
 ## Completed Tasks
+
+### April 7, 2025
+- [x] Improve toolbar with fixed positioning and district name
+- [x] Enhance UI by moving district name to toolbar and improve spacing
+- [x] Fix layout issues with the header to reduce empty space
+- [x] Improve responsive design for mobile devices
 
 ### April 4, 2025
 - [x] Fix lib-components.ts (added comprehensive tests)
@@ -79,30 +85,33 @@
 - [ ] Separate UI logic from data management in components
 - [ ] Standardize event handling across components
 - [ ] Create proper error boundaries for component failures
-- [ ] Improve test coverage (current: 68.18%, target: 80%)
+- [ ] Improve test coverage (current: 77.61%, target: 80%)
 - [x] Fix lib-components.ts (currently 0% test coverage)
 
 ## Test Coverage Summary (April 7, 2025)
 
 **Overall Coverage:**
-- Statements: ~74%
-- Branches: ~84%
-- Functions: ~69%
-- Lines: ~74%
+- Statements: ~77.61%
+- Branches: ~86.97%
+- Functions: ~78.57%
+- Lines: ~77.61%
 
 **Well-Covered Areas:**
 - `src/App.svelte`
 - `src/lib/stores/formStore.ts`
+- `src/lib/utils.ts` (100% coverage)
+- `src/lib/config/sectionConfigs.ts`
 
 **Areas with Low or No Coverage:**
-- `src/lib/utils.ts`
 - `src/lib/components/sections/VerificationNote.svelte`
-- Bootstrap and entry files (e.g., `src/main.ts`, `src/custom-element.ts`)
+- `src/main.ts` (0% coverage)
+- `src/lib-components.ts` (0% coverage)
+- `src/lib/Counter.svelte` (0% coverage)
 
 **Notes & TODOs:**
-- Increase coverage for utility functions and Svelte components with minimal tests.
-- Add tests for bootstrap files if feasible.
-- Aim to improve function coverage closer to 80%.
+- Focus on improving coverage for `src/main.ts` and other bootstrap files
+- Add tests for VerificationNote component functionality
+- The overall coverage is very close to our target of 80%, with just a few more areas to improve
 
 ## Future Enhancements
 - [ ] Add support for multiple language localization
@@ -121,4 +130,4 @@
 - [ ] Create component API documentation
 - [ ] Document PowerSchool integration process
 
-*Last updated: April 4, 2025*
+*Last updated: April 7, 2025*

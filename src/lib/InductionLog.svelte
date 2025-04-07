@@ -26,15 +26,17 @@
 <div class="induction-log">
   <ActionsBar />
   
-  <div class="form-container">
-    <CoverPage />
-    
-    <div class="log-content">
-      {#each sectionConfigs as sectionConfig}
-        <GenericSection config={sectionConfig} />
-      {/each}
-      <Signatures />
-      <VerificationNote />
+  <div class="form-content">
+    <div class="form-container">
+      <CoverPage />
+      
+      <div class="log-content">
+        {#each sectionConfigs as sectionConfig}
+          <GenericSection config={sectionConfig} />
+        {/each}
+        <Signatures />
+        <VerificationNote />
+      </div>
     </div>
   </div>
 </div>
@@ -42,16 +44,26 @@
 <style>
   /* General styles */
   .induction-log {
-    max-width: 1080px; /* Reduced from 1200px to reduce blank space */
-    width: 97%; /* Increased from 94% to use more screen space */
-    margin: 0 auto;
-    padding: 20px 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
     color: var(--text-color);
     display: flex;
     flex-direction: column;
-    align-items: center;
     background-color: #fbca28;
+  }
+  
+  .form-content {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 65px; /* Increased top padding to account for fixed header */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .form-container {
@@ -81,6 +93,10 @@
       width: 100%;
     }
     
+    .form-content {
+      padding: 0;
+    }
+    
     .form-container {
       background-color: transparent;
       box-shadow: none;
@@ -90,9 +106,9 @@
   
   /* Responsive adjustments */
   @media screen and (max-width: 768px) {
-    .induction-log {
-      width: 99%; /* Increased from 98% to use even more space on mobile */
-      padding: 10px 0;
+    .form-content {
+      padding: 10px;
+      padding-top: 58px; /* Increased padding for the mobile header */
     }
   }
 </style>

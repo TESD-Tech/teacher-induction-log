@@ -5,7 +5,6 @@
 
 <div class="cover-page-section">
   <header class="header">
-    <h1>TREDYFFRIN/EASTTOWN SCHOOL DISTRICT</h1>
     <h2>Teacher Induction Log</h2>
     <h3>Log Sheet</h3>
   </header>
@@ -65,109 +64,139 @@
   </div>
 
 <style>
-  /* Renamed outer class slightly for clarity */
+  /* Cover page section styles */
   .cover-page-section {
-    /* Removed page-break-after as it might be controlled by the parent */
-    max-width: 960px; /* Increased from 800px to better match parent container and reduce blank space */
-    margin: 15px auto; /* Reduced top/bottom margin from 20px to 15px */
-    padding: 15px;
-    font-family: sans-serif; /* Example font */
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    font-family: sans-serif;
     box-sizing: border-box;
   }
 
   /* Header styling */
   .header {
     text-align: center;
-    margin-bottom: 30px; /* Reduced from 40px to conserve vertical space */
-    width: 100%; /* Ensure header uses full width */
+    margin-bottom: 20px;
+    width: 100%;
+    position: relative;
+    padding: 10px 0;
   }
 
-  .header h1 {
-    font-size: 1.4em; /* Use em for relative sizing */
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-
-  .header h2, .header h3 {
-    font-size: 1.2em;
+  .header h2 {
+    font-size: 1.6em;
     margin: 5px 0;
-    font-weight: normal; /* Less emphasis than h1 */
+    font-weight: normal;
+  }
+  
+  .header h3 {
+    font-size: 1.3em;
+    margin: 5px 0;
+    font-weight: normal;
   }
 
-  /* Form fieldset styling */
+  /* Form fieldset styling with improved spacing */
   .inductee-info {
-    border: 1px solid #FFFF; /* Style the fieldset border */
-    padding: 20px;
-    margin: 0; /* Reset default fieldset margin */
+    border: 1px solid #FFFF;
+    padding: 25px 40px; /* Increased padding for better spacing */
+    margin: 0;
     border-radius: 8px;
     display: grid;
-    /* Default to single column */
     grid-template-columns: 1fr;
-    gap: 15px; /* Spacing between rows */
+    column-gap: 60px; /* Increased column gap */
+    row-gap: 20px; /* Explicit row gap */
   }
 
   .inductee-info legend {
     font-weight: bold;
-    padding: 0 10px; /* Spacing around legend text */
+    padding: 0 15px; /* Increased padding around legend text */
     font-size: 1.1em;
-    margin-left: 10px; /* Align legend nicely */
+    margin-left: 15px;
   }
 
-  /* Shared styling for input and readonly fields */
+  /* Improved styling for input fields and readonly fields */
   input[type="text"],
   .readonly-field {
     width: 100%;
-    padding: 8px 10px; /* Consistent padding */
-    border: 1px solid #ccc;
+    padding: 10px 12px; /* Slightly increased padding */
+    border: 1px solid #bbb; /* Lighter border */
     border-radius: 4px;
     font-size: 1em;
     font-family: inherit;
-    box-sizing: border-box; /* Include padding/border in width */
-    min-height: 38px; /* Ensure minimum height consistency */
-    display: flex; /* For readonly vertical alignment */
-    align-items: center; /* For readonly vertical alignment */
+    box-sizing: border-box;
+    min-height: 40px; /* Slightly taller for better visual presence */
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow for depth */
+    transition: border-color 0.2s; /* Smooth transition for hover/focus */
   }
 
-  /* Specific style for inputs when editable */
+  /* Specific style enhancements for inputs when editable */
   input[type="text"] {
     background-color: #fff;
   }
 
-  /* Specific style for readonly fields */
+  input[type="text"]:focus {
+    border-color: #999;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.1);
+  }
+
+  /* Specific style enhancements for readonly fields */
   .readonly-field {
     background-color: #f8f8f8;
-    /* color: #555; Optional: slightly muted text color */
+    color: #444; /* Slightly darker for better contrast */
   }
 
   /* Placeholder for empty readonly fields */
    .readonly-field:empty::after {
-     content: '\00a0'; /* Non-breaking space to maintain height */
+     content: '\00a0';
   }
 
-  /* Responsive adjustments */
-  @media screen and (min-width: 600px) {
-    /* Use two columns on wider screens */
+  /* Responsive adjustments with improved breakpoints */
+  @media screen and (min-width: 900px) {
     .inductee-info {
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px 30px; /* Row gap, Column gap */
+      gap: 20px 40px;
+    }
+  }
+
+  /* Three-column layout for very wide screens */
+  @media screen and (min-width: 1300px) {
+    .inductee-info {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px 30px;
     }
   }
 
   @media screen and (max-width: 600px) {
-    .cover-page-section { /* Adjusted class name here too */
-      padding: 10px 5px; /* Reduced horizontal padding from 10px to 5px */
-      width: 98%; /* Ensure near-full width on mobile */
-      max-width: none; /* Remove max-width constraint on mobile */
+    .cover-page-section {
+      padding: 10px 5px;
+      width: 100%;
+      max-width: none;
     }
-    .header h1 {
+    
+    .header {
+      margin-bottom: 15px;
+      padding: 5px 0;
+    }
+    
+    .header h2 {
       font-size: 1.2em;
     }
-    .header h2, .header h3 {
+    
+    .header h3 {
       font-size: 1.1em;
     }
+    
+    .inductee-info {
+      padding: 15px 20px;
+    }
+    
     input[type="text"],
     .readonly-field {
-       font-size: 0.95em; /* Slightly smaller font on mobile */
+      font-size: 0.95em;
+      min-height: 38px;
     }
   }
 </style>
