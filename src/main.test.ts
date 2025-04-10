@@ -1,31 +1,59 @@
 import { describe, it, expect, vi } from 'vitest';
-import { mount } from './main';
+import * as mainModule from './main';
 import App from './App.svelte';
+import { mount as svelteMount } from 'svelte';
 
-// Mock svelte mount function
-vi.mock('svelte', () => ({
-  mount: vi.fn()
-}));
-
+vi.mock('svelte', async () => {
+  const actual = await vi.importActual<any>('svelte');
+  return {
+    ...actual,
+    mount: vi.fn()
+  };
+});
 describe('main module', () => {
   it('should export a mount function', () => {
-    expect(mount).toBeDefined();
-    expect(typeof mount).toBe('function');
+    expect(mainModule.mount).toBeDefined();
+    expect(typeof mainModule.mount).toBe('function');
   });
 
   it('should call svelte mount with correct parameters', () => {
     const mockContainer = document.createElement('div');
     const mockConfig = {
-      // Minimal mock config matching FormConfig type
       sections: [],
-      version: '1.0'
+      version: '1.0',
+      data: {
+        inductee: '',
+        building: '',
+        assignment: '',
+        mentorTeacher: '',
+        mentorNames: [],
+        schoolYearOne: '',
+        schoolYearTwo: '',
+        activities: [],
+        signatures: {
+          mentorTeacher: '',
+          buildingPrincipal: '',
+          superintendent: '',
+          date: ''
+        },
+        verificationNotes: [],
+        lastSaved: '',
+        status: '',
+        id: '',
+        summerAcademy: [],
+        inductionSeminars: [],
+        mentorMeetings: [],
+        teamMeetings: [],
+        observations: [],
+        otherActivities: [],
+        classroomVisits: []
+      },
+      userRole: 'mentee'
     };
 
-    mount(mockContainer, mockConfig);
+    mainModule.mount(mockContainer, mockConfig);
 
-    // Verify mount was called with correct parameters
-    const mountMock = vi.mocked(mount);
-    expect(mountMock).toHaveBeenCalledWith(expect.anything(), {
+    expect(svelteMount).toHaveBeenCalledWith(App, {
       target: mockContainer,
       props: {
         formConfig: mockConfig
@@ -33,9 +61,4 @@ describe('main module', () => {
     });
   });
 
-  it('should import custom element and lib-components', () => {
-    // These imports should not throw errors
-    expect(() => import('./custom-element')).not.toThrow();
-    expect(() => import('./lib-components')).not.toThrow();
-  });
 });

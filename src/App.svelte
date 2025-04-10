@@ -68,6 +68,11 @@
           building: "HARDCODED SCHOOL",
           assignment: "Mathematics",
           mentorTeacher: "Robert Johnson",
+          mentorNames: [
+            "Robert Johnson",
+            "Ada Lovelace",
+            "Patti Smith",
+          ],
           schoolYearOne: "2024-2025",
           schoolYearTwo: "2025-2026",
           summerAcademy: [

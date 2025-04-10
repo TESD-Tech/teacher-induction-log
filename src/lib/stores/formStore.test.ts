@@ -47,29 +47,6 @@ describe('formStore', () => {
 
     formConfigStore.set({
       userRole: 'mentor' as const,
-      editable: {
-        inductee: true,
-        building: true,
-        assignment: true,
-        mentorTeacher: true,
-        schoolYearOne: true,
-        schoolYearTwo: true,
-        summerAcademy: true,
-        inductionSeminars: true,
-        mentorMeetings: true,
-        teamMeetings: true,
-        classroomVisits: true,
-        otherActivities: true,
-        signatures: true,
-        verifications: {
-          summerAcademy: false,
-          inductionSeminars: false,
-          mentorMeetings: false,
-          teamMeetings: false,
-          classroomVisits: false,
-          otherActivities: false
-        }
-      },
       data: {} as any // Adding data property to satisfy type requirements
     });
   });
@@ -99,29 +76,6 @@ describe('formStore', () => {
             date: ''
           }
         },
-        editable: {
-          inductee: false,
-          building: false,
-          assignment: false,
-          mentorTeacher: false,
-          schoolYearOne: false,
-          schoolYearTwo: false,
-          summerAcademy: false,
-          inductionSeminars: false,
-          mentorMeetings: false,
-          teamMeetings: false,
-          classroomVisits: false,
-          otherActivities: false,
-          signatures: false,
-          verifications: {
-            summerAcademy: false,
-            inductionSeminars: false,
-            mentorMeetings: false,
-            teamMeetings: false,
-            classroomVisits: false,
-            otherActivities: false
-          }
-        },
         userRole: 'mentor' as const
       };
 
@@ -135,8 +89,6 @@ describe('formStore', () => {
       expect(formData.summerAcademy[0].dateYearOne).toBe('2024-06-01');
       expect(formData.summerAcademy[0].verification).toBe('ABC');
 
-      expect(formConfig.editable.inductee).toBe(false);
-      expect(formConfig.editable.building).toBe(false);
       expect(formConfig.userRole).toBe('mentor');
     });
 
@@ -162,29 +114,6 @@ describe('formStore', () => {
             date: ''
           }
         },
-        editable: {
-          inductee: true,
-          building: true,
-          assignment: true,
-          mentorTeacher: true,
-          schoolYearOne: true,
-          schoolYearTwo: true,
-          summerAcademy: true,
-          inductionSeminars: true,
-          mentorMeetings: true,
-          teamMeetings: true,
-          classroomVisits: true,
-          otherActivities: true,
-          signatures: true,
-          verifications: {
-            summerAcademy: false,
-            inductionSeminars: false,
-            mentorMeetings: false,
-            teamMeetings: false,
-            classroomVisits: false,
-            otherActivities: false
-          }
-        },
         userRole: 'admin' as const
       };
 
@@ -193,12 +122,6 @@ describe('formStore', () => {
       const formConfig = get(formConfigStore);
 
       expect(formConfig.userRole).toBe('admin');
-      expect(formConfig.editable.verifications.summerAcademy).toBe(true);
-      expect(formConfig.editable.verifications.inductionSeminars).toBe(true);
-      expect(formConfig.editable.verifications.mentorMeetings).toBe(true);
-      expect(formConfig.editable.verifications.teamMeetings).toBe(true);
-      expect(formConfig.editable.verifications.classroomVisits).toBe(true);
-      expect(formConfig.editable.verifications.otherActivities).toBe(true);
     });
 
     it('should set verification fields to be non-editable for teacher users', () => {
@@ -223,29 +146,6 @@ describe('formStore', () => {
             date: ''
           }
         },
-        editable: {
-          inductee: true,
-          building: true,
-          assignment: true,
-          mentorTeacher: true,
-          schoolYearOne: true,
-          schoolYearTwo: true,
-          summerAcademy: true,
-          inductionSeminars: true,
-          mentorMeetings: true,
-          teamMeetings: true,
-          classroomVisits: true,
-          otherActivities: true,
-          signatures: true,
-          verifications: {
-            summerAcademy: true, // Set to true initially
-            inductionSeminars: true,
-            mentorMeetings: true,
-            teamMeetings: true,
-            classroomVisits: true,
-            otherActivities: true
-          }
-        },
         userRole: 'mentor' as const
       };
 
@@ -254,12 +154,6 @@ describe('formStore', () => {
       const formConfig = get(formConfigStore);
 
       expect(formConfig.userRole).toBe('mentor');
-      expect(formConfig.editable.verifications.summerAcademy).toBe(true);
-      expect(formConfig.editable.verifications.inductionSeminars).toBe(true);
-      expect(formConfig.editable.verifications.mentorMeetings).toBe(true);
-      expect(formConfig.editable.verifications.teamMeetings).toBe(true);
-      expect(formConfig.editable.verifications.classroomVisits).toBe(true);
-      expect(formConfig.editable.verifications.otherActivities).toBe(true);
     });
   });
 

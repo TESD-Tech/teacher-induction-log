@@ -1,52 +1,70 @@
-import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import fs from 'fs';
+import path from 'path';
 
 // Read package.json to get the project name
 const packageJson = JSON.parse(
-  readFileSync(resolve(__dirname, 'package.json'), 'utf-8')
+  fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8')
 );
 
 // Use the package name as the base path (remove any scope if present)
 const projectName = packageJson.name.replace(/^@[^/]+\//, '');
+
+// Gather all .svelte files in src/lib/components, src/lib root, and src root
+function gatherSvelteEntries() {
+  const entries: Record<string, string> = {};
+
+  const componentDirs = [
+    path.resolve(__dirname, 'src/lib/components'),
+    path.resolve(__dirname, 'src/lib'),
+    path.resolve(__dirname, 'src')
+  ];
+
+  for (const dir of componentDirs) {
+    if (!fs.existsSync(dir)) continue;
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+      if (file.endsWith('.svelte')) {
+        const name = file.replace(/\.svelte$/, '').toLowerCase();
+        entries[name] = path.resolve(dir, file);
+      }
+    }
+  }
+
+  return entries;
+}
+
+const componentEntries = gatherSvelteEntries();
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     svelte({
       compilerOptions: {
-        // We'll handle custom elements differently for individual components vs. the main app
-        customElement: false
+        customElement: true,
+        dev: true
       },
-      // Generate CSS that can be injected into Shadow DOM
       emitCss: false
     })
   ],
-  // Dynamically set the base path using the package name
   base: `/${projectName}/`,
   css: {
-    // Ensure CSS modules are properly processed
     modules: {
       localsConvention: 'camelCaseOnly'
     }
   },
   build: {
-    // Dynamically set the output directory using the package name
     outDir: `dist/WEB_ROOT/${projectName}/`,
     assetsDir: 'assets',
-    // Optimize the build for web components
     rollupOptions: {
-      // Just use the main entry point which will automatically register all components
-      input: {
-        'index': 'src/main.ts'
-      },
+      input: componentEntries,
       output: {
-        // Predictable file names for easier integration
+        format: 'es',
         entryFileNames: '[name].js',
         chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     }
   }
-})
+});

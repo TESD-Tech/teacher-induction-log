@@ -28,6 +28,77 @@ This web application is a comprehensive tool for tracking and managing teacher i
 - Carbon Icons
 - Vitest for Testing
 
+## Architecture & PowerSchool Integration
+
+### Overview
+
+This project is a Svelte 5 application packaged as a **custom element** for embedding within PowerSchool pages.
+
+- The app is embedded via `<teacher-induction-log-app>` inside PowerSchool admin/teacher pages.
+- PowerSchool UI chrome is injected using PSHTML tags:
+
+| Tag | Purpose |
+|------------------------------|------------------------------|
+| `~[wc:commonscripts]`        | Loads common PowerSchool JS |
+| `~[wc:admin_header_frame_css]` | Admin header UI             |
+| `~[wc:admin_navigation_frame_css]` | Admin navigation UI       |
+| `~[wc:admin_footer_frame_css]` | Admin footer UI             |
+
+- **No** `~[tlist_sql]` or `~(gpv.)` tags are used; data is loaded from JSON files.
+- The app fetches JSON config from `/admin/teacher-induction-log/log.json` or `/teachers/teacher-induction-log/log.json`.
+- The form is **data-driven**, rendering sections dynamically based on the config.
+
+### Svelte App Structure
+
+- `src/main.ts` bootstraps the app, imports:
+  - `custom-element.ts` (defines `<teacher-induction-log-app>`)
+  - `lib-components.ts` (auto-registers all components as custom elements)
+  - `App.svelte` (root component)
+- `App.svelte` fetches JSON config and mounts `InductionLog.svelte`.
+- `InductionLog.svelte` renders:
+  - Cover page
+  - Dynamic sections (via `GenericSection.svelte`)
+  - Signatures
+  - Verification note
+- Section configs are defined in `src/lib/config/sectionConfigs.ts`.
+
+### Data Flow
+
+- PowerSchool page loads `<teacher-induction-log-app>`.
+- The app fetches JSON config.
+- Config is stored in Svelte stores.
+- UI components bind to store data.
+- User edits update stores.
+
+---
+
+## Build Configuration Notes
+
+This project **differs from a standard Svelte 5 + Vite setup** in several ways:
+
+- **Global Svelte Custom Element Mode**
+  - The Svelte compiler is configured with `customElement: true` globally.
+  - All components are automatically compiled as custom elements.
+  - No manual custom element registration code is required.
+
+- **Shadow DOM CSS Injection**
+  - `svelte.config.ts` sets `compilerOptions.css = 'injected'` to inject styles into Shadow DOM.
+  - `vite.config.ts` disables `emitCss` to inline styles.
+
+- **Dynamic Base Path and Output Directory**
+  - `vite.config.ts` reads `package.json` to set `base` and `outDir` dynamically based on the project name.
+  - Output is placed under `dist/WEB_ROOT/{projectName}/` to match PowerSchool plugin structure.
+
+- **Predictable File Naming**
+  - Rollup options enforce consistent file names (`index.js`, hashed chunks/assets) for easier integration.
+
+- **CSS Modules**
+  - Enforces camelCase class names for CSS modules.
+
+These settings optimize the build for **embedding as a PowerSchool plugin** with Shadow DOM encapsulation and predictable asset paths.
+
+---
+
 ## Documentation
 
 - [PLANNING.md](PLANNING.md) - Detailed project architecture, goals, and development guidelines

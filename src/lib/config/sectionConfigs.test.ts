@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { sectionConfigs } from './sectionConfigs';
+import { config } from './sectionConfigs'; // Import the main config object
 
 describe('sectionConfigs', () => {
   it('should have the correct number of section configurations', () => {
-    expect(sectionConfigs.length).toBe(6); // We have 6 sections configured
+    expect(config.sectionConfigs.length).toBe(6); // We have 6 sections configured
   });
 
   it('should have all required sections', () => {
-    const sectionIds = sectionConfigs.map(config => config.id);
+    const sectionIds = config.sectionConfigs.map(config => config.id);
     
     expect(sectionIds).toContain('summerAcademy');
     expect(sectionIds).toContain('inductionSeminars');
@@ -18,7 +18,7 @@ describe('sectionConfigs', () => {
   });
 
   it('should have the correct structure for each section', () => {
-    sectionConfigs.forEach(config => {
+    config.sectionConfigs.forEach(config => {
       // Each config should have these properties
       expect(config).toHaveProperty('id');
       expect(config).toHaveProperty('title');
@@ -41,7 +41,7 @@ describe('sectionConfigs', () => {
     // Sections that should have add/remove actions
     const sectionsWithActions = ['mentorMeetings', 'teamMeetings', 'classroomVisits', 'otherActivities'];
     
-    sectionConfigs.forEach(config => {
+    config.sectionConfigs.forEach(config => {
       if (sectionsWithActions.includes(config.id)) {
         expect(config).toHaveProperty('actions');
         if (config.actions) {
@@ -62,7 +62,7 @@ describe('sectionConfigs', () => {
 
   it('should have static fields for sections that need them', () => {
     // Get the summer academy config
-    const summerAcademyConfig = sectionConfigs.find(config => config.id === 'summerAcademy');
+    const summerAcademyConfig = config.sectionConfigs.find(config => config.id === 'summerAcademy');
     expect(summerAcademyConfig).toBeDefined();
     
     if (summerAcademyConfig) {
@@ -75,7 +75,7 @@ describe('sectionConfigs', () => {
     }
     
     // Get the induction seminars config
-    const inductionSeminarsConfig = sectionConfigs.find(config => config.id === 'inductionSeminars');
+    const inductionSeminarsConfig = config.sectionConfigs.find(config => config.id === 'inductionSeminars');
     expect(inductionSeminarsConfig).toBeDefined();
     
     if (inductionSeminarsConfig) {
@@ -89,7 +89,7 @@ describe('sectionConfigs', () => {
   });
 
   it('should have verification fields for all sections', () => {
-    sectionConfigs.forEach(config => {
+    config.sectionConfigs.forEach(config => {
       // Each config should have a verification field
       const verificationField = config.fields.find(field => field.key === 'verification');
       expect(verificationField).toBeDefined();
@@ -97,5 +97,21 @@ describe('sectionConfigs', () => {
         expect(verificationField.type).toBe('verification');
       }
     });
+  });
+});
+
+describe('schoolYears', () => {
+  it('should generate 4 consecutive school years starting from last year', () => {
+    const currentYear = new Date().getFullYear();
+    const expectedYears = Array.from({ length: 4 }, (_, i) => {
+      const startYear = currentYear - 1 + i;
+      return `${startYear}-${startYear + 1}`;
+    });
+
+    // Import the generated schoolYears
+    const { schoolYears } = config; // Access schoolYears from the imported config object
+
+    expect(schoolYears.length).toBe(4);
+    expect(schoolYears).toEqual(expectedYears);
   });
 });

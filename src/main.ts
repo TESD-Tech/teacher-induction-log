@@ -1,9 +1,7 @@
 // Import the full application custom element
-import './custom-element';
 
 // Import the automatic component registration system
 // This will automatically register all components in the src/lib directory as custom elements
-import './lib-components';
 
 // Import App component and mount function from Svelte
 import App from './App.svelte';
@@ -24,3 +22,7 @@ export function mount(container: HTMLElement, config: FormConfig) {
 // <ps-svelte-app> - The full application
 // <svelte-counter> - The Counter component (automatically registered)
 // Any new component added to src/lib will be automatically available as <svelte-componentname>
+
+console.log('ps-svelte-app registered:', !!customElements.get('ps-svelte-app'));
+console.log('svelte-coverpage registered:', !!customElements.get('svelte-coverpage'));
+console.log('svelte-inductionlog registered:', !!customElements.get('svelte-inductionlog'));

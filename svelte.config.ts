@@ -6,10 +6,10 @@ const config: Config = {
   // for more information about preprocessors
   preprocess: vitePreprocess(),
   
-  // We're handling custom elements manually in our custom-element.ts file
-  // rather than using Svelte's built-in customElement compiler option
+  // Enable Svelte's built-in custom element support globally
   compilerOptions: {
     css: 'injected', // This ensures CSS is injected into the shadow DOM
+    customElement: true
   }
 };
 

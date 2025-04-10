@@ -1,7 +1,22 @@
 <script lang="ts">
-  import { formStore, formConfigStore } from '../../stores/formStore';
+  import { getContext } from 'svelte';
+  import { formStore as importedFormStore, formConfigStore as importedFormConfigStore } from '../../stores/formStore';
   import { canEdit } from '../../permissions';
   import FormRow from '../ui/FormRow.svelte';
+  import { schoolYears } from '../../config/sectionConfigs';
+
+  // Attempt to get from context, fallback to singleton imports
+  let contextFormStore;
+  let contextFormConfigStore;
+  try {
+    contextFormStore = getContext('formStore');
+  } catch {}
+  try {
+    contextFormConfigStore = getContext('formConfigStore');
+  } catch {}
+
+  export let formStore = contextFormStore ?? importedFormStore;
+  export let formConfigStore = contextFormConfigStore ?? importedFormConfigStore;
 </script>
 
 <div class="cover-page-section">
@@ -62,14 +77,17 @@
       <div class="info-column">
         <FormRow label="Mentor Teacher" let:id>
           {#if canEdit($formConfigStore.userRole, 'coverPage', 'mentorTeacher')}
-            <input 
-              type="text" 
-              id={id} 
-              bind:value={$formStore.mentorTeacher} 
-              placeholder="Last, First"
+            <select
+              id={id}
+              bind:value={$formStore.mentorTeacher}
               aria-label="Mentor Teacher Name"
               class="form-input"
-            />
+            >
+              <option value="" disabled selected={!$formStore.mentorTeacher}>Select Mentor</option>
+              {#each $formStore.mentorNames as mentorName}
+                <option value={mentorName}>{mentorName}</option>
+              {/each}
+            </select>
           {:else}
             <div class="readonly-field" id={id}>{$formStore.mentorTeacher || ''}</div>
           {/if}
@@ -77,15 +95,17 @@
 
         <FormRow label="School Year (Year 1)" let:id>
           {#if canEdit($formConfigStore.userRole, 'coverPage', 'schoolYearOne')}
-            <input 
-              type="text" 
-              id={id} 
-              bind:value={$formStore.schoolYearOne} 
-              placeholder="YYYY-YYYY"
+            <select
+              id={id}
+              bind:value={$formStore.schoolYearOne}
               aria-label="School Year One"
               class="form-input year-input"
-              pattern="\d{4}-\d{4}"
-            />
+            >
+              <option value="" disabled selected={!$formStore.schoolYearOne}>Select Year</option>
+              {#each schoolYears as year}
+                <option value={year}>{year}</option>
+              {/each}
+            </select>
           {:else}
             <div class="readonly-field" id={id}>{$formStore.schoolYearOne || ''}</div>
           {/if}
@@ -93,15 +113,17 @@
 
         <FormRow label="School Year (Year 2)" let:id>
           {#if canEdit($formConfigStore.userRole, 'coverPage', 'schoolYearTwo')}
-            <input 
-              type="text" 
-              id={id} 
-              bind:value={$formStore.schoolYearTwo} 
-              placeholder="YYYY-YYYY"
+            <select
+              id={id}
+              bind:value={$formStore.schoolYearTwo}
               aria-label="School Year Two"
               class="form-input year-input"
-              pattern="\d{4}-\d{4}"
-            />
+            >
+              <option value="" disabled selected={!$formStore.schoolYearTwo}>Select Year</option>
+              {#each schoolYears as year}
+                <option value={year}>{year}</option>
+              {/each}
+            </select>
           {:else}
             <div class="readonly-field" id={id}>{$formStore.schoolYearTwo || ''}</div>
           {/if}

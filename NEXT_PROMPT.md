@@ -113,3 +113,6 @@ When implementing the validation:
 4. Update documentation/comments to explain validation rules
 
 If you're unsure about any aspect of the project or validation requirements, please check the relevant files or ask for clarification before proceeding with implementation.
+
+
+Let's begin! Our next task is to change the "Teacher Mentor" field into a dropdown that gets populated by the config JSON object. What's the best way to proceed?
