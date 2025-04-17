@@ -1,89 +1,57 @@
 <svelte:options customElement="ps-actions-bar" />
 
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  // Imports needed for button actions and notifications
   import { printForm, saveForm } from '../../stores/formStore';
-  import { manualSave, initializeAutoSave } from '../../stores/saveManager';
+  import { manualSave } from '../../stores/saveManager'; // Note: initializeAutoSave might need to be called elsewhere if still used
   import { writable } from 'svelte/store';
   import Button from './Button.svelte';
   import Notification from './Notification.svelte';
   import Printer from "carbon-icons-svelte/lib/Printer.svelte";
   import Save from "carbon-icons-svelte/lib/Save.svelte";
 
+  // --- State for save notifications ---
   const showSaveNotification = writable(false);
   const notificationMessage = writable('');
   const notificationType = writable<'success' | 'info' | 'warning' | 'error'>('info');
-  let lastSaveTime = '';
-  let scrollY = 0;
-  let scrollThreshold = 50; 
 
-  onMount(() => {
-    initializeAutoSave();
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('scroll', handleScroll);
-    scrollY = window.scrollY; 
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  });
+  // --- Removed state and functions related to scroll effects ---
+  // Removed: lastSaveTime, scrollY, scrollThreshold, onMount/onDestroy for listeners, 
+  // handleScroll, handleStorageChange, reactive style calculations ($: opacity, etc.)
 
-  function handleScroll() { 
-    console.log(scrollY)
-    scrollY = window.scrollY; }
-
+  // --- Manual Save Handler ---
   function handleSave() {
-    // ... (handleSave logic remains the same) ...
     console.log('[DEBUG] handleSave called');
     try {
+      // Call original store save function
       saveForm();
+      // Call save manager function (if used for local storage, etc.)
       manualSave();
-      lastSaveTime = new Date().toLocaleTimeString();
+      
+      // Show success notification
       notificationMessage.set('Form saved successfully');
       notificationType.set('success');
       showSaveNotification.set(true);
-      setTimeout(() => showSaveNotification.set(false), 3000);
+      
+      // Hide notification after 3 seconds
+      setTimeout(() => {
+        showSaveNotification.set(false);
+      }, 3000);
       console.log('[DEBUG] handleSave success block executed');
     } catch (error) {
       console.log('[DEBUG] handleSave error block executed', error);
       console.error('Error saving form:', error);
+      
+      // Show error notification
       notificationMessage.set('Failed to save form');
       notificationType.set('error');
       showSaveNotification.set(true);
+      // Error notifications currently hide after 3s too, adjust if needed
     }
   }
-
-  function handleStorageChange(event: StorageEvent) {
-    // ... (handleStorageChange logic remains the same) ...
-    console.log('[DEBUG] handleStorageChange called', event);
-    if (event.key === 'teacher-induction-log-data') {
-      lastSaveTime = new Date().toLocaleTimeString();
-      notificationMessage.set('Form data auto-saved: ' + lastSaveTime);
-      notificationType.set('info');
-      showSaveNotification.set(true);
-      setTimeout(() => showSaveNotification.set(false), 2000);
-    }
-  }
-
-  // Keep background/shadow effects based on scroll
-  $: opacity = Math.min(scrollY / scrollThreshold, 0.95);
-  $: shadowOpacity = Math.min(scrollY / scrollThreshold, 0.15);
-  $: toolbarStyle = `
-    background-color: rgba(255, 255, 255, ${opacity});
-    box-shadow: 0 ${shadowOpacity * 8}px ${shadowOpacity * 16}px rgba(0, 0, 0, ${shadowOpacity});
-    border-bottom: ${scrollY > 10 ? '1px solid rgba(224, 224, 224, 0.5)' : 'none'};
-  `;
-
-  $: autoSaveOpacityValue = 0.5 + opacity * 0.5;
-
-  // REMOVED: Scroll-based conditional visibility logic for title
-  // $: showTitle = scrollY > 50; 
-  
-  // Keep compact/full if used for padding/height adjustment
-  $: headerStyle = scrollY > 180 ? 'compact' : 'full'; 
 </script>
 
-<div class="header-toolbar {headerStyle}" style="{toolbarStyle}">
+<div class="header-toolbar">
   <div class="toolbar-container">
     <div class="toolbar-content">
       
@@ -91,15 +59,6 @@
         <div class="district-title">TREDYFFRIN/EASTTOWN SCHOOL DISTRICT</div>
         <div class="separator">|</div>
         <div class="app-title">Teacher Induction Log</div>
-      </div>
-      
-      <div 
-        class="auto-save-info" 
-        style:--auto-save-opacity={autoSaveOpacityValue}
-      >
-        {#if lastSaveTime}
-          <span class="last-saved">Last saved: {lastSaveTime}</span>
-        {/if}
       </div>
       
       <div class="action-buttons">
@@ -119,98 +78,103 @@
     message={$notificationMessage} 
     type={$notificationType} 
     duration={3000} 
-    position="top-right"
+    position="top-right" 
   />
 {/if}
 
 <style>
   .header-toolbar {
-    position: sticky; 
-    top: 0; 
-    width: 100%; 
-    z-index: 1000; 
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, border-bottom 0.3s ease; /* Adjusted transition */
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px);
-  }
-
-  .header-toolbar.full { padding: 6px 0; height: 48px; }
-  .header-toolbar.compact { padding: 4px 0; height: 48px; }
+  /* Sticky positioning */
+  position: sticky; 
+  /* CHANGE THIS LINE: */
+  top: -1px; /* Adjust by -1px to counteract the 1px padding-top on #content-main */
+  
+  width: 100%; 
+  z-index: 1000; 
+  
+  /* --- Static Solid Background Styles --- */
+  background-color: #ffffff; 
+  border-bottom: 1px solid #e0e0e0; 
+  padding: 6px 0; 
+  height: 48px;  
+  box-sizing: border-box;
+}
   
   .toolbar-container {
-    max-width: 1400px; margin: 0 auto; padding: 0 20px; width: 100%; box-sizing: border-box; height: 100%;
+    max-width: 1400px; /* Match max-width of form-content */
+    margin: 0 auto;
+    padding: 0 20px; /* Match padding of form-content */
+    width: 100%;
+    box-sizing: border-box;
+    height: 100%;
   }
   
   .toolbar-content {
     display: flex; 
     align-items: center; /* Vertically center items */
+    justify-content: space-between; /* Push title left, buttons right */
     height: 100%;
-    position: relative; /* Needed for absolute positioning of auto-save */
+    /* position: relative; */ /* Not needed if auto-save removed */
   }
   
-  /* Title block - Now always visible */
+  /* Title block - Always visible */
   .title-block {
-    /* REMOVED: position: absolute */
     display: flex;
     align-items: center;
-    opacity: 1; /* Always visible */
-    /* REMOVED: transform, transition, pointer-events */
-    /* Add some margin to the right if needed */
-    /* margin-right: auto; */ /* Pushes other content right */
-    flex-shrink: 0; /* Prevent shrinking if space is tight */
+    opacity: 1; 
+    flex-shrink: 0; /* Prevent title shrinking */
   }
-
-  /* REMOVED: .title-block.visible rule */
 
   .district-title { font-weight: bold; font-size: 1.1rem; color: #333; white-space: nowrap; }
   .separator { margin: 0 10px; color: #666; }
   .app-title { font-weight: normal; font-size: 1.1rem; color: #333; white-space: nowrap; }
   
-  /* Auto-save info - keep centered */
-  .auto-save-info {
-    font-size: 0.85rem; color: #444; font-style: italic;
-    position: absolute; /* Keep absolute to center easily */
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: var(--auto-save-opacity, 0.5); /* Use variable, fallback to 0.5 */
-    transition: opacity 0.3s ease;
-    text-align: center; /* Ensure text inside is centered */
-    white-space: nowrap; /* Prevent wrapping */
-  }
-  
-  .last-saved { display: inline-block; padding: 3px 8px; background: rgba(255, 255, 255, 0.7); border-radius: 4px; border: 1px solid rgba(224, 224, 224, 0.5); }
+  /* Removed .auto-save-info styles */
 
-  /* Action buttons - push to the right */
+  /* Action buttons - Aligned right */
   .action-buttons {
     display: flex;
     gap: 1rem; 
-    margin-left: auto; /* Push to the far right */
+    /* No margin needed due to justify-content on parent */
   }
 
-  .icon { display: inline-flex; align-items: center; margin-right: 0.25rem; vertical-align: middle; }
-  .icon :global(svg) { fill: currentColor; }
+  .icon { 
+    display: inline-flex; 
+    align-items: center; 
+    margin-right: 0.25rem; 
+    vertical-align: middle; 
+  }
+  .icon :global(svg) { 
+    fill: currentColor; 
+  }
   
-  @media print { .header-toolbar { display: none; } }
-
-  /* Responsive adjustments - Ensure title doesn't overlap buttons */
-  @media screen and (max-width: 992px) { /* Example breakpoint */
-    .auto-save-info {
-       /* Maybe hide or move auto-save earlier if title needs space */
-       /* display: none; */ 
-    }
+  /* --- Print and Responsive Styles --- */
+  @media print { 
+    .header-toolbar { 
+      display: none; 
+    } 
   }
-
+  
   @media screen and (max-width: 767px) {
     .toolbar-container { padding: 0 10px; }
-    /* Further adjust title/auto-save/buttons if needed */
     .district-title { font-size: 0.95rem; }
-    .separator { margin: 0 5px; }
-    .app-title { display: none; } /* Hide app title earlier */
-    .auto-save-info { display: none; } /* Hide auto-save */
+    .app-title { display: none; } /* Hide app title on smaller screens */
+    .action-buttons { gap: 0.5rem; } /* Reduce gap */
   }
   
   @media screen and (max-width: 480px) {
-     /* Maybe just show icons for buttons */
+    .district-title { font-size: 0.85rem; }
+    .separator { display: none; } /* Hide separator */
+    /* Optionally hide button text, show only icons */
+     .action-buttons button span:not(.icon) { 
+       /* display: none;  */ /* Uncomment to hide text */
+     }
+     .action-buttons button .icon {
+        /* margin-right: 0; */ /* Uncomment if text hidden */
+     }
+     .action-buttons button {
+       /* padding: 0.5rem; */ /* Adjust padding if text hidden */
+     }
   }
 
 </style>
