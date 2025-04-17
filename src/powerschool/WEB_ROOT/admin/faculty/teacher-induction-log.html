@@ -79,6 +79,22 @@
 
   <teacher-induction-log-app id="induction-log-app"></teacher-induction-log-app>
 
+  ~[if#directory.~[directory]=admin]
+			<form action="/admin/changesrecorded.white.html?frn=~(frn)" method="POST">
+		[else#directory]
+			<form action="changesrecorded.white.html" method="POST">
+		[/if#directory]
+    <input type="hidden" name="[Users.U_TESD_Teacher_Induction_Log]json_string" value="" id="json_string" >
+    <input type="hidden" name="[Users.U_TESD_Teacher_Induction_Log]json_clob" value="" id="json_clob" >
+
+    ~[if#directory.~[directory]=teachers]
+      <input type="hidden" name="ac" value="webasmt">
+    [else#directory]
+    <input type="hidden" name="ac" value="prim">
+    [/if#directory]
+  </form>
+						
+
   <!-- Load the Svelte component -->
   <script type="module">
     // Import the custom element definition

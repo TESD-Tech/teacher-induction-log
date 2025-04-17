@@ -15,43 +15,14 @@
     "otherActivities": true,
     "signatures": true
   },
-  "data": {
-    "inductee": "~(first_name) ~(last_name)",
-    "building": "~(schoolname)",
-    "assignment": "Mathematics",
-    "mentorTeacher": "Robert Johnson",
-    "schoolYearOne": "2024-2025",
-    "schoolYearTwo": "2025-2026",
-    "summerAcademy": [
-      { "day": "Day 1", "dateYearOne": "2024-08-15", "dateYearTwo": "", "verification": "Completed" },
-      { "day": "Day 2", "dateYearOne": "2024-08-16", "dateYearTwo": "", "verification": "Completed" },
-      { "day": "Day 3", "dateYearOne": "2024-08-17", "dateYearTwo": "", "verification": "" },
-      { "day": "Day 4", "dateYearOne": "2024-08-18", "dateYearTwo": "", "verification": "" }
-    ],
-    "inductionSeminars": [
-      { "number": 1, "topic": "Classroom Management", "dateYearOne": "2024-09-10", "dateYearTwo": "", "verification": "Completed" },
-      { "number": 2, "topic": "Differentiated Instruction", "dateYearOne": "2024-10-15", "dateYearTwo": "", "verification": "" },
-      { "number": 3, "topic": "Assessment Strategies", "dateYearOne": "", "dateYearTwo": "", "verification": "" },
-      { "number": 4, "topic": "Technology Integration", "dateYearOne": "", "dateYearTwo": "", "verification": "" }
-    ],
-    "mentorMeetings": [
-      { "date": "2024-09-05", "topic": "First Week Reflection", "dateYearOne": "2024-09-05", "dateYearTwo": "", "verification": "Completed" },
-      { "date": "2024-10-03", "topic": "Parent-Teacher Conferences Prep", "dateYearOne": "2024-10-03", "dateYearTwo": "", "verification": "Completed" }
-    ],
-    "teamMeetings": [
-      { "date": "2024-09-12", "topic": "Math Department Planning", "dateYearOne": "2024-09-12", "dateYearTwo": "", "verification": "Completed" }
-    ],
-    "classroomVisits": [
-      { "date": "2024-09-20", "teacher": "Sarah Williams", "subject": "Algebra II", "dateYearOne": "2024-09-20", "dateYearTwo": "", "verification": "Completed" }
-    ],
-    "otherActivities": [
-      { "date": "2024-09-25", "activity": "Math Club Supervision", "dateYearOne": "2024-09-25", "dateYearTwo": "", "verification": "Completed" }
-    ],
-    "signatures": {
-      "mentorTeacher": "",
-      "buildingPrincipal": "",
-      "superintendent": "",
-      "date": ""
-    }
-  }
+  "options":{
+    "mentors": [],
+    "buildings": [],
+    "assignments": [],
+    "schoolYears": [],
+  },
+  "data": ~[tlist_sql;
+    SELECT json_string FROM U_TESD_Teacher_Induction_Log
+    WHERE U_TESD_Teacher_Induction_Log.usersdcid = ( SELECT dcid FROM users WHERE teachernumber = '~(teachernumber)' )
+;]~(json_string)[/tlist_sql]
 }

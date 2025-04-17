@@ -299,20 +299,50 @@ export function printForm(): void {
  * Save the form data
  */
 export function saveForm(): void {
-  // Get the CURRENT form data directly from formStore
-  const currentFormData = get(formStore); 
-  
-  // --- Log the up-to-date data from formStore ---
-  console.log('Form data as JSON:', JSON.stringify(currentFormData, null, 2)); 
-  console.log('Original form data object:', currentFormData); 
+  console.log('[SaveForm] Starting save process...');
 
-  // --- User role still comes from formConfigStore ---
-  // It's okay to get this separately if it doesn't change after initial load
-  const currentUserRole = get(formConfigStore).userRole; 
-  console.log('User role:', currentUserRole);
-  
-  // In a real implementation, you would typically send 'currentFormData' 
-  // (and perhaps 'currentUserRole') to a server endpoint.
+  // 1. Get current form data from the correct store
+  const currentFormData = get(formStore); 
+
+  // Log for debugging (optional)
+  console.log('[SaveForm] Current form data object:', currentFormData); 
+
+  // 2. Convert data to JSON string (no indentation for form value)
+  const jsonString = JSON.stringify(currentFormData);
+  console.log('[SaveForm] Form data as JSON string:', jsonString);
+
+  // 3. Find the hidden input element by ID
+  const inputElement = document.getElementById('json_clob');
+
+  if (inputElement && inputElement instanceof HTMLInputElement) {
+    console.log('[SaveForm] Found input element #json_clob.');
+
+    // 4. Update the input's value
+    inputElement.value = jsonString;
+    console.log('[SaveForm] Updated value of #json_clob.');
+
+    // 5. Find the parent form of the input element
+    const formElement = inputElement.closest('form');
+
+    if (formElement && formElement instanceof HTMLFormElement) {
+      console.log('[SaveForm] Found parent form. Submitting...');
+
+      // 6. Submit the form
+      try {
+        formElement.submit();
+        console.log('[SaveForm] Form submitted.');
+      } catch (error) {
+        console.error('[SaveForm] Error submitting form:', error);
+        // Handle submission error (e.g., display message to user)
+      }
+    } else {
+      console.error('[SaveForm] Could not find parent form for #json_clob.');
+      // Handle case where form is not found (e.g., display error)
+    }
+  } else {
+    console.error('[SaveForm] Could not find input element with ID "json_clob" or it is not an HTMLInputElement.');
+    // Handle case where input is not found (e.g., display error)
+  }
 }
 
 /**

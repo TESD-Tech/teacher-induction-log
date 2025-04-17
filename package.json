@@ -1,7 +1,7 @@
 {
   "name": "teacher-induction-log",
   "private": true,
-  "version": "25.04.08",
+  "version": "25.04.12",
   "type": "module",
   "scripts": {
     "dev": "vite",

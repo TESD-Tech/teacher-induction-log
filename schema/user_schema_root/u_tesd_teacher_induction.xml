@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<psExtension xmlns="http://www.powerschool.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.powerschool.com psextension.xsd">
+	<extensionname>U_TESD_Teacher_Induction_Log</extensionname>
+	<extendedTable coreTable="Users" dbTableName="U_TESD_Teacher_Induction_Log" comment="One to One">
+		<field name="json_string" type="String" length="4000"/>
+		<field name="json_clob" type="Clob"/>
+	</extendedTable>
+</psExtension>
