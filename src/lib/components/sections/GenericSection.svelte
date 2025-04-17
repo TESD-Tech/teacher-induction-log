@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-generic-section" />
+
 <script lang="ts">
   import { formStore, formConfigStore } from '../../stores/formStore';
   import { canEdit } from '../../permissions';

@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-notification" />
+
 <script lang="ts">
   import { fly } from 'svelte/transition';
   import { onMount, onDestroy } from 'svelte';

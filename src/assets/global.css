@@ -54,7 +54,7 @@
 html, body {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  /* REMOVED overflow-x: hidden; (from previous fix for sticky) */
 }
 
 body {
@@ -114,8 +114,9 @@ textarea {
   padding: var(--spacing-sm);
   border: 1px solid var(--input-border);
   border-radius: var(--border-radius);
-  width: 100%;
+  width: 100%; /* Keep general width for inputs */
   background-color: white;
+  box-sizing: border-box; /* Ensure padding doesn't add to width */
 }
 
 input:focus,
@@ -152,29 +153,34 @@ td {
   vertical-align: middle;
 }
 
-/* Section container consistency */
-.log-section, 
-.signatures-container {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  margin: 0 0 1.5rem 0;
-  padding: 1.5rem;
-  border-radius: 6px;
-  box-shadow: var(--box-shadow);
-  background-color: white;
-  overflow: hidden;
-}
+/* --- REMOVED THE FOLLOWING RULES --- */
 
-/* Table container */
-.table-container {
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  overflow-x: auto;
-  border-radius: 6px;
-  box-shadow: none;
-}
+/* .log-section, 
+  .signatures-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 1.5rem 0;
+    padding: 1.5rem;
+    border-radius: 6px;
+    box-shadow: var(--box-shadow);
+    background-color: white;
+    overflow: hidden;  <-- Note: This overflow:hidden might have also interfered with sticky if LogSection wrapped ActionsBar somehow
+  }
+*/
+
+/* .table-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: auto;
+    border-radius: 6px;
+    box-shadow: none;
+  } 
+*/
+
+/* --- END OF REMOVED RULES --- */
+
 
 /* Consistent button styling */
 button {
@@ -184,6 +190,9 @@ button {
   justify-content: center;
   height: var(--button-height);
   padding: var(--spacing-sm) var(--spacing-md);
+  /* Add other base button styles if desired, like border, background */
+  /* border: 1px solid transparent; */
+  /* border-radius: var(--border-radius); */
 }
 
 /* Utility classes */
@@ -255,9 +264,11 @@ button {
     font-size: 1.1rem;
   }
   
-  .log-section, 
-  .signatures-container {
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
+  /* REMOVED responsive adjustments for .log-section, .signatures-container */
+  /* .log-section, 
+    .signatures-container {
+      padding: 1rem;
+      margin-bottom: 1rem;
+    } 
+  */
 }

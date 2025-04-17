@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-actions-bar" />
+
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { printForm, saveForm } from '../../stores/formStore';
@@ -7,99 +9,63 @@
   import Notification from './Notification.svelte';
   import Printer from "carbon-icons-svelte/lib/Printer.svelte";
   import Save from "carbon-icons-svelte/lib/Save.svelte";
-  
-  // State for notification
+
   const showSaveNotification = writable(false);
   const notificationMessage = writable('');
   const notificationType = writable<'success' | 'info' | 'warning' | 'error'>('info');
-  
-  // State for auto-save
   let lastSaveTime = '';
-
-  // State for scroll effects
   let scrollY = 0;
-  let scrollThreshold = 50; // Pixels to scroll before starting the effect
-  
-  // Initialize auto-save on component mount
-  onMount(() => {
-    // Initialize auto-save functionality
-    initializeAutoSave();
-    
-    // Add event listener for storage changes to update UI
-    window.addEventListener('storage', handleStorageChange);
+  let scrollThreshold = 50; 
 
-    // Add scroll event listener for toolbar effects
+  onMount(() => {
+    initializeAutoSave();
+    window.addEventListener('storage', handleStorageChange);
     window.addEventListener('scroll', handleScroll);
-    
+    scrollY = window.scrollY; 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('scroll', handleScroll);
     };
   });
-  
-  // Clean up subscriptions when component is destroyed
-  onDestroy(() => {
-    // No unsubscribe needed
-  });
 
-  // Handle scroll events to update toolbar appearance
-  function handleScroll() {
-    scrollY = window.scrollY;
-  }
-  
-  // Handle manual save button click
-    console.log('[DEBUG] handleSave called');
+  function handleScroll() { 
+    console.log(scrollY)
+    scrollY = window.scrollY; }
+
   function handleSave() {
+    // ... (handleSave logic remains the same) ...
+    console.log('[DEBUG] handleSave called');
     try {
-      // First call the original saveForm function
       saveForm();
-      
-      // Then call our enhanced manualSave function
       manualSave();
-      
-      // Update last save time
       lastSaveTime = new Date().toLocaleTimeString();
-      
-      // Show success notification
       notificationMessage.set('Form saved successfully');
       notificationType.set('success');
       showSaveNotification.set(true);
-      
-      // Hide notification after 3 seconds
-      setTimeout(() => {
-        showSaveNotification.set(false);
-      }, 3000);
-    console.log('[DEBUG] handleSave success block executed');
+      setTimeout(() => showSaveNotification.set(false), 3000);
+      console.log('[DEBUG] handleSave success block executed');
     } catch (error) {
-    console.log('[DEBUG] handleSave error block executed', error);
+      console.log('[DEBUG] handleSave error block executed', error);
       console.error('Error saving form:', error);
-      
-      // Show error notification
       notificationMessage.set('Failed to save form');
       notificationType.set('error');
       showSaveNotification.set(true);
     }
   }
-  
-  // Handle storage events (when auto-save occurs)
-    console.log('[DEBUG] handleStorageChange called', event);
+
   function handleStorageChange(event: StorageEvent) {
+    // ... (handleStorageChange logic remains the same) ...
+    console.log('[DEBUG] handleStorageChange called', event);
     if (event.key === 'teacher-induction-log-data') {
       lastSaveTime = new Date().toLocaleTimeString();
-      
-      // Show auto-save notification
       notificationMessage.set('Form data auto-saved: ' + lastSaveTime);
       notificationType.set('info');
       showSaveNotification.set(true);
-      
-      // Hide notification after 2 seconds
-      setTimeout(() => {
-        showSaveNotification.set(false);
-      }, 2000);
+      setTimeout(() => showSaveNotification.set(false), 2000);
     }
   }
 
-  // Calculate opacity and shadow based on scroll position
+  // Keep background/shadow effects based on scroll
   $: opacity = Math.min(scrollY / scrollThreshold, 0.95);
   $: shadowOpacity = Math.min(scrollY / scrollThreshold, 0.15);
   $: toolbarStyle = `
@@ -107,23 +73,30 @@
     box-shadow: 0 ${shadowOpacity * 8}px ${shadowOpacity * 16}px rgba(0, 0, 0, ${shadowOpacity});
     border-bottom: ${scrollY > 10 ? '1px solid rgba(224, 224, 224, 0.5)' : 'none'};
   `;
+
+  $: autoSaveOpacityValue = 0.5 + opacity * 0.5;
+
+  // REMOVED: Scroll-based conditional visibility logic for title
+  // $: showTitle = scrollY > 50; 
   
-  // Title is always visible in the toolbar
-  $: isScrolled = true; 
-  $: headerStyle = scrollY > 180 ? 'compact' : 'full';
+  // Keep compact/full if used for padding/height adjustment
+  $: headerStyle = scrollY > 180 ? 'compact' : 'full'; 
 </script>
 
-<div class="header-toolbar {headerStyle}" style={toolbarStyle}>
+<div class="header-toolbar {headerStyle}" style="{toolbarStyle}">
   <div class="toolbar-container">
-    <!-- Title that appears when scrolling -->
     <div class="toolbar-content">
-      <div class="title-block" class:visible={isScrolled || scrollY < 5}>
+      
+      <div class="title-block"> 
         <div class="district-title">TREDYFFRIN/EASTTOWN SCHOOL DISTRICT</div>
         <div class="separator">|</div>
         <div class="app-title">Teacher Induction Log</div>
       </div>
       
-      <div class="auto-save-info">
+      <div 
+        class="auto-save-info" 
+        style:--auto-save-opacity={autoSaveOpacityValue}
+      >
         {#if lastSaveTime}
           <span class="last-saved">Last saved: {lastSaveTime}</span>
         {/if}
@@ -152,160 +125,92 @@
 
 <style>
   .header-toolbar {
-    position: fixed; /* Fixed at the top of the viewport */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000; /* Keep on top of other elements */
-    transition: all 0.3s ease; /* Smooth transition for opacity and shadow */
-    backdrop-filter: blur(10px); /* Blur effect for browsers that support it */
-    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    position: sticky; 
+    top: 0; 
+    width: 100%; 
+    z-index: 1000; 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, border-bottom 0.3s ease; /* Adjusted transition */
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
   }
-  
-  .header-toolbar.full {
-    padding: 6px 0;
-    height: 48px;
-  }
-  
-  .header-toolbar.compact {
-    padding: 4px 0;
-    height: 48px;
-  }
+
+  .header-toolbar.full { padding: 6px 0; height: 48px; }
+  .header-toolbar.compact { padding: 4px 0; height: 48px; }
   
   .toolbar-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-    width: 100%;
-    box-sizing: border-box;
-    height: 100%;
+    max-width: 1400px; margin: 0 auto; padding: 0 20px; width: 100%; box-sizing: border-box; height: 100%;
   }
   
   .toolbar-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; 
+    align-items: center; /* Vertically center items */
     height: 100%;
-    position: relative;
+    position: relative; /* Needed for absolute positioning of auto-save */
   }
   
+  /* Title block - Now always visible */
   .title-block {
-    position: absolute;
-    left: 0;
+    /* REMOVED: position: absolute */
     display: flex;
     align-items: center;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-  }
-  
-  .title-block.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  .district-title {
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: #333;
+    opacity: 1; /* Always visible */
+    /* REMOVED: transform, transition, pointer-events */
+    /* Add some margin to the right if needed */
+    /* margin-right: auto; */ /* Pushes other content right */
+    flex-shrink: 0; /* Prevent shrinking if space is tight */
   }
 
-  .separator {
-    margin: 0 10px;
-    color: #666;
-  }
+  /* REMOVED: .title-block.visible rule */
+
+  .district-title { font-weight: bold; font-size: 1.1rem; color: #333; white-space: nowrap; }
+  .separator { margin: 0 10px; color: #666; }
+  .app-title { font-weight: normal; font-size: 1.1rem; color: #333; white-space: nowrap; }
   
-  .app-title {
-    font-weight: normal;
-    font-size: 1.1rem;
-    color: #333;
-  }
-  
-  .action-buttons {
-    display: flex;
-    gap: 1rem; /* Increased gap between buttons */
-    margin-left: auto; /* Push to the right */
-  }
-  
+  /* Auto-save info - keep centered */
   .auto-save-info {
-    font-size: 0.85rem;
-    color: #444;
-    font-style: italic;
-    position: absolute;
+    font-size: 0.85rem; color: #444; font-style: italic;
+    position: absolute; /* Keep absolute to center easily */
     left: 50%;
     transform: translateX(-50%);
+    opacity: var(--auto-save-opacity, 0.5); /* Use variable, fallback to 0.5 */
+    transition: opacity 0.3s ease;
+    text-align: center; /* Ensure text inside is centered */
+    white-space: nowrap; /* Prevent wrapping */
   }
   
-  .last-saved {
-    display: inline-block;
-    padding: 3px 8px;
-    background: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
-    border-radius: 4px;
-    border: 1px solid rgba(224, 224, 224, 0.5);
-  }
-  
-  .icon {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 0.25rem;
-    vertical-align: middle;
-  }
-  
-  .icon :global(svg) {
-    fill: currentColor;
+  .last-saved { display: inline-block; padding: 3px 8px; background: rgba(255, 255, 255, 0.7); border-radius: 4px; border: 1px solid rgba(224, 224, 224, 0.5); }
+
+  /* Action buttons - push to the right */
+  .action-buttons {
+    display: flex;
+    gap: 1rem; 
+    margin-left: auto; /* Push to the far right */
   }
 
-  @media print {
-    .header-toolbar {
-      display: none;
+  .icon { display: inline-flex; align-items: center; margin-right: 0.25rem; vertical-align: middle; }
+  .icon :global(svg) { fill: currentColor; }
+  
+  @media print { .header-toolbar { display: none; } }
+
+  /* Responsive adjustments - Ensure title doesn't overlap buttons */
+  @media screen and (max-width: 992px) { /* Example breakpoint */
+    .auto-save-info {
+       /* Maybe hide or move auto-save earlier if title needs space */
+       /* display: none; */ 
     }
   }
-  
-  /* Responsive styles */
+
   @media screen and (max-width: 767px) {
-    .toolbar-container {
-      padding: 0 10px;
-    }
-    
-    .auto-save-info {
-      font-size: 0.7rem;
-      max-width: 40%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    
-    .district-title {
-      font-size: 0.95rem;
-    }
-    
-    .app-title {
-      font-size: 0.95rem;
-    }
+    .toolbar-container { padding: 0 10px; }
+    /* Further adjust title/auto-save/buttons if needed */
+    .district-title { font-size: 0.95rem; }
+    .separator { margin: 0 5px; }
+    .app-title { display: none; } /* Hide app title earlier */
+    .auto-save-info { display: none; } /* Hide auto-save */
   }
   
-  /* Very small screens - hide the auto-save info when space is limited */
   @media screen and (max-width: 480px) {
-    .auto-save-info {
-      display: none;
-    }
-    
-    .title-block {
-      left: 0;
-      transform: none;
-    }
-    
-    .district-title {
-      font-size: 0.85rem;
-    }
-    
-    .separator {
-      margin: 0 5px;
-    }
-    
-    .app-title {
-      font-size: 0.8rem;
-      display: none; /* Hide the subtitle on very small screens */
-    }
+     /* Maybe just show icons for buttons */
   }
+
 </style>

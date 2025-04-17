@@ -295,14 +295,24 @@ export function printForm(): void {
 /**
  * Save the form data
  */
+/**
+ * Save the form data
+ */
 export function saveForm(): void {
-  // Get the current configuration from the store
-  const currentConfig = get(formConfigStore);
+  // Get the CURRENT form data directly from formStore
+  const currentFormData = get(formStore); 
   
-  console.log('Form data saved:', currentConfig.data);
-  console.log('Form editability state:', currentConfig.editable);
-  console.log('User role:', currentConfig.userRole);
-  // In a real implementation, this would save to a database or file
+  // --- Log the up-to-date data from formStore ---
+  console.log('Form data as JSON:', JSON.stringify(currentFormData, null, 2)); 
+  console.log('Original form data object:', currentFormData); 
+
+  // --- User role still comes from formConfigStore ---
+  // It's okay to get this separately if it doesn't change after initial load
+  const currentUserRole = get(formConfigStore).userRole; 
+  console.log('User role:', currentUserRole);
+  
+  // In a real implementation, you would typically send 'currentFormData' 
+  // (and perhaps 'currentUserRole') to a server endpoint.
 }
 
 /**

@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-cover-page-wrapper" />
+
 <script lang="ts">
   import CoverPage from './CoverPage.svelte';
   import { setContext } from 'svelte';

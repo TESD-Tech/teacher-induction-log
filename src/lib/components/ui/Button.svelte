@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-button" />
+
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   

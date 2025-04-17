@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-cover-page" />
+
 <script lang="ts">
   import { getContext } from 'svelte';
   import { formStore as importedFormStore, formConfigStore as importedFormConfigStore } from '../../stores/formStore';

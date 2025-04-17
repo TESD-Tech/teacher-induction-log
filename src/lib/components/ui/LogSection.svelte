@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-log-section" />
+
 <script lang="ts">
   export let title: string;
 </script>

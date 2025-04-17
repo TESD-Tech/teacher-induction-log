@@ -7,7 +7,7 @@
   import './assets/print.css';
   
   // State variables
-  let config: FormConfig;
+  let config: FormConfig; // Keep local config state if needed for the loading logic
   let loading = true;
   let error = false;
   
@@ -40,6 +40,7 @@
   
   // Load the configuration directly from the JSON file
   async function loadConfig() {
+    let loadedConfig: FormConfig; // Use a temporary variable
     try {
       console.log('Fetching configuration from:', getConfigUrl());
       const response = await fetch(getConfigUrl());
@@ -49,23 +50,25 @@
       }
       
       const data = await response.json();
-      config = data as FormConfig;
+      loadedConfig = data as FormConfig; // Assign to temporary variable
       
-      console.log('Successfully loaded configuration:', config);
-      console.log('Inductee name:', config.data.inductee);
+      console.log('Successfully loaded configuration:', loadedConfig);
       
       // Update the form store with the loaded configuration
-      setFormConfig(config);
+      setFormConfig(loadedConfig); // Set the store HERE
+      config = loadedConfig; // Update local state AFTER setting store if needed for #if block
+      
     } catch (err) {
       console.error('Error loading configuration:', err);
       error = true;
       
       // Create a hardcoded configuration as fallback
-      config = {
+      loadedConfig = { // Assign to temporary variable
         userRole: 'mentee',
         data: {
           inductee: "Tester, Esther!!!!",
           building: "HARDCODED SCHOOL",
+          // ... rest of fallback data
           assignment: "Mathematics",
           mentorTeacher: "Robert Johnson",
           mentorNames: [
@@ -110,7 +113,9 @@
       };
       
       // Update the form store with the fallback configuration
-      setFormConfig(config);
+      setFormConfig(loadedConfig); // Set the store HERE
+      config = loadedConfig; // Update local state AFTER setting store if needed for #if block
+      
     } finally {
       loading = false;
     }
@@ -121,12 +126,13 @@
     loadConfig();
   });
 </script>
-
+<svelte:options customElement="teacher-induction-log-app" />
 <main>
-  {#if config}
-    <InductionLog config={config} />
-  {:else}
+  {#if !loading && config} <InductionLog /> {:else if loading}
     <p>Loading...</p>
+  {:else if error}
+    <p>Error loading configuration. Displaying fallback data.</p>
+     <InductionLog /> 
   {/if}
 </main>
 

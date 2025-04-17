@@ -1,28 +1,51 @@
-// Import the full application custom element
+// src/main.ts (Revised Approach)
+import './app.css'; // Global styles
+import App from './App.svelte'; // Your main app component
 
-// Import the automatic component registration system
-// This will automatically register all components in the src/lib directory as custom elements
+console.log('Importing component modules to trigger custom element registration...');
 
-// Import App component and mount function from Svelte
-import App from './App.svelte';
-import { mount as svelteMount } from 'svelte';
-import type { FormConfig } from './lib/stores/formStore';
+// Use import.meta.glob to find and eagerly import components
+// This ensures the code runs and <svelte:options customElement="tag-name"> takes effect.
+const componentModules = import.meta.glob('/src/lib/components/**/*.svelte', { eager: true });
 
-// Export a mount function that can be used to mount the app directly
-export function mount(container: HTMLElement, config: FormConfig) {
-  return svelteMount(App, {
-    target: container,
-    props: {
-      formConfig: config
+// Log registered elements (might need a slight delay for registration to complete)
+setTimeout(() => {
+  console.log('Checking registrations:');
+  console.log('ps-cover-page registered:', !!customElements.get('ps-cover-page'));
+  // Add other elements you expect to be registered
+}, 100);
+
+
+// --- Main Application Mounting ---
+// Keep your preferred method for mounting the main App
+// e.g., using the <ps-svelte-app> custom element wrapper class (if App itself doesn't use <svelte:options>)
+class PsSvelteApp extends HTMLElement {
+  private _appInstance: App | null = null;
+  connectedCallback() {
+    const shadow = this.attachShadow({ mode: 'open' });
+    this._appInstance = new App({ target: shadow });
+  }
+  disconnectedCallback() {
+    if (this._appInstance) {
+      this._appInstance.$destroy();
+      this._appInstance = null;
     }
-  });
+  }
+}
+// Only define ps-svelte-app if App.svelte doesn't define its own tag via <svelte:options>
+if (!customElements.get('ps-svelte-app')) {
+     customElements.define('ps-svelte-app', PsSvelteApp);
+     console.log('Registered <ps-svelte-app>');
 }
 
-// Both the full application and individual components are now available as custom elements
-// <ps-svelte-app> - The full application
-// <svelte-counter> - The Counter component (automatically registered)
-// Any new component added to src/lib will be automatically available as <svelte-componentname>
 
-console.log('ps-svelte-app registered:', !!customElements.get('ps-svelte-app'));
-console.log('svelte-coverpage registered:', !!customElements.get('svelte-coverpage'));
-console.log('svelte-inductionlog registered:', !!customElements.get('svelte-inductionlog'));
+// OR mounting directly (if not using <ps-svelte-app>)
+/*
+const app = new App({
+  target: document.getElementById('app') || document.body,
+});
+export default app;
+*/
+
+// Note: No explicit `defineCustomElement` or `customElements.define` calls needed here
+// for components using <svelte:options customElement="tag-name">

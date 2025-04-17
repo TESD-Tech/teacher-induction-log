@@ -1,14 +1,15 @@
+<svelte:options customElement="ps-signatures" />
+
 <script lang="ts">
   import { formStore, formConfigStore } from '../../stores/formStore';
   import LogSection from '../ui/LogSection.svelte';
-  import type { Signatures } from '../../stores/formStore';
+  // REMOVED: Unused import 'Signatures' type
+  // import type { Signatures } from '../../stores/formStore'; 
   
   import { canEdit } from '../../permissions';
 </script>
 
-
 {#if $formStore.signatures}
-
 <section class="signatures-container">
   <div class="signatures-wrapper">
     <p class="signature-intro">
@@ -22,8 +23,7 @@
           <div class="signature-line"></div>
           <label for="mentor-teacher-signature">Mentor Teacher</label>
         {:else}
-          <div class="readonly-field" aria-label="Mentor Teacher Signature">{$formStore.signatures.mentorTeacher}</div>
-          <div class="signature-line"></div>
+          <div class="readonly-field" aria-label="Mentor Teacher Signature">{$formStore.signatures.mentorTeacher || ' '}</div> <div class="signature-line"></div>
           <div class="signature-label">Mentor Teacher</div>
         {/if}
       </div>
@@ -34,7 +34,7 @@
           <div class="signature-line"></div>
           <label for="building-principal-signature">Building Principal</label>
         {:else}
-          <div class="readonly-field" aria-label="Building Principal Signature">{$formStore.signatures.buildingPrincipal}</div>
+          <div class="readonly-field" aria-label="Building Principal Signature">{$formStore.signatures.buildingPrincipal || ' '}</div>
           <div class="signature-line"></div>
           <div class="signature-label">Building Principal</div>
         {/if}
@@ -46,7 +46,7 @@
           <div class="signature-line"></div>
           <label for="superintendent-signature">Superintendent</label>
         {:else}
-          <div class="readonly-field" aria-label="Superintendent Signature">{$formStore.signatures.superintendent}</div>
+          <div class="readonly-field" aria-label="Superintendent Signature">{$formStore.signatures.superintendent || ' '}</div>
           <div class="signature-line"></div>
           <div class="signature-label">Superintendent</div>
         {/if}
@@ -57,7 +57,10 @@
           <input type="date" bind:value={$formStore.signatures.date} id="signature-date" />
           <div class="signature-line"></div>
           <label for="signature-date">Date</label>
-          <div class="readonly-field" aria-label="Signature Date">{$formStore.signatures.date}</div>
+        {:else}
+           <div class="readonly-field" aria-label="Signature Date">{$formStore.signatures.date ? $formStore.signatures.date.replace(/-/g, '/') : ' '}</div> 
+          <div class="signature-line"></div>
+          <div class="signature-label">Date</div>
         {/if}
       </div>
     </div>
@@ -83,12 +86,21 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     margin-bottom: 1.5rem;
     padding: 1.5rem;
-    width: 100%;
+    /* REMOVED: width: 100%; */
+    /* ADDED: Allow shrinking and prevent overflow */
+    max-width: 100%; 
+    box-sizing: border-box; 
+    /* Center align if needed within its flex parent (.log-content) */
+    margin-left: auto; 
+    margin-right: auto;
+     /* Optional: Set a specific max-width if needed, less than parent's 1400px */
+    /* max-width: 900px;  */
   }
   
   .signatures-wrapper {
-    width: 100%;
-    max-width: 100%;
+    /* Removed width/max-width, let it be determined by content */
+    /* width: 100%; */
+    /* max-width: 100%; */
   }
   
   .signature-intro {
@@ -100,21 +112,21 @@
   .signatures-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 2rem; /* Maybe reduce gap? */
     margin-bottom: 2rem;
   }
   
   .signature-field {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.5rem; /* Maybe reduce margin? */
   }
   
   .signature-line {
     height: 1px;
     background-color: #000;
     margin: 0.75rem 0 0.25rem 0;
-    width: 100%;
+    width: 100%; /* Line takes full width of field */
   }
   
   .signature-field label,
@@ -123,13 +135,15 @@
     text-align: center;
   }
   
-  .signature-field input {
+  .signature-field input[type="text"], 
+  .signature-field input[type="date"] { /* Added date input */
     border: none;
     background: transparent;
     text-align: center;
     font-size: 1rem;
     padding: 0.5rem;
     width: 100%;
+    box-sizing: border-box;
   }
   
   .signature-field input:focus {
@@ -139,10 +153,14 @@
   
   .readonly-field {
     text-align: center;
-    min-height: 2.5rem;
+    min-height: 2.5rem; /* Ensure consistent height */
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0.5rem; /* Match input padding */
+    box-sizing: border-box;
+    width: 100%; /* Take full width of field */
+    /* background-color: #f8f9fa; */ /* Optional background */
   }
   
   .signature-notes {
@@ -161,7 +179,7 @@
   @media print {
     .signatures-container {
       box-shadow: none;
-      border: 1px solid #000;
+      /* border: 1px solid #000; */ /* Remove border? */
       padding: 1rem;
       page-break-inside: avoid;
     }

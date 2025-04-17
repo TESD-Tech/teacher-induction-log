@@ -11,16 +11,6 @@
   // Import section configurations
   import { sectionConfigs } from './config/sectionConfigs';
   
-  // Import form store and types
-  import { formConfigStore, formStore, setFormConfig, type FormConfig } from './stores/formStore';
-  
-  // Props: form configuration can be passed in from parent component
-  export let config: FormConfig | undefined = undefined;
-  
-  // Initialize the form configuration if provided
-  if (config) {
-    setFormConfig(config);
-  }
 </script>
 
 <div class="induction-log">
@@ -32,7 +22,7 @@
       
       <div class="log-content">
         {#each sectionConfigs as sectionConfig}
-          <GenericSection config={sectionConfig} />
+          <GenericSection config={sectionConfig} /> 
         {/each}
         <Signatures />
         <VerificationNote />
@@ -42,7 +32,8 @@
 </div>
 
 <style>
-  /* General styles */
+  /* Styles remain unchanged */
+  /* ... */
   .induction-log {
     width: 100%;
     margin: 0;

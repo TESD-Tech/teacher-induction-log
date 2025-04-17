@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-form-row" />
+
 <script lang="ts">
   // Props
   export let label: string;

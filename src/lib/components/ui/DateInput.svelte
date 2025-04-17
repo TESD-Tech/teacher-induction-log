@@ -1,5 +1,8 @@
+<svelte:options customElement="ps-date-input" />
+
 <script lang="ts">
-  export let value: string = '';
+  // Value prop now consistently expects/provides YYYY-MM-DD format
+  export let value: string = ''; 
   export let readonly: boolean = false;
   export let name: string = '';
   export let required: boolean = false;
@@ -7,42 +10,27 @@
   let isValid = true;
   let errorMessage = '';
   let touched = false;
+
+  // --- Removed formatDateForInput - No longer needed with direct binding ---
   
-  // Convert string date to YYYY-MM-DD format for the date input
-  function formatDateForInput(dateString: string): string {
-    if (!dateString) return '';
-    
-    // Try to parse the date string
-    const dateParts = dateString.split('/');
-    if (dateParts.length === 3) {
-      // If it's in MM/DD/YYYY format
-      const [month, day, year] = dateParts;
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    }
-    
-    // If it's already in YYYY-MM-DD format or another format
-    return dateString;
-  }
-  
-  // Convert YYYY-MM-DD format to MM/DD/YYYY for display
+  // Convert YYYY-MM-DD format to MM/DD/YYYY for display ONLY in readonly mode
   function formatDateForDisplay(dateString: string): string {
-    if (!dateString) return '';
+    if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return ''; // Only format valid YYYY-MM-DD
     
     try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return dateString; // Return original if invalid
-      
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const day = date.getDate().toString().padStart(2, '0');
-      const year = date.getFullYear();
-      
+      // Split and rearrange without relying on Date object parsing for simple format change
+      const [year, month, day] = dateString.split('-');
+      // Basic validation of parts
+      if (parseInt(year) < 1000 || parseInt(month) < 1 || parseInt(month) > 12 || parseInt(day) < 1 || parseInt(day) > 31) {
+        return ''; // Return empty if parts seem invalid
+      }
       return `${month}/${day}/${year}`;
     } catch (e) {
-      return dateString; // Return original if parsing fails
+      return ''; // Return empty on error
     }
   }
   
-  // Validate the date
+  // Validate the date (expects YYYY-MM-DD)
   function validateDate(dateString: string): boolean {
     if (!dateString && !required) return true;
     if (!dateString && required) {
@@ -50,68 +38,52 @@
       return false;
     }
     
-    // Check for various formats (MM/DD/YYYY, YYYY-MM-DD)
-    let isValidFormat = false;
-    let date: Date;
-    
-    // Check MM/DD/YYYY format
-    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-      const [month, day, year] = dateString.split('/').map(p => parseInt(p, 10));
-      date = new Date(year, month - 1, day);
-      isValidFormat = date.getFullYear() === year && 
-                      date.getMonth() === month - 1 && 
-                      date.getDate() === day;
-    } 
-    // Check YYYY-MM-DD format
-    else if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(dateString)) {
-      const [year, month, day] = dateString.split('-').map(p => parseInt(p, 10));
-      date = new Date(year, month - 1, day);
-      isValidFormat = date.getFullYear() === year && 
-                      date.getMonth() === month - 1 && 
-                      date.getDate() === day;
-    }
-    
-    if (!isValidFormat) {
-      errorMessage = 'Please enter a valid date (MM/DD/YYYY)';
+    // Check YYYY-MM-DD format specifically
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      errorMessage = 'Invalid date format stored'; // Should not happen with native input
       return false;
     }
-    
-    // Check that date is not in the future
-    const currentDate = new Date();
-    if (date > currentDate) {
-      errorMessage = 'Date cannot be in the future';
-      return false;
+
+    // Check if the date components form a valid date
+    const [year, month, day] = dateString.split('-').map(p => parseInt(p, 10));
+    const date = new Date(year, month - 1, day); // Month is 0-indexed
+    if (!(date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day)) {
+        errorMessage = 'Invalid date entered';
+        return false;
     }
     
+    // Optional: Check that date is not in the future
+    // const currentDate = new Date();
+    // // Set hours to 0 to compare dates only
+    // currentDate.setHours(0, 0, 0, 0); 
+    // if (date > currentDate) {
+    //   errorMessage = 'Date cannot be in the future';
+    //   return false;
+    // }
+    
+    errorMessage = ''; // Clear error message if valid
     return true;
   }
   
-  // Handle date change
-  function handleDateChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const newDate = input.value;
-    touched = true;
-    
-    // Update the value with formatted date
-    if (newDate) {
-      value = formatDateForDisplay(newDate);
-      isValid = validateDate(value);
-    } else {
-      value = '';
-      isValid = !required;
-      if (!isValid) {
-        errorMessage = 'Date is required';
-      }
-    }
-  }
-  
-  // Handle blur event for validation
+  // --- Removed handleDateChange - Using bind:value instead ---
+
+  // Handle blur event for validation visual feedback
   function handleBlur() {
     touched = true;
-    isValid = validateDate(value);
+    isValid = validateDate(value); // Validate the current bound value
   }
-  
-  $: inputValue = formatDateForInput(value);
+
+  // Recalculate validity when value changes externally or required status changes
+  $: {
+    // Avoid validating initial empty non-required value until touched
+    if (touched || (required && value === '')) {
+        isValid = validateDate(value);
+    } else if (!required && value === '') {
+        isValid = true; // Reset validity if not required and cleared before touch
+        errorMessage = '';
+    }
+  }
+
 </script>
 
 {#if readonly}
@@ -121,13 +93,13 @@
     <input 
       type="date" 
       {name}
-      value={inputValue} 
-      on:change={handleDateChange}
+      bind:value={value}  
       on:blur={handleBlur}
-      class={`date-input ${!isValid && touched ? 'invalid' : ''}`}
+      class:invalid={!isValid && touched}
       aria-invalid={!isValid && touched}
       aria-required={required}
-    />
+      class="date-input"
+      required={required} />
     {#if !isValid && touched}
       <div class="error-message" role="alert">{errorMessage}</div>
     {/if}
@@ -135,6 +107,8 @@
 {/if}
 
 <style>
+  /* Styles remain largely the same, adjusted class usage */
+  /* ... */
   .date-input-container {
     position: relative;
     width: 100%;
@@ -204,14 +178,15 @@
     font-size: 0.8rem;
     margin-top: 4px;
     display: block;
-    position: absolute;
-    bottom: -20px;
-    left: 0;
-    z-index: 1;
-    background-color: white;
-    padding: 0 4px;
-    border-radius: 2px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* Removed absolute positioning for simplicity, adjust if needed */
+    /* position: absolute; */
+    /* bottom: -20px; */
+    /* left: 0; */
+    /* z-index: 1; */
+    /* background-color: white; */
+    /* padding: 0 4px; */
+    /* border-radius: 2px; */
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
   }
   
   /* Responsive styles */

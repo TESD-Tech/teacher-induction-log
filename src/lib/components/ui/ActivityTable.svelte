@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-activity-table" />
+
 <script lang="ts">
   export let headers: string[] = [];
   export let columnWidths: string[] = [];
