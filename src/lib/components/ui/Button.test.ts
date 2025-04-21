@@ -2,14 +2,12 @@ import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
-import PsButton from './Button.svelte'; // Adjust import path as needed
+import PsDateInput from './DateInput.svelte'; // Adjust the import path as needed
 
-describe('PsButton', () => {
+describe('PsDateInput', () => {
   const setup = () => {
     const user = userEvent.setup();
-    // Mock window.confirm globally for these tests
-    const confirmMock = vi.spyOn(window, 'confirm');
-    return { user, confirmMock };
+    return user;
   };
 
   // Restore original window.confirm after each test
@@ -17,158 +15,221 @@ describe('PsButton', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders a button with default type and class', () => {
-    render(PsButton);
-    const button = screen.getByTestId('ps-button');
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute('type', 'button'); // Default type is 'button'
-    expect(button).toHaveClass('default'); // Default variant is 'default'
-    expect(button).not.toHaveClass('compact'); // Default compact is false
+  it('renders an input of type date by default', () => {
+    render(PsDateInput);
+    const input = screen.getByTestId('date-input');
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveAttribute('type', 'date');
   });
 
-  // FIX APPLIED HERE - Check for text content directly in the document
-  it('renders button content from the slot', async () => {
-    render(PsButton, { slot: 'Click Me' });
-    // Use findByText to wait for the slot content to appear
-    const slotContent = await screen.findByText('Click Me');
-    expect(slotContent).toBeInTheDocument();
-    const button = screen.getByTestId('ps-button');
-    // Optionally check that the slot content is indeed inside the button
-    expect(button).toContainElement(slotContent);
+  it('renders the readonly field when readonly prop is true', () => {
+    render(PsDateInput, { readonly: true, value: '2023-10-26' }); // Updated syntax
+    const readonlyDiv = screen.getByText('10/26/2023');
+    expect(readonlyDiv).toBeInTheDocument();
+    const input = screen.queryByTestId('date-input');
+    expect(input).not.toBeInTheDocument();
   });
 
-  // FIX APPLIED HERE - Added await after rerender
-  it('applies the correct variant class', async () => { // Made test async
-    const { rerender } = render(PsButton, { props: { variant: 'add' } });
-    let button = screen.getByTestId('ps-button');
-    expect(button).toHaveClass('add');
-    expect(button).not.toHaveClass('default');
-
-    rerender({ props: { variant: 'remove' } });
-    // Wait for the DOM update after rerender before asserting
-    button = await screen.findByTestId('ps-button'); // findBy* waits for element to appear/update
-    expect(button).toHaveClass('remove');
-    expect(button).not.toHaveClass('add');
-
-    rerender({ props: { variant: 'default' } });
-     // Wait for the DOM update after rerender before asserting
-    button = await screen.findByTestId('ps-button');
-    expect(button).toHaveClass('default');
-    expect(button).not.toHaveClass('remove');
+  it('formats the date correctly for display in readonly mode', () => {
+    render(PsDateInput, { readonly: true, value: '2024-01-15' }); // Updated syntax
+    const readonlyDiv = screen.getByText('01/15/2024');
+    expect(readonlyDiv).toBeInTheDocument();
   });
 
-  // FIX APPLIED HERE - Added await after rerender
-  it('applies the compact class when compact prop is true', async () => { // Made test async
-    const { rerender } = render(PsButton, { props: { compact: true } });
-    // Wait for the DOM update after initial render (though often not strictly needed here)
-    let button = await screen.findByTestId('ps-button');
-    expect(button).toHaveClass('compact');
+  it('displays empty string in readonly mode for invalid or empty dates', () => {
+    // Assuming data-testid="readonly-field" is added to the component's readonly div
+    const { rerender } = render(PsDateInput, { readonly: true, value: 'invalid-date' }); // Updated syntax
+    const readonlyDiv = screen.getByTestId('readonly-field');
+    expect(readonlyDiv).toBeInTheDocument();
+    expect(readonlyDiv).toHaveTextContent('');
 
-    rerender({ props: { compact: false } });
-    // Wait for the DOM update after rerender before asserting
-    button = await screen.findByTestId('ps-button');
-    expect(button).not.toHaveClass('compact');
+    rerender({ readonly: true, value: '' }); // Updated syntax
+    expect(readonlyDiv).toBeInTheDocument();
+    expect(readonlyDiv).toHaveTextContent('');
   });
 
-  // FIX APPLIED HERE - Added await after rerender
-  it('applies the correct type attribute', async () => { // Made test async
-    const { rerender } = render(PsButton, { props: { type: 'submit' } });
-    // Wait for the DOM update after initial render
-    let button = await screen.findByTestId('ps-button');
-    expect(button).toHaveAttribute('type', 'submit');
+  it('binds the value prop to the input', async () => {
+    const user = setup();
+    render(PsDateInput);
+    const input = screen.getByTestId('date-input') as HTMLInputElement;
 
-    rerender({ props: { type: 'reset' } });
-    // Wait for the DOM update after rerender before asserting
-    button = await screen.findByTestId('ps-button');
-    expect(button).toHaveAttribute('type', 'reset');
-
-    rerender({ props: { type: 'button' } });
-    // Wait for the DOM update after rerender before asserting
-    button = await screen.findByTestId('ps-button');
-    expect(button).toHaveAttribute('type', 'button');
+    await user.type(input, '2023-11-01');
+    expect(input.value).toBe('2023-11-01');
   });
 
+  it('updates the value prop when input changes', async () => {
+    const user = setup();
+    const initialValue = '2023-12-25';
+    render(PsDateInput, { value: initialValue }); // Updated syntax
+    const input = screen.getByTestId('date-input') as HTMLInputElement;
 
-  it('calls the onclick function for default variant without confirmation', async () => {
-    const { user, confirmMock } = setup();
-    const onclickMock = vi.fn();
-    render(PsButton, { props: { onclick: onclickMock } });
-    const button = screen.getByTestId('ps-button');
+    expect(input).toHaveValue(initialValue);
 
-    await user.click(button);
-
-    expect(confirmMock).not.toHaveBeenCalled(); // No confirmation for default
-    expect(onclickMock).toHaveBeenCalledTimes(1);
-    // Optionally check the event object passed to onclickMock if needed
-    // expect(onclickMock).toHaveBeenCalledWith(expect.any(MouseEvent));
+    const newValue = '2024-01-01';
+    await user.clear(input);
+    await user.type(input, newValue);
+    expect(input).toHaveValue(newValue);
   });
 
-  it('calls the onclick function for add variant without confirmation', async () => {
-    const { user, confirmMock } = setup();
-    const onclickMock = vi.fn();
-    render(PsButton, { props: { variant: 'add', onclick: onclickMock } });
-    const button = screen.getByTestId('ps-button');
-
-    await user.click(button);
-
-    expect(confirmMock).not.toHaveBeenCalled(); // No confirmation for add
-    expect(onclickMock).toHaveBeenCalledTimes(1);
+  it('does not show error message initially if not required and value is empty', () => {
+    render(PsDateInput, { required: false, value: '' }); // Updated syntax
+    const errorMessage = screen.queryByRole('alert');
+    expect(errorMessage).not.toBeInTheDocument();
+    const input = screen.getByTestId('date-input');
+    expect(input).not.toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'false');
   });
 
-  it('calls confirm and onclick for remove variant when confirmed', async () => {
-    const { user, confirmMock } = setup();
-    // Make window.confirm return true (confirmed)
-    confirmMock.mockReturnValue(true);
-    const onclickMock = vi.fn();
-    const customMessage = 'Proceed with caution?';
-
-    render(PsButton, { props: { variant: 'remove', onclick: onclickMock, confirmMessage: customMessage } });
-    const button = screen.getByTestId('ps-button');
-
-    await user.click(button);
-
-    // Confirm should have been called once with the correct message
-    expect(confirmMock).toHaveBeenCalledTimes(1);
-    expect(confirmMock).toHaveBeenCalledWith(customMessage);
-
-    // onclick should have been called because confirm returned true
-    expect(onclickMock).toHaveBeenCalledTimes(1);
+  it('does not show error message initially if value is valid', () => {
+    render(PsDateInput, { value: '2023-10-26' }); // Updated syntax
+    const errorMessage = screen.queryByRole('alert');
+    expect(errorMessage).not.toBeInTheDocument();
+    const input = screen.getByTestId('date-input');
+    expect(input).not.toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'false');
   });
 
-  it('calls confirm but NOT onclick for remove variant when cancelled', async () => {
-    const { user, confirmMock } = setup();
-    // Make window.confirm return false (cancelled)
-    confirmMock.mockReturnValue(false);
-    const onclickMock = vi.fn();
-    const customMessage = 'Cancel this action?';
+  it('shows error message and invalid class on blur if required and value is empty', async () => {
+    const user = setup();
+    render(PsDateInput, { required: true, value: '' }); // Updated syntax
+    const input = screen.getByTestId('date-input');
 
-    render(PsButton, { props: { variant: 'remove', onclick: onclickMock, confirmMessage: customMessage } });
-    const button = screen.getByTestId('ps-button');
+    await user.click(input); // Focus
+    await user.tab(); // Blur
 
-    await user.click(button);
-
-    // Confirm should have been called once with the correct message
-    expect(confirmMock).toHaveBeenCalledTimes(1);
-    expect(confirmMock).toHaveBeenCalledWith(customMessage);
-
-    // onclick should NOT have been called because confirm returned false
-    expect(onclickMock).not.toHaveBeenCalled();
+    const errorMessage = await screen.findByRole('alert');
+    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toHaveTextContent('Date is required');
+    expect(input).toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
   });
 
-  it('uses the default confirm message if none is provided for remove variant', async () => {
-     const { user, confirmMock } = setup();
-     confirmMock.mockReturnValue(true); // Confirmed
-     const onclickMock = vi.fn();
+  it('shows error message and invalid class on blur if value has invalid format (manual value set)', async () => {
+    const user = setup();
+    render(PsDateInput);
+    const input = screen.getByTestId('date-input') as HTMLInputElement;
 
-     // Render remove button without providing confirmMessage prop
-     render(PsButton, { props: { variant: 'remove', onclick: onclickMock } });
-     const button = screen.getByTestId('ps-button');
+    fireEvent.input(input, { target: { value: 'invalid-format' } });
+    await user.tab(); // Blur
 
-     await user.click(button);
+    const errorMessage = await screen.findByRole('alert', {}, { timeout: 3000 });
+    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toHaveTextContent('Invalid date format stored');
+    expect(input).toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+  });
 
-     // Confirm should be called with the default message
-     expect(confirmMock).toHaveBeenCalledTimes(1);
-     expect(confirmMock).toHaveBeenCalledWith('Are you sure you want to delete this item?');
-     expect(onclickMock).toHaveBeenCalledTimes(1); // Action should proceed if confirmed
+  it('shows error message and invalid class on blur if value is an invalid date (manual value set)', async () => {
+    const user = setup();
+    render(PsDateInput);
+    const input = screen.getByTestId('date-input') as HTMLInputElement;
+
+    fireEvent.input(input, { target: { value: '2023-04-31' } });
+    await user.tab(); // Blur
+
+    const errorMessage = await screen.findByRole('alert', {}, { timeout: 3000 });
+    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toHaveTextContent('Invalid date entered');
+    expect(input).toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('clears error message and invalid class when a valid date is entered after an invalid one', async () => {
+    const user = setup();
+    render(PsDateInput, { required: true }); // Updated syntax
+    const input = screen.getByTestId('date-input') as HTMLInputElement;
+
+    await user.click(input);
+    await user.tab();
+    let errorMessage = screen.getByRole('alert');
+    expect(errorMessage).toBeInTheDocument();
+    expect(input).toHaveClass('invalid');
+
+    await user.clear(input);
+    fireEvent.input(input, { target: { value: '2023-11-15' } });
+    await user.tab();
+
+    await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument());
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(input).not.toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'false');
+  });
+
+  it('applies the name attribute to the input', () => {
+    render(PsDateInput, { name: 'my-date-field' }); // Updated syntax
+    const input = screen.getByTestId('date-input');
+    expect(input).toHaveAttribute('name', 'my-date-field');
+  });
+
+  it('applies the required attribute to the input when required prop is true', () => {
+    render(PsDateInput, { required: true }); // Updated syntax
+    const input = screen.getByTestId('date-input');
+    expect(input).toHaveAttribute('required');
+    expect(input).toHaveAttribute('aria-required', 'true');
+  });
+
+  it('does not apply the required attribute to the input when required prop is false', () => {
+    render(PsDateInput, { required: false }); // Updated syntax
+    const input = screen.getByTestId('date-input');
+    expect(input).not.toHaveAttribute('required');
+    expect(input).toHaveAttribute('aria-required', 'false');
+  });
+
+  it('validates and shows error message when required prop changes to true for empty field AND then is touched', async () => {
+    const user = setup();
+    const { rerender } = render(PsDateInput, { required: false, value: '' }); // Updated syntax
+    const input = screen.getByTestId('date-input');
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(input).not.toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'false');
+
+    rerender({ required: true, value: '' }); // Updated syntax
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(input).not.toHaveClass('invalid');
+
+    await user.click(input);
+    await user.tab();
+
+    const errorMessage = await screen.findByRole('alert');
+    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toHaveTextContent('Date is required');
+    expect(input).toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('validates when value changes externally after being touched', async () => {
+    const user = setup();
+    const { rerender } = render(PsDateInput, { required: true, value: '' }); // Updated syntax
+    const input = screen.getByTestId('date-input') as HTMLInputElement;
+
+    await user.click(input);
+    await user.tab();
+    const errorMessage = await screen.findByRole('alert');
+    expect(errorMessage).toBeInTheDocument();
+    expect(input).toHaveClass('invalid');
+
+    rerender({ required: true, value: '2024-05-20' }); // Updated syntax
+
+    await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument());
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(input).not.toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'false');
+  });
+
+  it('does not validate initially if not required and value is empty, even if touched', async () => {
+    const user = setup();
+    render(PsDateInput, { required: false, value: '' }); // Updated syntax
+    const input = screen.getByTestId('date-input');
+
+    await user.click(input);
+    await user.tab();
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(input).not.toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'false');
   });
 });

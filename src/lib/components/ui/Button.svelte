@@ -3,7 +3,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   // Svelte 5 Runes are compiler features, they are NOT imported.
-  // Remove the incorrect import for $props
 
   // All props, including regular ones, are declared within $props()
   // Destructure the result of $props() to declare your props.
