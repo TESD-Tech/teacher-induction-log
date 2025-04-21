@@ -29,56 +29,6 @@ vi.mock('../lib/stores/formStore', () => {
       set: vi.fn(),
     },
     setFormConfig: vi.fn((config) => {
-      // Simulate the setFormConfig behavior
-      if (config.userRole === 'admin') {
-        // Admin role - all fields editable
-        config.editable.verifications = {
-          summerAcademy: true,
-          inductionSeminars: true,
-          mentorMeetings: true,
-          teamMeetings: true,
-          classroomVisits: true,
-          otherActivities: true
-        };
-        config.editable.summerAcademy = true;
-        config.editable.inductionSeminars = true;
-        config.editable.mentorMeetings = true;
-        config.editable.teamMeetings = true;
-        config.editable.classroomVisits = true;
-        config.editable.otherActivities = true;
-      } else if (config.userRole === 'mentor') {
-        // Mentor role - can sign mentor verifications, but not others
-        config.editable.verifications = {
-          summerAcademy: false,
-          inductionSeminars: false,
-          mentorMeetings: true, // mentor can sign their own
-          teamMeetings: false,
-          classroomVisits: false,
-          otherActivities: false
-        };
-        config.editable.summerAcademy = true;
-        config.editable.inductionSeminars = true;
-        config.editable.mentorMeetings = true;
-        config.editable.teamMeetings = true;
-        config.editable.classroomVisits = true;
-        config.editable.otherActivities = true;
-      } else if (config.userRole === 'mentee') {
-        // Mentee role - mostly read-only verifications
-        config.editable.verifications = {
-          summerAcademy: false,
-          inductionSeminars: false,
-          mentorMeetings: false,
-          teamMeetings: false,
-          classroomVisits: false,
-          otherActivities: false
-        };
-        config.editable.summerAcademy = true;
-        config.editable.inductionSeminars = true;
-        config.editable.mentorMeetings = true;
-        config.editable.teamMeetings = true;
-        config.editable.classroomVisits = true;
-        config.editable.otherActivities = true;
-      }
       return config;
     }),
   };
@@ -153,7 +103,7 @@ describe('Verification Field Permissions', () => {
 
     const isEditable = (fieldKey: string, itemType: string) => {
       if (fieldKey === 'verification') {
-        return mockFormConfig.editable.verifications[itemType];
+        return mockFormConfig.editable.verifications?.[itemType];
       }
       return mockFormConfig.editable[itemType];
     };
