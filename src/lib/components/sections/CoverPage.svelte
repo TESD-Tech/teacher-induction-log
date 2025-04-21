@@ -1,24 +1,14 @@
 <svelte:options customElement="ps-cover-page" />
 
 <script lang="ts">
-  import { getContext } from 'svelte';
-  import { formStore as importedFormStore, formConfigStore as importedFormConfigStore } from '../../stores/formStore';
+  // Import stores, helpers, and UI components
+  import { formStore, formConfigStore } from '../../stores/formStore'; 
   import { canEdit } from '../../permissions';
   import FormRow from '../ui/FormRow.svelte';
-  import { schoolYears } from '../../config/sectionConfigs';
+  // Import the new Select component
+  import Select from '../ui/Select.svelte'; 
 
-  // Attempt to get from context, fallback to singleton imports
-  let contextFormStore;
-  let contextFormConfigStore;
-  try {
-    contextFormStore = getContext('formStore');
-  } catch {}
-  try {
-    contextFormConfigStore = getContext('formConfigStore');
-  } catch {}
-
-  export let formStore = contextFormStore ?? importedFormStore;
-  export let formConfigStore = contextFormConfigStore ?? importedFormConfigStore;
+  // REMOVED: Reactive checks like isMentorInOptions - logic moved to Select.svelte
 </script>
 
 <div class="cover-page-section">
@@ -27,7 +17,6 @@
     <legend>Inductee Information</legend>
 
     <div class="info-grid">
-      <!-- Left Column -->
       <div class="info-column">
         <FormRow label="Inductee" let:id>
           {#if canEdit($formConfigStore.userRole, 'coverPage', 'inductee')}
@@ -40,94 +29,89 @@
               class="form-input"
             />
           {:else}
-            <div class="readonly-field" id={id}>{$formStore.inductee || ''}</div>
+            <div class="readonly-field" id={id}>{$formStore.inductee || ' '}</div>
           {/if}
         </FormRow>
 
         <FormRow label="Building" let:id>
           {#if canEdit($formConfigStore.userRole, 'coverPage', 'building')}
-            <input 
-              type="text" 
-              id={id} 
-              bind:value={$formStore.building} 
-              placeholder="School Building"
-              aria-label="School Building"
-              class="form-input"
+            <Select
+              {id}
+              bind:value={$formStore.building}
+              options={$formConfigStore.options.buildings}
+              placeholder="-- Select Building --"
+              ariaLabel="School Building"
+              required={true}
+              className="form-input" 
             />
           {:else}
-            <div class="readonly-field" id={id}>{$formStore.building || ''}</div>
+            <div class="readonly-field" id={id}>{$formStore.building || ' '}</div>
           {/if}
         </FormRow>
 
         <FormRow label="Assignment" let:id>
           {#if canEdit($formConfigStore.userRole, 'coverPage', 'assignment')}
-            <input 
-              type="text" 
-              id={id} 
-              bind:value={$formStore.assignment} 
-              placeholder="Teaching Assignment"
-              aria-label="Teaching Assignment" 
-              class="form-input"
+             <Select
+              {id}
+              bind:value={$formStore.assignment}
+              options={$formConfigStore.options.assignments}
+              placeholder="-- Select Assignment --"
+              ariaLabel="Teaching Assignment"
+              required={true}
+              className="form-input"
             />
           {:else}
-            <div class="readonly-field" id={id}>{$formStore.assignment || ''}</div>
+            <div class="readonly-field" id={id}>{$formStore.assignment || ' '}</div>
           {/if}
         </FormRow>
       </div>
 
-      <!-- Right Column -->
       <div class="info-column">
         <FormRow label="Mentor Teacher" let:id>
           {#if canEdit($formConfigStore.userRole, 'coverPage', 'mentorTeacher')}
-            <select
-              id={id}
+             <Select
+              {id}
               bind:value={$formStore.mentorTeacher}
-              aria-label="Mentor Teacher Name"
-              class="form-input"
-            >
-              <option value="" disabled selected={!$formStore.mentorTeacher}>Select Mentor</option>
-              {#each $formStore.mentorNames as mentorName}
-                <option value={mentorName}>{mentorName}</option>
-              {/each}
-            </select>
+              options={$formConfigStore.options.mentors}
+              placeholder="-- Select Mentor --"
+              ariaLabel="Mentor Teacher Name"
+              required={true}
+              className="form-input"
+            />
           {:else}
-            <div class="readonly-field" id={id}>{$formStore.mentorTeacher || ''}</div>
+            <div class="readonly-field" id={id}>{$formStore.mentorTeacher || ' '}</div>
           {/if}
         </FormRow>
 
         <FormRow label="School Year (Year 1)" let:id>
           {#if canEdit($formConfigStore.userRole, 'coverPage', 'schoolYearOne')}
-            <select
-              id={id}
+             <Select
+              {id}
               bind:value={$formStore.schoolYearOne}
-              aria-label="School Year One"
-              class="form-input year-input"
-            >
-              <option value="" disabled selected={!$formStore.schoolYearOne}>Select Year</option>
-              {#each schoolYears as year}
-                <option value={year}>{year}</option>
-              {/each}
-            </select>
+              options={$formConfigStore.options.schoolYears}
+              placeholder="-- Select Year --"
+              ariaLabel="School Year One"
+              required={true}
+              className="form-input year-input" 
+            />
           {:else}
-            <div class="readonly-field" id={id}>{$formStore.schoolYearOne || ''}</div>
+            <div class="readonly-field" id={id}>{$formStore.schoolYearOne || ' '}</div>
           {/if}
         </FormRow>
 
         <FormRow label="School Year (Year 2)" let:id>
           {#if canEdit($formConfigStore.userRole, 'coverPage', 'schoolYearTwo')}
-            <select
-              id={id}
+             <Select
+              {id}
               bind:value={$formStore.schoolYearTwo}
-              aria-label="School Year Two"
-              class="form-input year-input"
-            >
-              <option value="" disabled selected={!$formStore.schoolYearTwo}>Select Year</option>
-              {#each schoolYears as year}
-                <option value={year}>{year}</option>
-              {/each}
-            </select>
+              options={$formConfigStore.options.schoolYears}
+              placeholder="-- Select Year --"
+              ariaLabel="School Year Two"
+              required={true}
+              className="form-input year-input"
+            />
           {:else}
-            <div class="readonly-field" id={id}>{$formStore.schoolYearTwo || ''}</div>
+            <div class="readonly-field" id={id}>{$formStore.schoolYearTwo || ' '}</div>
           {/if}
         </FormRow>
       </div>

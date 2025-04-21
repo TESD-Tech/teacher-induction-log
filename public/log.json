@@ -23,11 +23,17 @@
       "otherActivities": true
     }
   },
+  "options":{
+    "mentors": [{"name": "Robert Johnson", "dcid": 1234}, {"name": "Patti Smith", "dcid": 4321}, {"name": "Ada Lovelace", "dcid": 1122}],
+    "buildings": [],
+    "assignments": [],
+    "schoolYears": []
+  },
   "data": {
     "inductee": "Jane Smith",
     "building": "Edison Elementary",
     "assignment": "2nd Grade",
-    "mentorTeacher": "Robert Johnson",
+    "mentorTeacher": "Robert Lovelace",
     "schoolYearOne": "2024-2025",
     "schoolYearTwo": "2025-2026",
     "summerAcademy": [

@@ -1,65 +1,42 @@
 import { writable, get, type Writable } from 'svelte/store';
 
-/**
- * Base activity interface with common properties for all activity types
- */
+// --- Base Interfaces ---
 export interface BaseActivity {
   dateYearOne: string;
   dateYearTwo: string;
   verification: string;
 }
 
-/**
- * Summer Academy Day activity type
- */
 export interface SummerAcademyDay extends BaseActivity {
   day: string; 
 }
 
-/**
- * Induction Seminar activity type
- */
 export interface InductionSeminar extends BaseActivity {
   number: number;
   topic: string;
 }
 
-/**
- * Mentor Meeting activity type
- */
 export interface MentorMeeting extends BaseActivity {
   date: string;
   topic: string;
 }
 
-/**
- * Team Meeting activity type
- */
 export interface TeamMeeting extends BaseActivity {
   date: string;
   topic: string;
 }
 
-/**
- * Classroom Visit activity type
- */
 export interface ClassroomVisit extends BaseActivity {
   date: string;
   teacher: string;
   subject: string;
 }
 
-/**
- * Other Activity type
- */
 export interface OtherActivity extends BaseActivity {
   date: string;
   activity: string;
 }
 
-/**
- * Signatures for the form
- */
 export interface Signatures {
   mentorTeacher: string;
   buildingPrincipal: string;
@@ -67,9 +44,7 @@ export interface Signatures {
   date: string;
 }
 
-/**
- * Main form data structure
- */
+// --- Main Data Structure (Mentee Specific) ---
 export interface FormData {
   inductee: string;
   building: string;
@@ -86,26 +61,45 @@ export interface FormData {
   signatures: Signatures;
 }
 
-/**
- * Verification fields configuration
- */
+// --- NEW: Interface for Dropdown Options ---
+export interface FormOptions {
+  mentors: string[];
+  buildings: string[];
+  assignments: string[];
+  schoolYears: string[];
+  // Add any other option lists needed
+}
 
-/**
- * User role types
- */
+// --- NEW: Interface for Editability Flags ---
+export interface Editability {
+  inductee: boolean;
+  building: boolean;
+  assignment: boolean;
+  mentorTeacher: boolean;
+  schoolYearOne: boolean;
+  schoolYearTwo: boolean;
+  summerAcademy: boolean;
+  inductionSeminars: boolean;
+  mentorMeetings: boolean;
+  teamMeetings: boolean;
+  classroomVisits: boolean;
+  otherActivities: boolean;
+  signatures: boolean;
+  // Add other fields as needed
+}
+
+// --- User Role Type ---
 export type UserRole = 'admin' | 'mentor' | 'mentee';
 
-/**
- * Combined configuration for the form
- */
+// --- UPDATED: Combined Configuration Interface ---
 export interface FormConfig {
   data: FormData;
   userRole: UserRole;
+  options: FormOptions;
+  editable: Editability;
 }
 
-/**
- * Create a new empty activity with initial values
- */
+// --- Helper Function ---
 function createEmptyActivity<T extends BaseActivity>(additionalProps: Omit<T, keyof BaseActivity>): T {
   return {
     dateYearOne: "",
@@ -115,7 +109,14 @@ function createEmptyActivity<T extends BaseActivity>(additionalProps: Omit<T, ke
   } as T;
 }
 
-// Initial form data with properly typed empty activities
+// --- Initial Values ---
+const initialFormOptions: FormOptions = {
+    mentors: [],
+    buildings: [],
+    assignments: [],
+    schoolYears: [],
+};
+
 const initialFormData: FormData = {
   inductee: "",
   building: "",
@@ -155,23 +156,36 @@ const initialFormData: FormData = {
   }
 };
 
-// Default verification config - all verification fields are non-editable for teachers
-
-// Initial editability state with verification config
-
-// Initial form configuration
-const initialFormConfig: FormConfig = {
-  data: initialFormData,
-  userRole: 'mentee'
+const initialEditability: Editability = {
+  inductee: false, 
+  building: true,
+  assignment: true,
+  mentorTeacher: true,
+  schoolYearOne: true,
+  schoolYearTwo: true,
+  summerAcademy: true,
+  inductionSeminars: true,
+  mentorMeetings: true,
+  teamMeetings: true,
+  classroomVisits: true,
+  otherActivities: true,
+  signatures: true
 };
 
-// Create the stores with proper types
+const initialFormConfig: FormConfig = {
+  data: initialFormData,
+  userRole: 'mentee', 
+  options: initialFormOptions, 
+  editable: initialEditability 
+};
+
+// --- Stores ---
 export const formConfigStore: Writable<FormConfig> = writable<FormConfig>(initialFormConfig);
 export const formStore: Writable<FormData> = writable<FormData>(initialFormData);
 
-/**
- * Type-safe helper to add a new activity to an array
- */
+// --- Action Functions ---
+
+// Helper to add activity
 function addActivity<T extends BaseActivity>(
   currentData: FormData, 
   activityType: keyof Pick<FormData, 'mentorMeetings' | 'teamMeetings' | 'classroomVisits' | 'otherActivities'>,
@@ -183,9 +197,7 @@ function addActivity<T extends BaseActivity>(
   };
 }
 
-/**
- * Type-safe helper to remove an activity from an array
- */
+// Helper to remove activity
 function removeActivity<T extends BaseActivity>(
   currentData: FormData,
   activityType: keyof Pick<FormData, 'mentorMeetings' | 'teamMeetings' | 'classroomVisits' | 'otherActivities'>,
@@ -197,9 +209,7 @@ function removeActivity<T extends BaseActivity>(
   };
 }
 
-/**
- * Add a new mentor meeting to the form
- */
+// Add Mentor Meeting
 export function addMentorMeeting(): void {
   formStore.update(data => {
     return addActivity<MentorMeeting>(
@@ -210,18 +220,14 @@ export function addMentorMeeting(): void {
   });
 }
 
-/**
- * Remove a mentor meeting from the form
- */
+// Remove Mentor Meeting
 export function removeMentorMeeting(index: number): void {
   formStore.update(data => {
     return removeActivity<MentorMeeting>(data, 'mentorMeetings', index);
   });
 }
 
-/**
- * Add a new team meeting to the form
- */
+// Add Team Meeting
 export function addTeamMeeting(): void {
   formStore.update(data => {
     return addActivity<TeamMeeting>(
@@ -232,18 +238,14 @@ export function addTeamMeeting(): void {
   });
 }
 
-/**
- * Remove a team meeting from the form
- */
+// Remove Team Meeting
 export function removeTeamMeeting(index: number): void {
   formStore.update(data => {
     return removeActivity<TeamMeeting>(data, 'teamMeetings', index);
   });
 }
 
-/**
- * Add a new classroom visit to the form
- */
+// Add Classroom Visit
 export function addClassroomVisit(): void {
   formStore.update(data => {
     return addActivity<ClassroomVisit>(
@@ -254,18 +256,14 @@ export function addClassroomVisit(): void {
   });
 }
 
-/**
- * Remove a classroom visit from the form
- */
+// Remove Classroom Visit
 export function removeClassroomVisit(index: number): void {
   formStore.update(data => {
     return removeActivity<ClassroomVisit>(data, 'classroomVisits', index);
   });
 }
 
-/**
- * Add a new other activity to the form
- */
+// Add Other Activity
 export function addOtherActivity(): void {
   formStore.update(data => {
     return addActivity<OtherActivity>(
@@ -276,87 +274,57 @@ export function addOtherActivity(): void {
   });
 }
 
-/**
- * Remove an other activity from the form
- */
+// Remove Other Activity
 export function removeOtherActivity(index: number): void {
   formStore.update(data => {
     return removeActivity<OtherActivity>(data, 'otherActivities', index);
   });
 }
 
-/**
- * Print the form
- */
+// Print Form
 export function printForm(): void {
   window.print();
 }
 
-/**
- * Save the form data
- */
-/**
- * Save the form data
- */
+// Save Form
 export function saveForm(): void {
   console.log('[SaveForm] Starting save process...');
-
-  // 1. Get current form data from the correct store
   const currentFormData = get(formStore); 
-
-  // Log for debugging (optional)
   console.log('[SaveForm] Current form data object:', currentFormData); 
-
-  // 2. Convert data to JSON string (no indentation for form value)
   const jsonString = JSON.stringify(currentFormData);
   console.log('[SaveForm] Form data as JSON string:', jsonString);
-
-  // 3. Find the hidden input element by ID
-  const inputElement = document.getElementById('json_clob');
-
+  const inputElement = document.getElementById('json_clob'); // Make sure 'json_clob' is correct ID
   if (inputElement && inputElement instanceof HTMLInputElement) {
     console.log('[SaveForm] Found input element #json_clob.');
-
-    // 4. Update the input's value
     inputElement.value = jsonString;
     console.log('[SaveForm] Updated value of #json_clob.');
-
-    // 5. Find the parent form of the input element
     const formElement = inputElement.closest('form');
-
     if (formElement && formElement instanceof HTMLFormElement) {
       console.log('[SaveForm] Found parent form. Submitting...');
-
-      // 6. Submit the form
       try {
         formElement.submit();
         console.log('[SaveForm] Form submitted.');
       } catch (error) {
         console.error('[SaveForm] Error submitting form:', error);
-        // Handle submission error (e.g., display message to user)
       }
     } else {
       console.error('[SaveForm] Could not find parent form for #json_clob.');
-      // Handle case where form is not found (e.g., display error)
     }
   } else {
     console.error('[SaveForm] Could not find input element with ID "json_clob" or it is not an HTMLInputElement.');
-    // Handle case where input is not found (e.g., display error)
   }
 }
 
-/**
- * Get verification config based on user role
- */
-
-/**
- * Update the section editability settings based on user role
- */
-
-/**
- * Set the entire form configuration
- */
+// Set Form Configuration
 export function setFormConfig(config: FormConfig, preserveVerifications = false): void {
-  formConfigStore.set(config);
-  formStore.set(config.data);
+  // Add checks if necessary to ensure config has data, options, editable, userRole
+  if (config && config.data && config.options && config.editable && config.userRole) {
+     formConfigStore.set(config);
+     formStore.set(config.data);
+  } else {
+   console.error("Invalid config passed to setFormConfig", config);
+   // Handle error appropriately - maybe set to initial state?
+   // formConfigStore.set(initialFormConfig);
+   // formStore.set(initialFormData);
+  }
 }
