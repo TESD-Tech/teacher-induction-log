@@ -44,11 +44,12 @@
 <button
   {type}
   class={`${variant} ${compact ? 'compact' : ''}`}
-  on:click={handleClick}
+  onclick={handleClick}
   data-testid="ps-button"
 >
   <slot></slot>
 </button>
+
 
 <style>
   button {
