@@ -1,120 +1,152 @@
 <svelte:options customElement="ps-date-input" />
 
 <script lang="ts">
-  // Value prop now consistently expects/provides YYYY-MM-DD format
-  export let value: string = ''; 
-  export let readonly: boolean = false;
-  export let name: string = '';
-  export let required: boolean = false;
-  
-  let isValid = true;
-  let errorMessage = '';
-  let touched = false;
+  // Svelte 5 Runes are compiler features, they are NOT imported.
+  // You use them directly within the script block.
 
-  // --- Removed formatDateForInput - No longer needed with direct binding ---
-  
+  // All props, including bindable ones, are declared within $props()
+  // Destructure the result of $props() to declare your props.
+  let {
+    readonly = false, // Regular prop with default value
+    name = '',        // Regular prop with default value
+    required = false, // Regular prop with default value
+    value = $bindable('') // Bindable prop with default value and $bindable()
+  } = $props<{ // Type annotation for the $props() declaration
+    readonly?: boolean; // Use ? if the prop is optional from the parent's perspective
+    name?: string;
+    required?: boolean;
+    value?: string; // The type of the bindable prop itself
+  }>();
+
+  // Internal state managed with $state
+  let isValid = $state(true); // Correct usage: $state is a syntax element
+  let errorMessage = $state(''); // Correct usage: $state is a syntax element
+  let touched = $state(false); // Correct usage: $state is a syntax element
+
   // Convert YYYY-MM-DD format to MM/DD/YYYY for display ONLY in readonly mode
+  // This can remain a function as it's called directly in the template
   function formatDateForDisplay(dateString: string): string {
     if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return ''; // Only format valid YYYY-MM-DD
-    
+
     try {
-      // Split and rearrange without relying on Date object parsing for simple format change
       const [year, month, day] = dateString.split('-');
-      // Basic validation of parts
-      if (parseInt(year) < 1000 || parseInt(month) < 1 || parseInt(month) > 12 || parseInt(day) < 1 || parseInt(day) > 31) {
-        return ''; // Return empty if parts seem invalid
+       // Basic validation of parts within formatting logic
+      if (parseInt(year) < 1000) {
+        errorMessage = 'Year must be 1000 or later'; // Sets state but not rendered in readonly
+        return '';
+      }
+      if (parseInt(month) < 1 || parseInt(month) > 12 || parseInt(day) < 1 || parseInt(day) > 31) {
+         errorMessage = 'Invalid date entered'; // Sets state but not rendered in readonly
+         return '';
       }
       return `${month}/${day}/${year}`;
     } catch (e) {
+      console.error('Error formatting date:', e);
+      errorMessage = 'Formatting error'; // Sets state but not rendered in readonly
       return ''; // Return empty on error
     }
   }
-  
-  // Validate the date (expects YYYY-MM-DD)
-  function validateDate(dateString: string): boolean {
-    if (!dateString && !required) return true;
-    if (!dateString && required) {
-      errorMessage = 'Date is required';
-      return false;
+
+  // Pure function to validate the date (expects YYYY-MM-DD)
+  // Returns an object with validity status and an optional message
+  function validateDate(dateString: string, isRequired: boolean): { valid: boolean, message: string } {
+    if (!dateString && !isRequired) return { valid: true, message: '' };
+    if (!dateString && isRequired) {
+      return { valid: false, message: 'Date is required' };
     }
-    
+
     // Check YYYY-MM-DD format specifically
     if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-      errorMessage = 'Invalid date format stored'; // Should not happen with native input
-      return false;
+      // Note: Native date input prevents this usually, but good for robustness
+      return { valid: false, message: 'Invalid date format stored' };
     }
 
     // Check if the date components form a valid date
     const [year, month, day] = dateString.split('-').map(p => parseInt(p, 10));
     const date = new Date(year, month - 1, day); // Month is 0-indexed
+
+    // Check for valid date components and if the Date object correctly parsed them
+    // (e.g., new Date(2023, 1, 30) returns March 2nd, which is not 2023-02-30)
     if (!(date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day)) {
-        errorMessage = 'Invalid date entered';
-        return false;
+        return { valid: false, message: 'Invalid date entered' };
     }
-    
-    // Optional: Check that date is not in the future
+
+    // Optional: Check that date is not in the future (if uncommented)
     // const currentDate = new Date();
-    // // Set hours to 0 to compare dates only
-    // currentDate.setHours(0, 0, 0, 0); 
+    // currentDate.setHours(0, 0, 0, 0);
     // if (date > currentDate) {
-    //   errorMessage = 'Date cannot be in the future';
-    //   return false;
+    //   return { valid: false, message: 'Date cannot be in the future' };
     // }
-    
-    errorMessage = ''; // Clear error message if valid
-    return true;
-  }
-  
-  // --- Removed handleDateChange - Using bind:value instead ---
 
-  // Handle blur event for validation visual feedback
-  function handleBlur() {
-    touched = true;
-    isValid = validateDate(value); // Validate the current bound value
+    return { valid: true, message: '' }; // Valid date
   }
 
-  // Recalculate validity when value changes externally or required status changes
-  $: {
-    // Avoid validating initial empty non-required value until touched
+  // Use an effect to react to changes in 'value', 'required', and 'touched'
+  // and perform validation, updating '$state' variables 'isValid' and 'errorMessage'.
+  $effect(() => { // Correct usage: $effect is a syntax element
+    // This effect runs when any state or prop it reads changes: value, required, touched.
+    // We apply validation logic based on the state.
+
+    // If not touched and not required, and value is empty, it's valid with no message.
+    // We avoid initial validation errors until the field is touched or required.
+    if (!touched && !required && value === '') {
+        isValid = true;
+        errorMessage = '';
+        return; // Stop here, no further validation needed in this state
+    }
+
+    // If touched, or if required and value is empty, run full validation.
     if (touched || (required && value === '')) {
-        isValid = validateDate(value);
+        const validationResult = validateDate(value, required);
+        isValid = validationResult.valid;
+        errorMessage = validationResult.message;
     } else if (!required && value === '') {
-        isValid = true; // Reset validity if not required and cleared before touch
+        // Explicitly reset validity if not required and cleared before touch (after potentially being invalid)
+        isValid = true;
         errorMessage = '';
     }
+  });
+
+
+  // Handle blur event - primarily sets the 'touched' state
+  function handleBlur() {
+    touched = true;
+    // The $effect will react to 'touched' becoming true and trigger validation
+    // if the conditions inside the effect are met (e.g., value is invalid or required empty).
   }
 
 </script>
 
 {#if readonly}
-  <div class="readonly-field">{formatDateForDisplay(value)}</div>
+  <!-- Added data-testid for easier selection in tests -->
+  <div class="readonly-field" data-testid="readonly-field">{formatDateForDisplay(value)}</div>
 {:else}
   <div class="date-input-container">
-    <input 
-      type="date" 
+    <input
+      type="date"
       {name}
-      bind:value={value}  
+      bind:value={value}
       on:blur={handleBlur}
       class:invalid={!isValid && touched}
-      aria-invalid={!isValid && touched}
+      aria-invalid={(!isValid && touched).toString()} 
       aria-required={required}
+      data-testid="date-input"
       class="date-input"
       required={required} />
-    {#if !isValid && touched}
+    {#if !isValid && touched} 
       <div class="error-message" role="alert">{errorMessage}</div>
     {/if}
   </div>
 {/if}
 
 <style>
-  /* Styles remain largely the same, adjusted class usage */
-  /* ... */
+  /* ... (CSS remains the same) ... */
   .date-input-container {
     position: relative;
     width: 100%;
     margin-bottom: 4px;
   }
-  
+
   .date-input {
     border: 1px solid var(--input-border, #ccc);
     border-radius: 4px;
@@ -137,7 +169,7 @@
     background-position: right 8px center;
     background-size: 16px;
   }
-  
+
   /* Consistent date-picker styling across browsers */
   input[type="date"]::-webkit-inner-spin-button,
   input[type="date"]::-webkit-calendar-picker-indicator {
@@ -150,18 +182,18 @@
     height: 100%;
     cursor: pointer;
   }
-  
+
   .date-input:focus {
     outline: none;
     border-color: var(--focus-color, #007bff);
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
   }
-  
+
   .date-input.invalid {
     border-color: #dc3545;
     background-color: rgba(220, 53, 69, 0.05);
   }
-  
+
   .readonly-field {
     background-color: #f8f9fa;
     display: flex;
@@ -172,23 +204,14 @@
     border: 1px solid #eee;
     width: 100%;
   }
-  
+
   .error-message {
     color: #dc3545;
     font-size: 0.8rem;
     margin-top: 4px;
     display: block;
-    /* Removed absolute positioning for simplicity, adjust if needed */
-    /* position: absolute; */
-    /* bottom: -20px; */
-    /* left: 0; */
-    /* z-index: 1; */
-    /* background-color: white; */
-    /* padding: 0 4px; */
-    /* border-radius: 2px; */
-    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
   }
-  
+
   /* Responsive styles */
   @media screen and (max-width: 480px) {
     .date-input {
@@ -196,7 +219,7 @@
       padding: 0.375rem 0.5rem;
     }
   }
-  
+
   /* Firefox specific styles */
   @-moz-document url-prefix() {
     .date-input {
@@ -204,13 +227,13 @@
       padding-bottom: 0.375rem;
     }
   }
-  
+
   /* Print styles */
   @media print {
     .error-message {
       display: none;
     }
-    
+
     .date-input, .readonly-field {
       border: none;
       height: auto;
