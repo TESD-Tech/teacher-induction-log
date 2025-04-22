@@ -36,6 +36,7 @@ describe('PsDateInput', () => {
     const { container } = render(PsDateInput);
     const input = container.querySelector('input[type="date"]');
     
+    if (!input) throw new Error('Input not found');
     await user.type(input, '2023-11-01');
     expect(input).toHaveValue('2023-11-01');
   });
@@ -49,7 +50,9 @@ describe('PsDateInput', () => {
     expect(input).toHaveValue(initialValue);
     
     const newValue = '2024-01-01';
+    if (!input) throw new Error('Input not found');
     await user.clear(input);
+    if (!input) throw new Error('Input not found');
     await user.type(input, newValue);
     expect(input).toHaveValue(newValue);
   });
@@ -166,6 +169,7 @@ describe('PsDateInput', () => {
     const input = container.querySelector('input[type="date"]');
     
     // Trigger validation
+    if (!input) throw new Error('Input not found');
     await user.click(input);
     await user.tab();
     
@@ -182,10 +186,124 @@ describe('PsDateInput', () => {
     const input = container.querySelector('input[type="date"]');
     
     // Test direct input 
+    if (!input) throw new Error('Input not found');
     await user.click(input);
+    if (!input) throw new Error('Input not found');
     await user.clear(input);
+    if (!input) throw new Error('Input not found');
     await user.type(input, '2023-07-15');
     
     expect(input).toHaveValue('2023-07-15');
+  });
+
+  // formatDateForDisplay tests
+  it('handles invalid date format in readonly mode', () => {
+    const { container } = render(PsDateInput, { 
+      readonly: true, 
+      value: 'invalid-date' 
+    });
+    const readonlyDiv = container.querySelector('.readonly-field');
+    expect(readonlyDiv).toBeInTheDocument();
+    expect(readonlyDiv).toHaveTextContent('');
+  });
+
+  it('formats valid date correctly in readonly mode', () => {
+    const { container } = render(PsDateInput, { 
+      readonly: true, 
+      value: '2023-10-26' 
+    });
+    const readonlyDiv = container.querySelector('.readonly-field');
+    expect(readonlyDiv).toBeInTheDocument();
+    expect(readonlyDiv).toHaveTextContent('10/26/2023');
+  });
+
+  it('handles empty date in readonly mode', () => {
+    const { container } = render(PsDateInput, { 
+      readonly: true, 
+      value: '' 
+    });
+    const readonlyDiv = container.querySelector('.readonly-field');
+    expect(readonlyDiv).toBeInTheDocument();
+    expect(readonlyDiv).toHaveTextContent('');
+  });
+
+  it('handles edge dates correctly in readonly mode', () => {
+    const { container } = render(PsDateInput, { 
+      readonly: true, 
+      value: '2020-02-29' 
+    });
+    const readonlyDiv = container.querySelector('.readonly-field');
+    expect(readonlyDiv).toBeInTheDocument();
+    expect(readonlyDiv).toHaveTextContent('02/29/2020');
+  });
+
+  it('handles invalid month/day combinations in readonly mode', () => {
+    const { container } = render(PsDateInput, { 
+      readonly: true, 
+      value: '2023-02-30' 
+    });
+
+  // validateDate function tests
+  it('validates correct date format', async () => {
+    const { container } = render(PsDateInput, { value: '2023-10-26' });
+    const input = container.querySelector('input[type="date"]');
+    if (!input) throw new Error('Input not found');
+    
+    await userEvent.click(input);
+    await userEvent.tab();
+    
+    await waitFor(() => {
+      const errorMessage = container.querySelector('.error-message');
+      expect(errorMessage).not.toBeInTheDocument();
+    });
+  });
+
+  it('shows error for invalid month/day combination', async () => {
+    const { container } = render(PsDateInput, { value: '2023-02-30' });
+    const input = container.querySelector('input[type="date"]');
+    if (!input) throw new Error('Input not found');
+    
+    await userEvent.click(input);
+    await userEvent.tab();
+    
+    await waitFor(() => {
+      const errorMessage = container.querySelector('.error-message');
+      expect(errorMessage).toBeInTheDocument();
+      expect(errorMessage).toHaveTextContent('Invalid date entered');
+    });
+  });
+
+  it('shows error for invalid date format', async () => {
+    const { container } = render(PsDateInput, { value: 'invalid-date' });
+    const input = container.querySelector('input[type="date"]');
+    if (!input) throw new Error('Input not found');
+    
+    await userEvent.click(input);
+    await userEvent.tab();
+    
+    await waitFor(() => {
+      const errorMessage = container.querySelector('.error-message');
+      expect(errorMessage).toBeInTheDocument();
+      expect(errorMessage).toHaveTextContent('Invalid date format stored');
+    });
+  });
+
+  it('shows error for required empty field after touch', async () => {
+    const { container } = render(PsDateInput, { required: true, value: '' });
+    const input = container.querySelector('input[type="date"]');
+    if (!input) throw new Error('Input not found');
+    
+    await userEvent.click(input);
+    await userEvent.tab();
+    
+    await waitFor(() => {
+      const errorMessage = container.querySelector('.error-message');
+      expect(errorMessage).toBeInTheDocument();
+      expect(errorMessage).toHaveTextContent('Date is required');
+    });
+  });
+    const readonlyDiv = container.querySelector('.readonly-field');
+    expect(readonlyDiv).toBeInTheDocument();
+    expect(readonlyDiv).toHaveTextContent('');
   });
 });

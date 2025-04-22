@@ -100,7 +100,7 @@ export interface FormConfig {
 }
 
 // --- Helper Function ---
-function createEmptyActivity<T extends BaseActivity>(additionalProps: Omit<T, keyof BaseActivity>): T {
+export function createEmptyActivity<T extends BaseActivity>(additionalProps: Omit<T, keyof BaseActivity>): T {
   return {
     dateYearOne: "",
     dateYearTwo: "",
@@ -292,7 +292,7 @@ export function saveForm(): void {
   const currentFormData = get(formStore); 
   console.log('[SaveForm] Current form data object:', currentFormData); 
   const jsonString = JSON.stringify(currentFormData);
-  console.log('[SaveForm] Form data as JSON string:', jsonString);
+  console.log('[SaveForm] Form data as JSON string:', [jsonString]);
   const inputElement = document.getElementById('json_clob'); // Make sure 'json_clob' is correct ID
   if (inputElement && inputElement instanceof HTMLInputElement) {
     console.log('[SaveForm] Found input element #json_clob.');
