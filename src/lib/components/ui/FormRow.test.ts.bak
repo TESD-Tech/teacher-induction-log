@@ -1,0 +1,61 @@
+import { render, screen } from '@testing-library/svelte';
+import { describe, it, expect } from 'vitest';
+import '@testing-library/jest-dom';
+import FormRow from './FormRow.svelte'; // Adjust path if necessary
+
+describe('FormRow Component', () => {
+  const defaultProps = { label: 'Test Label' };
+
+  it('renders with a label and slot content', () => {
+    // Render the custom element directly with slot content\n    // Pass props as attributes\n+    const { container } = render('<ps-form-row label=\"Test Label\"><span>Input Element</span></ps-form-row>');
+
+    // Check if label is rendered
+    expect(screen.getByText('Test Label')).toBeInTheDocument();
+    // Check if slot content is rendered (it should be a direct child of the custom element or within the slot container)
+    expect(screen.getByText('Input Element')).toBeInTheDocument();
+  });
+
+  it('renders the required indicator when required is true', () => {
+    render(FormRow, { props: { ...defaultProps, required: true } });
+
+    // Check if the required indicator is present\n    // We can look for the span with the specific class or just the text content if unique\n    expect(screen.getByText('*')).toBeInTheDocument();
+  });
+
+  it('does not render the required indicator when required is false', () => {
+    render(FormRow, { props: { ...defaultProps, required: false } });
+
+    // Check that the required indicator is not present
+    const requiredIndicator = screen.queryByText('*');
+    expect(requiredIndicator).not.toBeInTheDocument();
+  });
+
+  it('renders help text when provided', () => {
+    const helpText = 'This is helpful text.';
+    render(FormRow, { props: { ...defaultProps, helpText } });
+
+    expect(screen.getByText(helpText)).toBeInTheDocument();
+  });
+
+  it('renders error message when hasError is true and errorMessage is provided', () => {
+    const errorMessage = 'This is an error message.';
+    render(FormRow, { props: { ...defaultProps, hasError: true, errorMessage } });
+
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
+  });
+
+  it('does not render error message when hasError is false', () => {
+    const errorMessage = 'This is an error message.';
+    render(FormRow, { props: { ...defaultProps, hasError: false, errorMessage } });
+
+    expect(screen.queryByText(errorMessage)).not.toBeInTheDocument();
+  });
+
+  it('does not render error message when errorMessage is not provided', () => {
+    render(FormRow, { props: { ...defaultProps, hasError: true, errorMessage: '' } });
+
+    const errorMessageElement = screen.queryByRole('alert', { name: 'This is an error message.' }); // Adjust query based on actual element/role
+    // A more robust check might be needed depending on the final DOM structure for the error message.
+    // For now, checking that the specific error message text is not present is sufficient.
+    expect(screen.queryByText('This is an error message.')).not.toBeInTheDocument();
+  });
+});

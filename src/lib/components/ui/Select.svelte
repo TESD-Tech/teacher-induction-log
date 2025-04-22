@@ -11,7 +11,8 @@
   import { onMount } from 'svelte'; // Import onMount
 
   // --- Props ---
-  export let value: string | number | null | undefined = undefined; 
+  export let value: string | number | null | undefined = undefined;
+  $: boundValue = value ?? '';
   export let options: any[] = []; 
   export let placeholder: string = '-- Select --';
   export let id: string = '';
@@ -52,7 +53,7 @@
 <select
   {id}
   {name}
-  bind:value={value}
+  bind:value={boundValue}
   {required}
   aria-label={ariaLabel || placeholder}
   class="form-select {className}"

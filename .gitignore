@@ -27,3 +27,4 @@ dist-ssr
 coverage/
 # Temporary prompt files
 NEXT_PROMPT.md
+.aider*

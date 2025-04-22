@@ -128,7 +128,7 @@
       bind:value={value}
       on:blur={handleBlur}
       class:invalid={!isValid && touched}
-      aria-invalid={(!isValid && touched).toString()} 
+      aria-invalid={!isValid && touched}
       aria-required={required}
       data-testid="date-input"
       class="date-input"
