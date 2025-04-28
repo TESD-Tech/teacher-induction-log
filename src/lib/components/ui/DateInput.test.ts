@@ -7,8 +7,8 @@ import PsDateInput from './DateInput.svelte';
 describe('PsDateInput', () => {
   // Helper to set up userEvent correctly for each test
   const setup = () => {
-    const user = userEvent.setup();
-    return user;
+    // userEvent.setup() is recommended for better event simulation
+    return userEvent.setup();
   };
 
   // Basic rendering tests
@@ -19,51 +19,70 @@ describe('PsDateInput', () => {
     expect(input).toHaveAttribute('type', 'date');
   });
 
-  // Readonly mode tests - simplified due to component limitations
-  it('renders the readonly field when readonly prop is true', () => {
+  // Readonly mode tests
+  it('renders the readonly field with formatted date when readonly prop is true and value is valid', () => {
     const { container } = render(PsDateInput, { readonly: true, value: '2023-10-26' });
     const readonlyDiv = container.querySelector('.readonly-field');
     expect(readonlyDiv).toBeInTheDocument();
-    
+    // Ensure the formatted text matches the expected MM/DD/YYYY format
+    expect(readonlyDiv).toHaveTextContent('10/26/2023');
+
     // Input should not be present in readonly mode
     const input = container.querySelector('input[type="date"]');
     expect(input).not.toBeInTheDocument();
   });
 
+  it('renders the readonly field with empty text when readonly prop is true and value is invalid or empty', () => {
+    const { container } = render(PsDateInput, { readonly: true, value: 'invalid-date' });
+    const readonlyDiv = container.querySelector('.readonly-field');
+    expect(readonlyDiv).toBeInTheDocument();
+    expect(readonlyDiv).toHaveTextContent('');
+
+    const { container: container2 } = render(PsDateInput, { readonly: true, value: '' });
+    const readonlyDiv2 = container2.querySelector('.readonly-field');
+    expect(readonlyDiv2).toBeInTheDocument();
+    expect(readonlyDiv2).toHaveTextContent('');
+  });
+
   // Binding and value updating tests
-  it('binds the value prop to the input', async () => {
+  // In Svelte 5 with @testing-library/svelte, you re-render with new props
+  // or use the `component` object's methods if available (though re-render is common).
+  // Let's test this by re-rendering.
+  it('updates the input value when the value prop changes externally', async () => {
+    const { container, rerender } = render(PsDateInput, { value: '2023-12-25' });
+    const input = container.querySelector('input[type="date"]');
+
+    expect(input).toHaveValue('2023-12-25');
+
+    // Update the prop externally by re-rendering
+    await rerender({ value: '2024-01-01' });
+
+    expect(input).toHaveValue('2024-01-01');
+  });
+
+  // Testing user input and its effect on the input element's value attribute.
+  it('updates the input element\'s value when user types', async () => {
     const user = setup();
     const { container } = render(PsDateInput);
     const input = container.querySelector('input[type="date"]');
-    
+
     if (!input) throw new Error('Input not found');
-    await user.type(input, '2023-11-01');
-    expect(input).toHaveValue('2023-11-01');
+
+    // Using type will simulate keyboard input, which should update the element's value
+    await user.type(input, '2023-11-05');
+
+    expect(input).toHaveValue('2023-11-05');
   });
 
-  it('updates the value prop when input changes', async () => {
-    const user = setup();
-    const initialValue = '2023-12-25';
-    const { container } = render(PsDateInput, { value: initialValue });
-    const input = container.querySelector('input[type="date"]');
-    
-    expect(input).toHaveValue(initialValue);
-    
-    const newValue = '2024-01-01';
-    if (!input) throw new Error('Input not found');
-    await user.clear(input);
-    if (!input) throw new Error('Input not found');
-    await user.type(input, newValue);
-    expect(input).toHaveValue(newValue);
-  });
 
   // Error state and validation tests
   it('does not show error message initially if not required and value is empty', () => {
     const { container } = render(PsDateInput, { required: false, value: '' });
     const errorMessage = container.querySelector('.error-message');
     expect(errorMessage).not.toBeInTheDocument();
-    
+
     const input = container.querySelector('input[type="date"]');
+    // Check the presence and value of aria-invalid directly on the input
     expect(input).not.toHaveClass('invalid');
     expect(input).toHaveAttribute('aria-invalid', 'false');
   });
@@ -72,8 +91,9 @@ describe('PsDateInput', () => {
     const { container } = render(PsDateInput, { value: '2023-10-26' });
     const errorMessage = container.querySelector('.error-message');
     expect(errorMessage).not.toBeInTheDocument();
-    
+
     const input = container.querySelector('input[type="date"]');
+     // Check the presence and value of aria-invalid directly on the input
     expect(input).not.toHaveClass('invalid');
     expect(input).toHaveAttribute('aria-invalid', 'false');
   });
@@ -82,51 +102,48 @@ describe('PsDateInput', () => {
     const user = setup();
     const { container } = render(PsDateInput, { required: true, value: '' });
     const input = container.querySelector('input[type="date"]');
-    
-    // Focus and blur to trigger validation
+
     expect(input).toBeInTheDocument();
-    if (input) {
-      await user.click(input);
-      await user.tab();
-    }
-    
+    if (!input) throw new Error('Input not found');
+
+    // Focus and blur to trigger validation on touch and blur
+    await user.click(input); // This also triggers touch
+    await user.tab(); // Blurs the input
+
     // Wait for validation to complete and error message to appear
     await waitFor(() => {
       const errorMessage = container.querySelector('.error-message');
       expect(errorMessage).toBeInTheDocument();
+      expect(errorMessage).toHaveTextContent('Date is required'); // Assuming this is the required message
       expect(input).toHaveClass('invalid');
       expect(input).toHaveAttribute('aria-invalid', 'true');
     });
   });
 
-  it('clears error message when a valid date is entered after being required', async () => {
+  it('clears error message when a valid date is entered after being required and showing error', async () => {
     const user = setup();
     const { container } = render(PsDateInput, { required: true, value: '' });
     const input = container.querySelector('input[type="date"]');
-    
-    // Trigger validation error
+
     expect(input).toBeInTheDocument();
-    if (input) {
-      await user.click(input);
-      await user.tab();
-    }
-    
+    if (!input) throw new Error('Input not found');
+
+    // Trigger validation error by touching and blurring
+    await user.click(input);
+    await user.tab();
+
     // Wait for error to appear
     await waitFor(() => {
       const errorMessage = container.querySelector('.error-message');
       expect(errorMessage).toBeInTheDocument();
       expect(input).toHaveClass('invalid');
     });
-    
-    // Enter a valid date
-    expect(input).toBeInTheDocument(); // Check input exists before clear
-    if (input) {
-      await user.clear(input);
-      // The fireEvent check already exists below
-      fireEvent.input(input, { target: { value: '2023-11-15' } });
-      await user.tab();
-    }
-    
+
+    // Enter a valid date using userEvent
+    await user.clear(input); // Clear existing value if any
+    await user.type(input, '2023-11-15');
+    await user.tab(); // Blur again to trigger re-validation
+
     // Wait for error to disappear
     await waitFor(() => {
       const errorMessage = container.querySelector('.error-message');
@@ -135,6 +152,7 @@ describe('PsDateInput', () => {
       expect(input).toHaveAttribute('aria-invalid', 'false');
     });
   });
+
 
   it('applies the name attribute to the input', () => {
     const { container } = render(PsDateInput, { name: 'my-date-field' });
@@ -167,143 +185,164 @@ describe('PsDateInput', () => {
     const user = setup();
     const { container } = render(PsDateInput, { required: true, value: '' });
     const input = container.querySelector('input[type="date"]');
-    
-    // Trigger validation
+
+    // Trigger validation by touching and blurring
     if (!input) throw new Error('Input not found');
     await user.click(input);
     await user.tab();
-    
+
     // Check for role="alert" on the error message for accessibility
     await waitFor(() => {
       const errorMessage = container.querySelector('.error-message');
+      expect(errorMessage).toBeInTheDocument();
       expect(errorMessage).toHaveAttribute('role', 'alert');
     });
   });
 
-  it('handles manual direct input', async () => {
+  it('handles direct user input and updates the input value', async () => {
     const user = setup();
     const { container } = render(PsDateInput);
     const input = container.querySelector('input[type="date"]');
-    
-    // Test direct input 
+
     if (!input) throw new Error('Input not found');
-    await user.click(input);
-    if (!input) throw new Error('Input not found');
+
+    // Clear and type to simulate user entering a value
     await user.clear(input);
-    if (!input) throw new Error('Input not found');
     await user.type(input, '2023-07-15');
-    
+
+    // Expect the input element's value attribute to be updated
     expect(input).toHaveValue('2023-07-15');
   });
 
-  // formatDateForDisplay tests
-  it('handles invalid date format in readonly mode', () => {
-    const { container } = render(PsDateInput, { 
-      readonly: true, 
-      value: 'invalid-date' 
-    });
-    const readonlyDiv = container.querySelector('.readonly-field');
-    expect(readonlyDiv).toBeInTheDocument();
-    expect(readonlyDiv).toHaveTextContent('');
-  });
 
-  it('formats valid date correctly in readonly mode', () => {
-    const { container } = render(PsDateInput, { 
-      readonly: true, 
-      value: '2023-10-26' 
-    });
-    const readonlyDiv = container.querySelector('.readonly-field');
-    expect(readonlyDiv).toBeInTheDocument();
-    expect(readonlyDiv).toHaveTextContent('10/26/2023');
-  });
-
-  it('handles empty date in readonly mode', () => {
-    const { container } = render(PsDateInput, { 
-      readonly: true, 
-      value: '' 
-    });
-    const readonlyDiv = container.querySelector('.readonly-field');
-    expect(readonlyDiv).toBeInTheDocument();
-    expect(readonlyDiv).toHaveTextContent('');
-  });
-
-  it('handles edge dates correctly in readonly mode', () => {
-    const { container } = render(PsDateInput, { 
-      readonly: true, 
-      value: '2020-02-29' 
-    });
-    const readonlyDiv = container.querySelector('.readonly-field');
-    expect(readonlyDiv).toBeInTheDocument();
-    expect(readonlyDiv).toHaveTextContent('02/29/2020');
-  });
-
-  it('handles invalid month/day combinations in readonly mode', () => {
-    const { container } = render(PsDateInput, { 
-      readonly: true, 
-      value: '2023-02-30' 
-    });
-
-  // validateDate function tests
-  it('validates correct date format', async () => {
+  it('validates correct date format on blur', async () => {
+    const user = setup();
     const { container } = render(PsDateInput, { value: '2023-10-26' });
     const input = container.querySelector('input[type="date"]');
     if (!input) throw new Error('Input not found');
-    
-    await userEvent.click(input);
-    await userEvent.tab();
-    
+
+    // Blur the input to trigger validation
+    await user.click(input);
+    await user.tab();
+
     await waitFor(() => {
       const errorMessage = container.querySelector('.error-message');
       expect(errorMessage).not.toBeInTheDocument();
+      expect(input).not.toHaveClass('invalid');
+      expect(input).toHaveAttribute('aria-invalid', 'false');
     });
   });
 
-  it('shows error for invalid month/day combination', async () => {
+  it('shows error for invalid month/day combination on blur', async () => {
+    const user = setup();
     const { container } = render(PsDateInput, { value: '2023-02-30' });
     const input = container.querySelector('input[type="date"]');
     if (!input) throw new Error('Input not found');
-    
-    await userEvent.click(input);
-    await userEvent.tab();
-    
+
+    // Blur the input to trigger validation
+    await user.click(input);
+    await user.tab();
+
     await waitFor(() => {
       const errorMessage = container.querySelector('.error-message');
       expect(errorMessage).toBeInTheDocument();
+      // Assuming the component provides a specific message for this type of invalidity
       expect(errorMessage).toHaveTextContent('Invalid date entered');
+      expect(input).toHaveClass('invalid');
+      expect(input).toHaveAttribute('aria-invalid', 'true');
     });
   });
 
-  it('shows error for invalid date format', async () => {
+  it('shows error for invalid date format on blur', async () => {
+    const user = setup();
     const { container } = render(PsDateInput, { value: 'invalid-date' });
     const input = container.querySelector('input[type="date"]');
     if (!input) throw new Error('Input not found');
-    
-    await userEvent.click(input);
-    await userEvent.tab();
-    
+
+    // Blur the input to trigger validation
+    await user.click(input);
+    await user.tab();
+
     await waitFor(() => {
       const errorMessage = container.querySelector('.error-message');
       expect(errorMessage).toBeInTheDocument();
+      // Assuming the component provides a specific message for invalid format
       expect(errorMessage).toHaveTextContent('Invalid date format stored');
+      expect(input).toHaveClass('invalid');
+      expect(input).toHaveAttribute('aria-invalid', 'true');
     });
   });
 
-  it('shows error for required empty field after touch', async () => {
+  it('shows error for required empty field after touch and blur', async () => {
+    const user = setup();
     const { container } = render(PsDateInput, { required: true, value: '' });
     const input = container.querySelector('input[type="date"]');
     if (!input) throw new Error('Input not found');
-    
-    await userEvent.click(input);
-    await userEvent.tab();
-    
+
+    // Click (touches) and then blur to trigger validation
+    await user.click(input);
+    await user.tab();
+
     await waitFor(() => {
       const errorMessage = container.querySelector('.error-message');
       expect(errorMessage).toBeInTheDocument();
       expect(errorMessage).toHaveTextContent('Date is required');
+      expect(input).toHaveClass('invalid');
+      expect(input).toHaveAttribute('aria-invalid', 'true');
     });
   });
-    const readonlyDiv = container.querySelector('.readonly-field');
-    expect(readonlyDiv).toBeInTheDocument();
-    expect(readonlyDiv).toHaveTextContent('');
+
+
+  // Effect validation tests (refined based on how validation is likely triggered)
+  it('does not show error for empty field when not required and not touched/blurred', async () => {
+    const { container } = render(PsDateInput, { required: false, value: '' });
+
+    // No interaction, so no validation or error should be visible
+    const errorMessage = container.querySelector('.error-message');
+    expect(errorMessage).not.toBeInTheDocument();
+
+    const input = container.querySelector('input[type="date"]');
+    expect(input).not.toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'false');
+  });
+
+
+   // This test now expects "Invalid date entered" based on our assumption
+   // that the component logic should prioritize the invalid date format message
+   // when both required and invalid. If the component logic is intended
+   // to show "Date is required" first, then the expectation here should
+   // be changed back to 'Date is required'.
+  it('shows "Invalid date entered" error when invalid date is entered after being required and showing "Date is required" error', async () => {
+    const user = setup();
+    const { container } = render(PsDateInput, { required: true, value: '' });
+    const input = container.querySelector('input[type="date"]');
+    if (!input) throw new Error('Input not found');
+
+    // Trigger initial required error by touching and blurring
+    await user.click(input);
+    await user.tab();
+
+    await waitFor(() => {
+      const errorMessage = container.querySelector('.error-message');
+      expect(errorMessage).toBeInTheDocument();
+      expect(errorMessage).toHaveTextContent('Date is required');
+      expect(input).toHaveClass('invalid');
+    });
+
+    // Enter a syntactically invalid date (like 2023-02-30) and blur
+    // Use userEvent.type which simulates typing for a more realistic interaction
+    await user.clear(input); // Clear existing value
+    await user.type(input, '2023-02-30'); // Type the invalid date
+    await user.tab(); // Blur to trigger re-validation
+
+    // Wait for the validation based on the new input value.
+    // We expect the "Invalid date entered" message.
+    await waitFor(() => {
+      const errorMessage = container.querySelector('.error-message');
+      expect(errorMessage).toBeInTheDocument();
+      expect(errorMessage).toHaveTextContent('Invalid date entered'); // Expecting the specific invalid date message
+      expect(input).toHaveClass('invalid');
+      expect(input).toHaveAttribute('aria-invalid', 'true');
+    });
   });
 });

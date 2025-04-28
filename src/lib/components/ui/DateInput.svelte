@@ -20,7 +20,7 @@
 
   // Internal state managed with $state
   let isValid = $state(true); // Correct usage: $state is a syntax element
-  let errorMessage = $state(''); // Correct usage: $state is a syntax element
+  let errorMessage = $state('');; // Correct usage: $state is a syntax element
   let touched = $state(false); // Correct usage: $state is a syntax element
 
   // Convert YYYY-MM-DD format to MM/DD/YYYY for display ONLY in readonly mode
@@ -31,18 +31,22 @@
     try {
       const [year, month, day] = dateString.split('-');
        // Basic validation of parts within formatting logic
-      if (parseInt(year) < 1000) {
-        errorMessage = 'Year must be 1000 or later'; // Sets state but not rendered in readonly
+      // Note: This validation here is primarily for formatting,
+      // the main validation for input is in validateDate and the effect.
+      if (parseInt(year, 10) < 1000) {
+        // Although this sets errorMessage, it won't be shown in readonly mode's div
+        // consider if you need separate state/handling for readonly display errors.
+        // For now, we just return empty string.
         return '';
       }
-      if (parseInt(month) < 1 || parseInt(month) > 12 || parseInt(day) < 1 || parseInt(day) > 31) {
-         errorMessage = 'Invalid date entered'; // Sets state but not rendered in readonly
+       if (parseInt(month, 10) < 1 || parseInt(month, 10) > 12 || parseInt(day, 10) < 1 || parseInt(day, 10) > 31) {
+         // Similarly, won't show error message in readonly, just return empty.
          return '';
       }
       return `${month}/${day}/${year}`;
     } catch (e) {
       console.error('Error formatting date:', e);
-      errorMessage = 'Formatting error'; // Sets state but not rendered in readonly
+      // Won't show error message in readonly, just return empty.
       return ''; // Return empty on error
     }
   }
@@ -50,32 +54,45 @@
   // Pure function to validate the date (expects YYYY-MM-DD)
   // Returns an object with validity status and an optional message
   function validateDate(dateString: string, isRequired: boolean): { valid: boolean, message: string } {
-    if (!dateString && !isRequired) return { valid: true, message: '' };
+    // If a value exists, validate its format and date components first
+    if (dateString) {
+      // Check YYYY-MM-DD format specifically
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        // This handles cases like "invalid-date"
+        return { valid: false, message: 'Invalid date format stored' };
+      }
+
+      const [year, month, day] = dateString.split('-').map(p => parseInt(p, 10));
+
+      // Check for valid number parsing and ranges before creating Date object
+      if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 12 || day < 1 || day > 31) {
+           return { valid: false, message: 'Invalid date entered' };
+      }
+
+      const date = new Date(year, month - 1, day); // Month is 0-indexed
+
+      // Check that the Date object's components match the input components
+      if (!(date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day)) {
+          return { valid: false, message: 'Invalid date entered' };
+      }
+    }
+
+    // Handle the case where the field is required but empty
     if (!dateString && isRequired) {
       return { valid: false, message: 'Date is required' };
     }
 
-    // Check YYYY-MM-DD format specifically
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-      // Note: Native date input prevents this usually, but good for robustness
-      return { valid: false, message: 'Invalid date format stored' };
+    // If the field is empty and not required, it's valid
+    if (!dateString && !isRequired) {
+        return { valid: true, message: '' };
     }
 
-    // Check if the date components form a valid date
-    const [year, month, day] = dateString.split('-').map(p => parseInt(p, 10));
-    const date = new Date(year, month - 1, day); // Month is 0-indexed
-
-    // Check for valid date components and if the Date object correctly parsed them
-    // (e.g., new Date(2023, 1, 30) returns March 2nd, which is not 2023-02-30)
-    if (!(date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day)) {
-        return { valid: false, message: 'Invalid date entered' };
-    }
 
     // Optional: Check that date is not in the future (if uncommented)
     // const currentDate = new Date();
     // currentDate.setHours(0, 0, 0, 0);
     // if (date > currentDate) {
-    //   return { valid: false, message: 'Date cannot be in the future' };
+    //   return { valid: false, message: 'Date cannot be in the future' } ;
     // }
 
     return { valid: true, message: '' }; // Valid date
@@ -83,32 +100,24 @@
 
   // Use an effect to react to changes in 'value', 'required', and 'touched'
   // and perform validation, updating '$state' variables 'isValid' and 'errorMessage'.
-  $effect(() => { // Correct usage: $effect is a syntax element
-    // This effect runs when any state or prop it reads changes: value, required, touched.
-    // We apply validation logic based on the state.
+  $effect(() => {
+  // Always perform the validation to get the true validity status and potential message
+  const validationResult = validateDate(value, required);
+  isValid = validationResult.valid;
 
-    // If not touched and not required, and value is empty, it's valid with no message.
-    // We avoid initial validation errors until the field is touched or required.
-    if (!touched && !required && value === '') {
-        isValid = true;
-        errorMessage = '';
-        return; // Stop here, no further validation needed in this state
-    }
-
-    // If touched, or if required and value is empty, run full validation.
-    if (touched || (required && value === '')) {
-        const validationResult = validateDate(value, required);
-        isValid = validationResult.valid;
-        errorMessage = validationResult.message;
-    } else if (!required && value === '') {
-        // Explicitly reset validity if not required and cleared before touch (after potentially being invalid)
-        isValid = true;
-        errorMessage = '';
-    }
-  });
+  // Update the *displayed* error message based on validity and touched state.
+  // The message text comes from the validation result.
+  if (!isValid && touched) {
+    errorMessage = validationResult.message;
+  } else {
+    // If valid, or not touched, clear the displayed error message.
+    errorMessage = '';
+  }
+});
 
 
-  // Handle blur event - primarily sets the 'touched' state
+  // Handle blur event - sets the 'touched' state, which triggers the $effect for validation.
+  // Changed from on:blur to onblur for Svelte 5 syntax
   function handleBlur() {
     touched = true;
     // The $effect will react to 'touched' becoming true and trigger validation
@@ -118,7 +127,6 @@
 </script>
 
 {#if readonly}
-  <!-- Added data-testid for easier selection in tests -->
   <div class="readonly-field" data-testid="readonly-field">{formatDateForDisplay(value)}</div>
 {:else}
   <div class="date-input-container">
@@ -126,14 +134,14 @@
       type="date"
       {name}
       bind:value={value}
-      on:blur={handleBlur}
+      onblur={handleBlur}
       class:invalid={!isValid && touched}
       aria-invalid={!isValid && touched}
       aria-required={required}
       data-testid="date-input"
       class="date-input"
       required={required} />
-    {#if !isValid && touched} 
+    {#if !isValid && touched}
       <div class="error-message" role="alert">{errorMessage}</div>
     {/if}
   </div>
@@ -164,7 +172,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     padding-right: 2rem; /* Space for the calendar icon */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3Cline%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3Cline%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3Cline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     background-size: 16px;
