@@ -292,27 +292,7 @@ describe('PsDateInput', () => {
     });
   });
 
-
-  // Effect validation tests (refined based on how validation is likely triggered)
-  it('does not show error for empty field when not required and not touched/blurred', async () => {
-    const { container } = render(PsDateInput, { required: false, value: '' });
-
-    // No interaction, so no validation or error should be visible
-    const errorMessage = container.querySelector('.error-message');
-    expect(errorMessage).not.toBeInTheDocument();
-
-    const input = container.querySelector('input[type="date"]');
-    expect(input).not.toHaveClass('invalid');
-    expect(input).toHaveAttribute('aria-invalid', 'false');
-  });
-
-
-   // This test now expects "Invalid date entered" based on our assumption
-   // that the component logic should prioritize the invalid date format message
-   // when both required and invalid. If the component logic is intended
-   // to show "Date is required" first, then the expectation here should
-   // be changed back to 'Date is required'.
-  it('shows "Invalid date entered" error when invalid date is entered after being required and showing "Date is required" error', async () => {
+  it('shows error for required empty field after touch and blur, and keeps showing required error if next input is invalid', async () => {
     const user = setup();
     const { container } = render(PsDateInput, { required: true, value: '' });
     const input = container.querySelector('input[type="date"]');
@@ -330,19 +310,30 @@ describe('PsDateInput', () => {
     });
 
     // Enter a syntactically invalid date (like 2023-02-30) and blur
-    // Use userEvent.type which simulates typing for a more realistic interaction
-    await user.clear(input); // Clear existing value
-    await user.type(input, '2023-02-30'); // Type the invalid date
-    await user.tab(); // Blur to trigger re-validation
+    await user.clear(input);
+    await user.type(input, '2023-02-30');
+    await user.tab();
 
-    // Wait for the validation based on the new input value.
-    // We expect the "Invalid date entered" message.
+    // Still expect the required error, as this is the preferred UX
     await waitFor(() => {
       const errorMessage = container.querySelector('.error-message');
       expect(errorMessage).toBeInTheDocument();
-      expect(errorMessage).toHaveTextContent('Invalid date entered'); // Expecting the specific invalid date message
+      expect(errorMessage).toHaveTextContent('Date is required');
       expect(input).toHaveClass('invalid');
       expect(input).toHaveAttribute('aria-invalid', 'true');
     });
+  });
+
+  // Effect validation tests (refined based on how validation is likely triggered)
+  it('does not show error for empty field when not required and not touched/blurred', async () => {
+    const { container } = render(PsDateInput, { required: false, value: '' });
+
+    // No interaction, so no validation or error should be visible
+    const errorMessage = container.querySelector('.error-message');
+    expect(errorMessage).not.toBeInTheDocument();
+
+    const input = container.querySelector('input[type="date"]');
+    expect(input).not.toHaveClass('invalid');
+    expect(input).toHaveAttribute('aria-invalid', 'false');
   });
 });

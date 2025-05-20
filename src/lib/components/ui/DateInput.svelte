@@ -4,6 +4,11 @@
   // Svelte 5 Runes are compiler features, they are NOT imported.
   // You use them directly within the script block.
 
+  // Svelte 5 runes for state and bindable props
+  let isValid = $state(true);
+  let errorMessage = $state('');
+  let touched = $state(false);
+
   // All props, including bindable ones, are declared within $props()
   // Destructure the result of $props() to declare your props.
   let {
@@ -17,11 +22,6 @@
     required?: boolean;
     value?: string; // The type of the bindable prop itself
   }>();
-
-  // Internal state managed with $state
-  let isValid = $state(true); // Correct usage: $state is a syntax element
-  let errorMessage = $state('');; // Correct usage: $state is a syntax element
-  let touched = $state(false); // Correct usage: $state is a syntax element
 
   // Convert YYYY-MM-DD format to MM/DD/YYYY for display ONLY in readonly mode
   // This can remain a function as it's called directly in the template
@@ -98,31 +98,23 @@
     return { valid: true, message: '' }; // Valid date
   }
 
-  // Use an effect to react to changes in 'value', 'required', and 'touched'
-  // and perform validation, updating '$state' variables 'isValid' and 'errorMessage'.
-  $effect(() => {
-  // Always perform the validation to get the true validity status and potential message
-  const validationResult = validateDate(value, required);
-  isValid = validationResult.valid;
-
-  // Update the *displayed* error message based on validity and touched state.
-  // The message text comes from the validation result.
-  if (!isValid && touched) {
+  function validateAndSetState() {
+    const validationResult = validateDate(value, required);
+    isValid = validationResult.valid;
     errorMessage = validationResult.message;
-  } else {
-    // If valid, or not touched, clear the displayed error message.
-    errorMessage = '';
   }
-});
 
-
-  // Handle blur event - sets the 'touched' state, which triggers the $effect for validation.
-  // Changed from on:blur to onblur for Svelte 5 syntax
   function handleBlur() {
     touched = true;
-    // The $effect will react to 'touched' becoming true and trigger validation
-    // if the conditions inside the effect are met (e.g., value is invalid or required empty).
+    validateAndSetState();
   }
+
+  function handleInput() {
+    validateAndSetState();
+  }
+
+  // Initial validation (in case value is pre-filled)
+  validateAndSetState();
 
 </script>
 
@@ -135,12 +127,14 @@
       {name}
       bind:value={value}
       onblur={handleBlur}
+      oninput={handleInput}
       class:invalid={!isValid && touched}
       aria-invalid={!isValid && touched}
       aria-required={required}
       data-testid="date-input"
       class="date-input"
-      required={required} />
+      required={required}
+    />
     {#if !isValid && touched}
       <div class="error-message" role="alert">{errorMessage}</div>
     {/if}
