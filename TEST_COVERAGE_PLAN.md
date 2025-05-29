@@ -9,6 +9,7 @@ This plan outlines steps to increase test coverage to as close to 100% as possib
 - [ ] Only update `.svelte` files if absolutely necessary to enable testability.
 - [ ] After each test file is created or updated, run the test suite and resolve any issues.
 - [ ] After marking an item as complete, update this checklist to reflect the progress before moving to the next item.
+- [ ] Use Context7 for up-to-date documetation and examples regarding testing Svelte components.
 
 ## Coverage Steps
 
@@ -22,7 +23,7 @@ This plan outlines steps to increase test coverage to as close to 100% as possib
 ### 2. UI Components
 
 - [x] Ensure 100% coverage for `src/lib/components/ui/Button.svelte` (all variants, confirm logic, compact mode, slot rendering, event dispatch).
-- [ ] Ensure 100% coverage for `src/lib/components/ui/Notification.svelte` (all types, positions, durations, close/auto-close, transitions, accessibility).
+- [x] Ensure 100% coverage for `src/lib/components/ui/Notification.svelte` (all types, positions, durations, close/auto-close, transitions, accessibility).
 - [x] Ensure 100% coverage for `src/lib/components/ui/DateInput.svelte` (readonly, validation, error display, events, edge cases).
 - [x] Ensure 100% coverage for `src/lib/components/ui/Select.svelte` (all props, historical value, placeholder, disabled, events).
 - [x] Ensure 100% coverage for `src/lib/components/ui/FormRow.svelte` (label, help text, slot rendering, accessibility).

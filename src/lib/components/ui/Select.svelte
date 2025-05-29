@@ -12,7 +12,21 @@
 
   // --- Props ---
   export let value: string | number | null | undefined = undefined;
-  $: boundValue = value ?? '';
+  
+  // Use a local variable for the select binding
+  let boundValue = value ?? '';
+  
+  // Watch for external changes to value prop
+  $: if (value !== undefined && value !== null && boundValue !== value) {
+    boundValue = value;
+  }
+  
+  // Handle changes from user interaction
+  function handleChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    boundValue = target.value;
+    value = target.value === '' ? undefined : target.value;
+  }
   export let options: any[] = []; 
   export let placeholder: string = '-- Select --';
   export let id: string = '';
@@ -53,7 +67,8 @@
 <select
   {id}
   {name}
-  bind:value={boundValue}
+  value={boundValue}
+  on:change={handleChange}
   {required}
   aria-label={ariaLabel || placeholder}
   class="form-select {className}"

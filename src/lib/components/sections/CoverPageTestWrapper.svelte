@@ -12,4 +12,4 @@
   setContext('formConfigStore', formConfigStore);
 </script>
 
-<CoverPage {formStore} {formConfigStore} />
+<CoverPage />
