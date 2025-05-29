@@ -83,6 +83,12 @@ describe('Utility Functions', () => {
       const dateStr = new Date(2023, 0, 15).toISOString();
       expect(formatDate(dateStr)).toBe('01/15/2023');
     });
+
+    it('should handle thrown errors gracefully', () => {
+      // @ts-ignore
+      const input: any = {};
+      expect(formatDate(input)).toBe(input); // Should return the original object
+    });
   });
 
   describe('isValidDate', () => {

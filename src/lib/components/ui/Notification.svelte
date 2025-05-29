@@ -3,6 +3,9 @@
 <script lang="ts">
   import { fly } from 'svelte/transition';
   import { onMount, onDestroy } from 'svelte';
+
+  // Detect test environment
+  const isTest = typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 'test';
   
   export let message: string;
   export let type: 'success' | 'info' | 'warning' | 'error' = 'info';
@@ -10,7 +13,9 @@
   export let position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'top-right';
   
   let visible = true;
+  let show = true;
   let timer: ReturnType<typeof setTimeout>;
+  let notificationEl: HTMLDivElement | null = null;
   
   // Set up timer to hide notification after duration
   onMount(() => {
@@ -43,21 +48,30 @@
     'bottom-right': 'notification-bottom-right',
     'bottom-left': 'notification-bottom-left'
   }[position];
+
+  $: if (!visible && show && notificationEl) {
+    // Wait for outro transition to finish, then remove from DOM
+    // Svelte will call on:outroend, which sets show = false
+  }
 </script>
 
-{#if visible}
-  <div
-    class={`notification ${type} ${positionClass}`}
-    role="alert"
-    transition:fly={{ y: position.includes('top') ? -20 : 20, duration: 300 }}
-  >
-    <div class="notification-content">
-      <span class="message">{message}</span>
+{#if show}
+  {#if visible}
+    <div
+      bind:this={notificationEl}
+      class={`notification ${type} ${positionClass}`}
+      role="alert"
+      transition:fly|local={{ y: position.includes('top') ? -20 : 20, duration: isTest ? 0 : 300 }}
+      on:outroend={() => { show = false; }}
+    >
+      <div class="notification-content">
+        <span class="message">{message}</span>
+      </div>
+      <button class="close-button" on:click={close} aria-label="Close notification">
+        &times;
+      </button>
     </div>
-    <button class="close-button" on:click={close} aria-label="Close notification">
-      &times;
-    </button>
-  </div>
+  {/if}
 {/if}
 
 <style>
