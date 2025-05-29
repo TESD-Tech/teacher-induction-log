@@ -3,10 +3,11 @@
 <script lang="ts">
   export let headers: string[] = [];
   export let columnWidths: string[] = [];
+  export let emptyMessage: string = 'No activities to display.';
 </script>
 
 <div class="table-container">
-  <table>
+  <table class="activity-table">
     <thead>
       <tr>
         {#each headers as header, i}
@@ -18,6 +19,9 @@
       <slot></slot>
     </tbody>
   </table>
+  {#if !headers.length}
+    <div class="empty-message">{emptyMessage}</div>
+  {/if}
 </div>
 
 <style>

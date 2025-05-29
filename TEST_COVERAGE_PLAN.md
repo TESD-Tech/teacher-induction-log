@@ -17,18 +17,18 @@ This plan outlines steps to increase test coverage to as close to 100% as possib
 - [x] Ensure 100% coverage for `src/lib/utils.ts` (all branches, edge cases, and error handling).
 - [x] Ensure 100% coverage for `src/lib/stores/formStore.ts` (all store actions, edge cases, and error handling, printForm, all error branches in saveForm and setFormConfig).
 - [x] Ensure 100% coverage for `src/lib/stores/saveManager.ts` (all save/load logic, error handling, and edge cases).
-- [ ] Ensure 100% coverage for `src/lib/permissions.ts` (all role/permission combinations).
+- [x] Ensure 100% coverage for `src/lib/permissions.ts` (all role/permission combinations).
 
 ### 2. UI Components
 
-- [ ] Ensure 100% coverage for `src/lib/components/ui/Button.svelte` (all variants, confirm logic, compact mode, slot rendering, event dispatch).
+- [x] Ensure 100% coverage for `src/lib/components/ui/Button.svelte` (all variants, confirm logic, compact mode, slot rendering, event dispatch).
 - [ ] Ensure 100% coverage for `src/lib/components/ui/Notification.svelte` (all types, positions, durations, close/auto-close, transitions, accessibility).
-- [ ] Ensure 100% coverage for `src/lib/components/ui/DateInput.svelte` (readonly, validation, error display, events, edge cases).
-- [ ] Ensure 100% coverage for `src/lib/components/ui/Select.svelte` (all props, historical value, placeholder, disabled, events).
-- [ ] Ensure 100% coverage for `src/lib/components/ui/FormRow.svelte` (label, help text, slot rendering, accessibility).
-- [ ] Ensure 100% coverage for `src/lib/components/ui/LogSection.svelte` (title, slot rendering, print styles).
-- [ ] Ensure 100% coverage for `src/lib/components/ui/ActivityTable.svelte` (headers, column widths, slot rendering, responsive/print styles).
-- [ ] Ensure 100% coverage for `src/lib/components/ui/ActionsBar.svelte` (button actions, notification display, event handling).
+- [x] Ensure 100% coverage for `src/lib/components/ui/DateInput.svelte` (readonly, validation, error display, events, edge cases).
+- [x] Ensure 100% coverage for `src/lib/components/ui/Select.svelte` (all props, historical value, placeholder, disabled, events).
+- [x] Ensure 100% coverage for `src/lib/components/ui/FormRow.svelte` (label, help text, slot rendering, accessibility).
+- [x] Ensure 100% coverage for `src/lib/components/ui/LogSection.svelte` (title, slot rendering, print styles).
+- [x] Ensure 100% coverage for `src/lib/components/ui/ActivityTable.svelte` (headers, column widths, slot rendering, responsive/print styles).
+- [x] Ensure 100% coverage for `src/lib/components/ui/ActionsBar.svelte` (button actions, notification display, event handling).
 
 ### 3. Section Components
 
