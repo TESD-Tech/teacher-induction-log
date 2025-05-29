@@ -11,15 +11,16 @@
     type = 'button',     // Regular prop with default value
     confirmMessage = 'Are you sure you want to delete this item?', // Regular prop with default value
     compact = false,     // Regular prop with default value
-    onclick = undefined  // Regular prop (function) with default value
+    onclick = undefined, // Regular prop (function) with default value
+    children            // Svelte 5 slot content
   } = $props<{ // Type annotation for the $props() declaration
     variant?: 'default' | 'add' | 'remove'; // Using ? for optionality allows omitting the prop
     type?: 'button' | 'submit' | 'reset';
     confirmMessage?: string;
     compact?: boolean;
     onclick?: ((event: MouseEvent) => void) | undefined; // Type for the function prop
+    children?: any;
   }>();
-
 
   // createEventDispatcher is not part of the rune system, remains the same
   const dispatch = createEventDispatcher();
@@ -47,7 +48,7 @@
   onclick={handleClick}
   data-testid="ps-button"
 >
-  <slot></slot>
+  {@render children?.()}
 </button>
 
 

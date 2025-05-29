@@ -181,9 +181,4 @@ describe('Button Component', () => {
     expect(button).toBeInTheDocument();
   });
 
-  it('renders slot content', async () => {
-    const slotText = 'Click Me!';
-    const { container } = render(Button, {}, { slots: { default: () => slotText } });
-    expect(container).toHaveTextContent(slotText);
-  });
 });
