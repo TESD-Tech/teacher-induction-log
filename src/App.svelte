@@ -7,10 +7,10 @@
   import './assets/global.css';
   import './assets/print.css';
   
-  // State variables
-  let config: FormConfig | undefined; // Allow undefined initially
-  let loading = true;
-  let error = false;
+  // State variables (now reactive)
+  let config: FormConfig | undefined = $state(undefined); // Allow undefined initially
+  let loading = $state(true);
+  let error = $state(false);
   
   // Determine the correct JSON endpoint based on the current URL
   function getConfigUrl(): string {
@@ -133,6 +133,14 @@
   onMount(() => {
     loadConfig();
   });
+  
+  // Svelte 5: Accept userType/user-type/user-role as a prop
+  let { userType, userRole, usertype, 'user-type': userTypeAttr, 'user-role': userRoleAttr } = $props();
+
+  // Compute the effective user type (reactive, Svelte 5 runes mode)
+  const effectiveUserType = $derived(
+    userType || usertype || userTypeAttr || userRole || userRoleAttr || config?.userRole || 'mentee'
+  );
 </script>
 
 <svelte:options customElement="teacher-induction-log-app" />
@@ -144,9 +152,9 @@
      <p style="color: red; text-align: center; padding: 1rem;">
       Error loading configuration. Displaying default/fallback data. Some options may be limited.
     </p>
-    <InductionLog /> 
+    <InductionLog userType={effectiveUserType} /> 
   {:else if config}
-    <InductionLog /> 
+    <InductionLog userType={effectiveUserType} /> 
   {:else}
      <p>Cannot display Induction Log.</p>
   {/if}

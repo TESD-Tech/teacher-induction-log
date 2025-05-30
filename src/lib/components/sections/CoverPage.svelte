@@ -13,6 +13,7 @@
   // Props for stores (for when passed as props in tests)
   export let formStore: Writable<FormData> | undefined = undefined;
   export let formConfigStore: Writable<FormConfig> | undefined = undefined;
+  export let userType: string | undefined = undefined;
 
   // Try to get stores from context first, then props, then fall back to defaults
   const contextFormStore = getContext<Writable<FormData>>('formStore');

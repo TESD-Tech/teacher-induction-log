@@ -11,21 +11,24 @@
   // Import section configurations
   import { sectionConfigs } from './config/sectionConfigs';
   // context7: All imports are explicit, and the #each block is keyed for best practice.
+
+  // Svelte 5: Accept userType as a prop
+  let { userType } = $props();
 </script>
 
-<div class="induction-log">
+<div class="induction-log" data-testid="induction-log">
   <ActionsBar />
   
   <div class="form-content">
     <div class="form-container">
-      <CoverPage />
+      <CoverPage userType={userType} />
       
       <div class="log-content">
         {#each sectionConfigs as sectionConfig (sectionConfig.id)}
-          <GenericSection config={sectionConfig} /> 
+          <GenericSection config={sectionConfig} userType={userType} /> 
         {/each}
-        <Signatures />
-        <VerificationNote />
+        <Signatures userType={userType} />
+        <VerificationNote userType={userType} />
       </div>
     </div>
   </div>

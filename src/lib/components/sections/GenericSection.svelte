@@ -30,9 +30,7 @@
   };
   
   // Get data from the store based on section config
-  $: sectionData = $formStore[config.dataKey] || [];
-  
-  // Check if a field is editable
+  $: sectionData = $formStore[config.dataKey as keyof typeof $formStore] || [];
   
   // Update verification column title to a shorter version
   $: modifiedHeaders = config.headers.map(header => 
@@ -44,7 +42,6 @@
   <ActivityTable 
     headers={modifiedHeaders} 
     columnWidths={config.columnWidths}
-    showActions={!!config.actions?.remove}
     sectionId={config.id}
   >
     {#each sectionData as item, i (i)}

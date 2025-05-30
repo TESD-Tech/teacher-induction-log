@@ -1,5 +1,9 @@
 <svelte:options customElement="ps-verification-note" />
 
+<script lang="ts">
+  export let userType: string | undefined = undefined;
+</script>
+
 <div class="verification-note">
   <p>On the date of each activity, this log must be initialed by the mentor teacher, principal or seminar coordinator.</p>
 </div>
