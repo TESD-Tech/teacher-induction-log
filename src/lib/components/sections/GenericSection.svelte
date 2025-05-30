@@ -44,11 +44,13 @@
   <ActivityTable 
     headers={modifiedHeaders} 
     columnWidths={config.columnWidths}
-    showActions={!!config.actions?.remove}>
-    {#each sectionData as item, i}
+    showActions={!!config.actions?.remove}
+    sectionId={config.id}
+  >
+    {#each sectionData as item, i (i)}
       <tr>
-        {#each config.fields as field}
-          <td class={`field-type-${field.type}`}>
+        {#each config.fields as field (field.key)}
+          <td class={`field-type-${field.type}`}> 
             {#if field.type === 'static'}
               <div class="static-field">{item[field.key]}</div>
             {:else if field.type === 'date'}
@@ -79,7 +81,6 @@
             {/if}
           </td>
         {/each}
-        
         {#if config.actions?.remove}
           <td class="actions-cell">
             <Button 
@@ -96,7 +97,6 @@
       </tr>
     {/each}
   </ActivityTable>
-  
   {#if config.actions?.add}
     <Button 
       variant="add" 

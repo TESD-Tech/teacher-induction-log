@@ -10,7 +10,7 @@
   
   // Import section configurations
   import { sectionConfigs } from './config/sectionConfigs';
-  
+  // context7: All imports are explicit, and the #each block is keyed for best practice.
 </script>
 
 <div class="induction-log">
@@ -21,7 +21,7 @@
       <CoverPage />
       
       <div class="log-content">
-        {#each sectionConfigs as sectionConfig}
+        {#each sectionConfigs as sectionConfig (sectionConfig.id)}
           <GenericSection config={sectionConfig} /> 
         {/each}
         <Signatures />
