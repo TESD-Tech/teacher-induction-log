@@ -1,5 +1,5 @@
 {
-  "userRole": "admin",
+  "userRole": "mentee",
   "editable": {
     "inductee": true,
     "building": true,
@@ -24,16 +24,29 @@
     }
   },
   "options":{
-    "mentors": [{"name": "Robert Johnson", "dcid": 1234}, {"name": "Patti Smith", "dcid": 4321}, {"name": "Ada Lovelace", "dcid": 1122}],
-    "buildings": [],
-    "assignments": [],
-    "schoolYears": []
+    "mentors": [{"name": "Robert Johnson", "dcid": "Robert Johnson"}, {"name": "Patti Smith", "dcid": "Patti Smith"}, {"name": "Ada Lovelace", "dcid": "Ada Lovelace"}],
+    "buildings": [
+      {"name": "Edison Elementary", "dcid": "Edison Elementary"},
+      {"name": "Lincoln High School", "dcid": "Lincoln High School"},
+      {"name": "Roosevelt Middle School", "dcid": "Roosevelt Middle School"}
+    ],
+    "assignments": [
+      {"name": "2nd Grade", "dcid": "2nd Grade"},
+      {"name": "3rd Grade", "dcid": "3rd Grade"},
+      {"name": "4th Grade", "dcid": "4th Grade"},
+      {"name": "5th Grade", "dcid": "5th Grade"}
+    ],
+    "schoolYears": [
+      {"name": "2024-2025", "dcid": "2024-2025"},
+      {"name": "2025-2026", "dcid": "2025-2026"},
+      {"name": "2026-2027", "dcid": "2026-2027"}
+    ]
   },
   "data": {
     "inductee": "Jane Smith",
     "building": "Edison Elementary",
     "assignment": "2nd Grade",
-    "mentorTeacher": "Robert Lovelace",
+    "mentorTeacher": "Robert Johnson",
     "schoolYearOne": "2024-2025",
     "schoolYearTwo": "2025-2026",
     "summerAcademy": [
