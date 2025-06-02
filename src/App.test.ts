@@ -77,11 +77,11 @@ describe('App.svelte', () => {
     });
     
     // Simulate custom element attribute
-    const { container } = render(App, { 
+    render(App, { 
       props: { 
-        userType: 'mentor', 
-        userRole: undefined, 
-        usertype: undefined 
+        userType: 'mentor',
+        userRole: undefined,
+        usertype: undefined
       } 
     });
     
@@ -89,7 +89,31 @@ describe('App.svelte', () => {
       expect(screen.getByTestId('induction-log')).toBeInTheDocument();
     }, { timeout: 3000 });
     
-    // Verify the mock was called with the right userType
-    expect(container.innerHTML).toContain('induction-log');
+    // Verify the correct userType is being displayed
+    expect(screen.getByText(/InductionLog Mock - userType: mentor/)).toBeInTheDocument();
+  });
+
+  it('falls back to config userRole when no userType prop provided', async () => {
+    const mockConfig = { 
+      userRole: 'admin', 
+      options: {}, 
+      editable: {}, 
+      data: {} 
+    };
+    
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockConfig
+    });
+    
+    // No userType prop provided - should use config.userRole
+    render(App);
+    
+    await waitFor(() => {
+      expect(screen.getByTestId('induction-log')).toBeInTheDocument();
+    }, { timeout: 3000 });
+    
+    // Verify the config userRole is being used
+    expect(screen.getByText(/InductionLog Mock - userType: admin/)).toBeInTheDocument();
   });
 });
