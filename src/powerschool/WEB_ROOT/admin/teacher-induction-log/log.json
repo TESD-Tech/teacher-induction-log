@@ -19,7 +19,7 @@
     "mentors": [],
     "buildings": [],
     "assignments": [],
-    "schoolYears": [],
+    "schoolYears": []
   },
   "data": ~[tlist_sql;
     SELECT json_string FROM U_TESD_Teacher_Induction_Log
