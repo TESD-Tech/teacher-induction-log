@@ -16,13 +16,55 @@
     "signatures": true
   },
   "options":{
-    "mentors": [],
-    "buildings": [],
+    "mentors": ~[tlist_sql;
+
+    SELECT JSON_ARRAYAGG(
+			JSON_OBJECT( * )
+			ORDER BY foo."name"
+			RETURNING CLOB
+		) obj
+	FROM (
+SELECT 
+DISTINCT teachers.FIRST_NAME || ' ' || teachers.last_name "name"
+	, teachers.FIRST_NAME || ' ' || teachers.last_name "dcid"
+FROM teachers
+WHERE ( teachers.SCHOOLID = ~(curschoolid) OR '~(curschoolid)' = '0' )
+	AND teachers.STATUS = 1
+	AND teachers.PTACCESS = 1
+) foo
+    
+    ;]~(json_string)[/tlist_sql],
+    "buildings": ~[tlist_sql;
+  
+    SELECT JSON_ARRAYAGG(
+    JSON_OBJECT( * )
+    ORDER BY foo."name"
+    RETURNING CLOB
+  ) obj
+FROM (
+SELECT schools.name "name"
+, schools.name "dcid"
+FROM schools
+WHERE (schools.SCHOOL_NUMBER BETWEEN 2000 AND 5000 OR schools.SCHOOL_NUMBER = 3)
+) foo;]~(json_string)[/tlist_sql],
     "assignments": [],
-    "schoolYears": []
+    "schoolYears": ~[tlist_sql;
+  
+    SELECT JSON_ARRAYAGG(
+    JSON_OBJECT( * )
+    ORDER BY foo."name" DESC
+    RETURNING CLOB
+  ) obj
+FROM (
+SELECT DISTINCT
+	terms.name "name"
+	, terms.name "dcid"
+FROM TERMS
+WHERE terms.ABBREVIATION LIKE '%-%'
+) foo;]~(json_string)[/tlist_sql]
   },
   "data": ~[tlist_sql;
-    SELECT json_string FROM U_TESD_Teacher_Induction_Log
+    SELECT json_clob FROM U_TESD_Teacher_Induction_Log
     WHERE U_TESD_Teacher_Induction_Log.usersdcid = ( SELECT dcid FROM users WHERE teachernumber = '~(teachernumber)' )
 ;]~(json_string)[/tlist_sql]
 }
