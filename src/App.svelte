@@ -180,9 +180,9 @@
      <p style="color: red; text-align: center; padding: 1rem;">
       Error loading configuration. Displaying default/fallback data. Some options may be limited.
     </p>
-    <InductionLog userType={effectiveUserType} /> 
+    <InductionLog userType={effectiveUserType()} /> 
   {:else if config}
-    <InductionLog userType={effectiveUserType} /> 
+    <InductionLog userType={effectiveUserType()} /> 
   {:else}
      <p>Cannot display Induction Log.</p>
   {/if}

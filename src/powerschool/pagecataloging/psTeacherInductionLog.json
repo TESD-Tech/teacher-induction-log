@@ -3,18 +3,10 @@
     {
       "htmlID": "navPsTeacherInductionLog",
       "title": "Teacher Induction Log",
-      "version": "25.06.04",
+      "version": "25.06.05",
       "districtLevelContext": 0,
       "pageURL": "/admin/faculty/teacher-induction-log.html?frn=~(teacherfrn)",
       "parentHTMLID": "navStaffStaffDetails"
-    },
-    {
-      "htmlID": "navPsMentorDashboard",
-      "title": "Mentor Dashboard",
-      "version": "25.06.04",
-      "districtLevelContext": 0,
-      "pageURL": "/teachers/mentor-dashboard/mentor-dashboard.html",
-      "parentHTMLID": "navTeachersHomeroom"
     }
   ]
 }
