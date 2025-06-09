@@ -12,14 +12,31 @@
   let loading = $state(true);
   let error = $state(false);
   
+  // Parse URL parameters for mentor view mode
+  function parseUrlParameters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+      menteeId: urlParams.get('mentee'),
+      viewMode: urlParams.get('view'),
+      frn: urlParams.get('frn')
+    };
+  }
+
   // Determine the correct JSON endpoint based on the current URL
   function getConfigUrl(): string {
     const pathname = window.location.pathname;
     const baseUrl = window.location.origin;
     const queryString = window.location.search;
+    const urlParams = parseUrlParameters();
     
     let configUrl = '';
-    if (pathname.includes('/admin/')) {
+    
+    // Check if this is mentor view mode
+    if (urlParams.menteeId && urlParams.viewMode === 'mentor') {
+      // Load mentee's data for mentor view
+      configUrl = `${baseUrl}/teachers/teacher-induction-log/logs/${urlParams.menteeId}.json`;
+      console.log(`[Mentor View] Loading mentee data for ID: ${urlParams.menteeId}`);
+    } else if (pathname.includes('/admin/')) {
       configUrl = `${baseUrl}/admin/teacher-induction-log/log.json`;
     } else if (pathname.includes('/teachers/')) {
       configUrl = `${baseUrl}/teachers/teacher-induction-log/log.json`;
@@ -29,9 +46,11 @@
       console.log(`[Dev Env] Using base URL: ${base}. Fetching from: ${configUrl}`);
     }
     
-    if (queryString) {
+    // Add query string if not in mentor view mode
+    if (!urlParams.menteeId && queryString) {
       configUrl += queryString;
     }
+    
     console.log('Config URL:', configUrl);
     return configUrl;
   }
@@ -138,9 +157,18 @@
   let { userType, userRole, usertype, 'user-type': userTypeAttr, 'user-role': userRoleAttr } = $props();
 
   // Compute the effective user type (reactive, Svelte 5 runes mode)
-  const effectiveUserType = $derived(
-    userType || usertype || userTypeAttr || userRole || userRoleAttr || config?.userRole || 'mentee'
-  );
+  const effectiveUserType = $derived(() => {
+    const urlParams = parseUrlParameters();
+    
+    // If in mentor view mode, override user type to mentor
+    if (urlParams.menteeId && urlParams.viewMode === 'mentor') {
+      console.log('[Mentor View] Setting user type to mentor');
+      return 'mentor';
+    }
+    
+    // Otherwise use provided or fallback user type
+    return userType || usertype || userTypeAttr || userRole || userRoleAttr || config?.userRole || 'mentee';
+  });
 </script>
 
 <svelte:options customElement="teacher-induction-log-app" />

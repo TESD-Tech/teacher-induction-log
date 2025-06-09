@@ -13,7 +13,18 @@
 
 ## Current Tasks
 
-### High Priority
+### High Priority - Mentor Workflow Implementation
+- [ ] **Create Mentor Dashboard HTML page** (`/teachers/mentor-dashboard/mentor-dashboard.html`)
+- [ ] **Create Mentor Dashboard Svelte component** for selecting mentees
+- [ ] **Update Page Cataloging** to include mentor dashboard navigation
+- [ ] **Implement Mentee Data Endpoint** for fetching mentor's assigned mentees
+- [ ] **Add Mentor View Mode** to existing teacher-induction-log page
+- [ ] **Update Custom Element** to handle mentor view parameters (mentee ID, view mode)
+- [ ] **Test Mentor Permissions** ensure mentors can only edit verification fields
+- [ ] **Create Mentor Navigation Flow** from dashboard → mentee log → back to dashboard
+- [ ] **PowerSchool Integration** for mentor-mentee relationships and data fetching
+
+### High Priority - General
 - [ ] Improve test coverage (current coverage: ~80.5% of statements, target: 90%)
 
 ### Medium Priority

@@ -1,0 +1,55 @@
+{
+  "mentorName": "Dr. Sarah Johnson",
+  "mentees": [
+    {
+      "id": "mentee001",
+      "name": "Emily Rodriguez",
+      "building": "Valley Forge Elementary",
+      "assignment": "3rd Grade",
+      "schoolYear": "2024-2025",
+      "logStatus": "incomplete",
+      "lastModified": "2025-06-08T14:30:00Z"
+    },
+    {
+      "id": "mentee002",
+      "name": "Michael Chen",
+      "building": "Conestoga High School",
+      "assignment": "Mathematics",
+      "schoolYear": "2024-2025",
+      "logStatus": "pending-review",
+      "lastModified": "2025-06-07T09:15:00Z"
+    },
+    {
+      "id": "mentee003",
+      "name": "Jessica Thompson",
+      "building": "Great Valley Middle School",
+      "assignment": "English Language Arts",
+      "schoolYear": "2024-2025",
+      "logStatus": "complete",
+      "lastModified": "2025-06-05T16:45:00Z"
+    },
+    {
+      "id": "mentee004",
+      "name": "David Park",
+      "building": "Valley Forge Elementary",
+      "assignment": "5th Grade",
+      "schoolYear": "2024-2025",
+      "logStatus": "incomplete",
+      "lastModified": "2025-06-09T11:20:00Z"
+    },
+    {
+      "id": "mentee005",
+      "name": "Amanda Wilson",
+      "building": "Hillside Elementary",
+      "assignment": "Special Education",
+      "schoolYear": "2024-2025",
+      "logStatus": "pending-review",
+      "lastModified": "2025-06-06T13:00:00Z"
+    }
+  ],
+  "summaryStats": {
+    "totalMentees": 5,
+    "completedLogs": 1,
+    "pendingReviews": 2
+  }
+}

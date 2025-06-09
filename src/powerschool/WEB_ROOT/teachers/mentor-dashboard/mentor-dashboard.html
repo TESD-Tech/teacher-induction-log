@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>T/E Tech - Mentor Dashboard</title>
+
+  <!-- required scripts -->
+  ~[wc:commonscripts]
+  <!-- Required style sheets: screen.css, and print.css -->
+  <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+  <link href="/images/css/print.css" rel="stylesheet" media="print">
+  <script src="/scripts/psQuery/psQuery.js"></script>
+
+</head>
+
+<body>
+  ~[wc:teachers_header_css]~[wc:teachers_navigation_css]
+  ~[SetPostValue:frn=204~[x:users_dcid]]
+  ~[wc:teachers_nav_css]
+
+  <!-- Start of mentor dashboard content -->
+  <mentor-dashboard-app id="mentor-dashboard-app"></mentor-dashboard-app>
+
+  <!-- Load the Svelte component -->
+  <script type="module">
+    // Import the custom element definition for mentor dashboard
+    import '/teacher-induction-log/mentor-dashboard.js';
+    
+    // Wait for the module to load and the DOM to be ready
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Mentor Dashboard initialized');
+    });
+  </script>
+
+  ~[wc:teachers_footer_nf_css]
+</body>
+
+</html>

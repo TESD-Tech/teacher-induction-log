@@ -7,6 +7,14 @@
       "districtLevelContext": 0,
       "pageURL": "/admin/faculty/teacher-induction-log.html?frn=~(teacherfrn)",
       "parentHTMLID": "navStaffStaffDetails"
+    },
+    {
+      "htmlID": "navPsMentorDashboard",
+      "title": "Mentor Dashboard",
+      "version": "25.06.03",
+      "districtLevelContext": 0,
+      "pageURL": "/teachers/mentor-dashboard/mentor-dashboard.html",
+      "parentHTMLID": "navTeachersHomeroom"
     }
   ]
 }

@@ -10,14 +10,38 @@
   
   // Import section configurations
   import { sectionConfigs } from './config/sectionConfigs';
+  
+  // Import form store to access mentee data
+  import { formStore } from './stores/formStore';
   // context7: All imports are explicit, and the #each block is keyed for best practice.
 
   // Svelte 5: Accept userType as a prop
   let { userType } = $props();
+  
+  // Check if we're in mentor view mode
+  const urlParams = new URLSearchParams(window.location.search);
+  const isMentorView = urlParams.get('view') === 'mentor';
+  const menteeId = urlParams.get('mentee');
+  
+  function backToDashboard() {
+    const baseUrl = window.location.origin;
+    window.location.href = `${baseUrl}/teacher-induction-log/teachers/mentor-dashboard/mentor-dashboard.html`;
+  }
 </script>
 
 <div class="induction-log" data-testid="induction-log">
   <ActionsBar />
+  
+  {#if isMentorView}
+    <div class="mentor-navigation">
+      <button type="button" class="back-to-dashboard" onclick={backToDashboard}>
+        ← Back to Mentor Dashboard
+      </button>
+      <div class="mentee-info">
+        Viewing log for mentee: {$formStore.inductee || menteeId}
+      </div>
+    </div>
+  {/if}
   
   <div class="form-content">
     <div class="form-container">
@@ -104,5 +128,36 @@
       padding: 10px;
       padding-top: 58px; /* Increased padding for the mobile header */
     }
+  }
+  
+  .mentor-navigation {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .back-to-dashboard {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  
+  .back-to-dashboard:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .mentee-info {
+    font-size: 14px;
+    opacity: 0.9;
   }
 </style>

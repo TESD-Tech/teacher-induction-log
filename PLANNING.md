@@ -177,6 +177,132 @@ The application is designed to integrate with PowerSchool through:
 4. Ensure configuration files are properly located and accessible
 
 ## Future Enhancements
+
+### Mentor Workflow Implementation Plan
+
+#### 1. **Mentor Dashboard System**
+Create a comprehensive dashboard for mentors to manage their assigned mentees:
+
+**1.1 Mentor Dashboard Page**
+- Create `/teachers/mentor-dashboard/mentor-dashboard.html`
+- Follow existing PowerSchool integration patterns from teacher-induction-log page
+- Include PowerSchool header, navigation, and footer components
+- Load mentor dashboard Svelte component
+
+**1.2 Mentor Dashboard Component**
+- Display list of assigned mentees with key information:
+  - Mentee name, building, assignment, school year
+  - Log completion status (incomplete, complete, pending review)
+  - Last modified date
+  - Quick action buttons (View Log, Send Message)
+- Implement responsive grid layout for mentee cards
+- Add filtering and sorting capabilities (by building, completion status, etc.)
+- Include summary statistics (total mentees, completed logs, pending reviews)
+
+**1.3 Data Integration**
+- Create endpoint `/teachers/mentor-dashboard/mentees.json` or server-side script
+- Fetch mentor-mentee relationships from PowerSchool database
+- Include mentee progress data and log status
+- Handle error states (no mentees assigned, server errors)
+
+#### 2. **Mentor View Mode Enhancement**
+
+**2.1 URL Parameter Handling**
+- Extend existing teacher-induction-log page to accept mentor view parameters:
+  - `?mentee={menteeId}&view=mentor`
+- Update custom element to detect and handle mentor view mode
+- Set appropriate data attributes for Svelte app configuration
+
+**2.2 Data Loading**
+- Modify config fetch logic to load mentee's data when in mentor view
+- Fetch from mentee-specific JSON endpoint: `/teachers/teacher-induction-log/logs/{menteeId}.json`
+- Maintain existing form store structure with mentee's data
+
+**2.3 Permission Enforcement**
+- Ensure mentor permissions are properly enforced (can only edit verification fields)
+- Update UI components to reflect mentor's limited editing capabilities
+- Add visual indicators showing mentor vs mentee editable fields
+
+#### 3. **Navigation Flow Enhancement**
+
+**3.1 Breadcrumb Navigation**
+- Add breadcrumb navigation: Dashboard → Mentee Log
+- Include "Back to Dashboard" button in mentee log view
+- Maintain context between dashboard and individual logs
+
+**3.2 PowerSchool Integration**
+- Update page cataloging (`psTeacherInductionLog.json`) to include mentor dashboard
+- Add mentor dashboard to PowerSchool navigation structure
+- Ensure proper role-based access control in PowerSchool
+
+#### 4. **UI/UX Improvements**
+
+**4.1 Visual Differentiation**
+- Add visual indicators when viewing in mentor mode
+- Show mentee information prominently (name, year, etc.)
+- Display read-only vs editable field indicators clearly
+
+**4.2 Mentor-Specific Features**
+- Add mentor comment/note sections for each activity
+- Include mentor verification timestamp tracking
+- Provide mentor-specific action buttons (Approve, Request Changes, etc.)
+
+#### 5. **Technical Implementation Details**
+
+**5.1 File Structure**
+```
+src/powerschool/WEB_ROOT/teachers/
+├── mentor-dashboard/
+│   ├── mentor-dashboard.html
+│   ├── mentees.json (or server-side script)
+│   └── assets/ (if needed)
+└── teacher-induction-log/
+    ├── teacher-induction-log.html (updated)
+    └── logs/{menteeId}.json (dynamic)
+```
+
+**5.2 Component Architecture**
+- Create `MentorDashboard.svelte` component
+- Extend existing `InductionLog.svelte` for mentor view mode
+- Update `custom-element.ts` to handle mentor view parameters
+- Modify form store to support mentee data loading
+
+**5.3 Permissions Integration**
+- Leverage existing `permissions.ts` system
+- Ensure `canEdit(role, sectionId, fieldKey)` works with mentor role
+- Test mentor permissions across all form sections
+
+#### 6. **Testing Strategy**
+
+**6.1 Unit Tests**
+- Test mentor dashboard component rendering
+- Test mentor view mode parameter handling
+- Test mentor permission enforcement
+
+**6.2 Integration Tests**
+- Test complete mentor workflow (dashboard → log → back)
+- Test data loading for mentor view mode
+- Test mentor-specific UI behaviors
+
+**6.3 User Acceptance Testing**
+- Test with actual mentors and mentees
+- Validate workflow efficiency and usability
+- Ensure PowerSchool integration works seamlessly
+
+#### 7. **Deployment Considerations**
+
+**7.1 PowerSchool Configuration**
+- Update page cataloging for mentor dashboard
+- Configure appropriate role-based access
+- Ensure database relationships for mentor-mentee assignments
+
+**7.2 Data Migration**
+- Plan for existing mentee logs to be accessible to mentors
+- Ensure backward compatibility during transition
+- Test data access patterns and performance
+
+### Other Future Enhancements
+
 1. Implement auto-save functionality (Completed: April 3, 2025)
 2. Add export capabilities (PDF, Excel)
 3. Create a dashboard for administrators to track multiple teachers
