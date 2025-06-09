@@ -3,7 +3,7 @@
     {
       "htmlID": "navPsTeacherInductionLog",
       "title": "Teacher Induction Log",
-      "version": "25.06.02",
+      "version": "25.06.03",
       "districtLevelContext": 0,
       "pageURL": "/admin/faculty/teacher-induction-log.html?frn=~(teacherfrn)",
       "parentHTMLID": "navStaffStaffDetails"
