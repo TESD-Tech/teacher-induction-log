@@ -1,170 +1,40 @@
 <!DOCTYPE html>
 <html>
 
-<!-- non framed -->
-
 <head>
   <title>T/E Tech - Teacher Induction Log</title>
+
+  <!-- required scripts -->
   ~[wc:commonscripts]
+  <!-- Required style sheets: screen.css, and print.css -->
   <link href="/images/css/screen.css" rel="stylesheet" media="screen">
   <link href="/images/css/print.css" rel="stylesheet" media="print">
+  <script src="/scripts/psQuery/psQuery.js"></script>
 
-  <style type="text/css">
-    .dfd {
-      max-width: 1400px;
-      width: 100%;
-    }
-
-    .component-example {
-      border: 1px solid #ccc;
-      padding: 20px;
-      margin: 15px 0;
-      background-color: #f9f9f9;
-      border-radius: 4px;
-    }
-
-    .code-block {
-      background-color: #f5f5f5;
-      padding: 15px;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      font-family: monospace;
-      white-space: pre-wrap;
-      margin: 10px 0;
-      overflow-x: auto;
-    }
-
-    .info-box {
-      background-color: #e3f2fd;
-      padding: 15px;
-      border-left: 4px solid #2196f3;
-      margin: 15px 0;
-    }
-
-    .warning-box {
-      background-color: #fff8e1;
-      padding: 15px;
-      border-left: 4px solid #ffc107;
-      margin: 15px 0;
-    }
-
-    .feature-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-      margin: 20px 0;
-    }
-
-    .feature-item {
-      background-color: #f5f5f5;
-      padding: 15px;
-      border-radius: 4px;
-      border-top: 3px solid #4CAF50;
-    }
-
-    .feature-item h4 {
-      margin-top: 0;
-      color: #2e7d32;
-    }
-
-    /* DEV TOOLBAR STYLES */
-    #dev-user-toolbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 9999;
-      background: #222;
-      color: #fff;
-      padding: 8px 16px;
-      display: flex;
-      align-items: center;
-      font-family: sans-serif;
-      font-size: 15px;
-      box-shadow: 0 2px 8px #0002;
-    }
-
-    #dev-user-toolbar span {
-      margin-right: 12px;
-    }
-
-    #dev-user-toolbar select {
-      margin-right: 12px;
-      font-size: 15px;
-    }
-  </style>
 </head>
 
 <body>
-  ~[wc:admin_header_frame_css]
-  <!-- breadcrumb start -->
-  <a href="/admin/home.html" target="_top">Start Page</a> &gt; <a href="/admin/tech" target="_top">System</a> &gt; T/E
-  Tech - Teacher Induction Log
-  <!-- breadcrumb end -->
-  ~[wc:admin_navigation_frame_css]
+  ~[wc:teachers_header_css]~[wc:teachers_navigation_css]
+  ~[SetPostValue:frn=204~[x:users_dcid]]
+  ~[wc:teachers_nav_css]
 
-  <!-- DEV TOOLBAR: Only show in pnpm dev (localhost or 127.0.0.1) -->
-  <script>
-    (function() {
-      const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      if (!isDev) return;
-      // Create toolbar
-      const toolbar = document.createElement('div');
-      toolbar.id = 'dev-user-toolbar';
-      toolbar.style.cssText = `
-        position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-        background: #222; color: #fff; padding: 8px 16px; display: flex; align-items: center;
-        font-family: sans-serif; font-size: 15px; box-shadow: 0 2px 8px #0002;
-      `;
-      toolbar.innerHTML = `
-        <span style="margin-right: 12px; font-weight: bold;">User Type:</span>
-        <select id="dev-user-type-select" style="margin-right: 12px; font-size: 15px;">
-          <option value="admin">Admin</option>
-          <option value="mentor">Mentor</option>
-          <option value="mentee">Mentee</option>
-        </select>
-        <span style="opacity:0.7;">(Development Only)</span>
-      `;
-      document.body.prepend(toolbar);
-      // Offset page content
-      document.body.style.paddingTop = '48px';
-      // Restore last selection
-      const select = document.getElementById('dev-user-type-select');
-      const last = localStorage.getItem('devUserType') || 'admin';
-      select.value = last;
-      // Set attribute on custom element
-      function updateUserType(val) {
-        const el = document.getElementById('induction-log-app') || document.querySelector('teacher-induction-log-app');
-        if (el) el.setAttribute('user-type', val);
-        localStorage.setItem('devUserType', val);
-      }
-      select.addEventListener('change', e => updateUserType(e.target.value));
-      // Initial set
-      updateUserType(select.value);
-    })();
-  </script>
-  <!-- END DEV TOOLBAR -->
-
-  <teacher-induction-log-app id="induction-log-app"></teacher-induction-log-app>
-
-  ~[if#directory.~[directory]=admin]
-			<form action="/admin/changesrecorded.white.html?frn=~(frn)" method="POST">
+  <!-- Start of shaded content table -->
+  <teacher-induction-log-app id="induction-log-app"></teacher-induction-log-app> ~[if#directory.~[directory]=admin]
+  <form action="/admin/changesrecorded.white.html?frn=~(frn)" method="POST">
 		[else#directory]
-			<form action="changesrecorded.white.html" method="POST">
+    <form action="/teachers/changesrecorded.white.html" method="POST">
 		[/if#directory]
-    <input type="hidden" name="[Users.U_TESD_Teacher_Induction_Log]json_string" value="" id="json_string" >
-    <input type="hidden" name="[Users.U_TESD_Teacher_Induction_Log]json_clob" value="" id="json_clob" >
-
-    ~[if#directory.~[directory]=teachers]
-      <input type="hidden" name="ac" value="webasmt">
+      <input type="hidden" name="[Users.U_TESD_Teacher_Induction_Log]json_string" value="" id="json_string">
+        <input type="hidden" name="[Users.U_TESD_Teacher_Induction_Log]json_clob" value="" id="json_clob"> ~[if#directory.~[directory]=teachers]
+          <input type="hidden" name="ac" value="webasmt">
     [else#directory]
-    <input type="hidden" name="ac" value="prim">
+            <input type="hidden" name="ac" value="prim">
     [/if#directory]
-  </form>
-						
+            </form>
 
-  <!-- Load the Svelte component -->
-  <script type="module">
+
+            <!-- Load the Svelte component -->
+            <script type="module">
     // Import the custom element definition
     import '/teacher-induction-log/app.js';
     
@@ -172,9 +42,9 @@
     document.addEventListener('DOMContentLoaded', () => {
       console.log('Teacher Induction Log initialized');
     });
-  </script>
+            </script>
 
-  ~[wc:admin_footer_frame_css]
+  ~[wc:teachers_footer_nf_css]
 </body>
 
 </html>
