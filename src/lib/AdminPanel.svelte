@@ -1,11 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { adminStore, adminActions, adminStats, filteredLogs, selectedLogs } from './stores/adminStore';
+  import { appStore, appActions, appStats, filteredLogs, selectedLogs } from './stores/appStore';
   import { settingsStore } from './stores/settingsStore';
   import AdminDashboard from './components/admin/AdminDashboard.svelte';
   import LogsTable from './components/admin/LogsTable.svelte';
   import SettingsModal from './components/admin/SettingsModalSimple.svelte';
   import Button from './components/ui/Button.svelte';
+  import ActionsBar from './components/ui/ActionsBar.svelte';
   
   // Carbon Icons
   import Settings from "carbon-icons-svelte/lib/Settings.svelte";
@@ -14,7 +15,7 @@
   import Close from "carbon-icons-svelte/lib/Close.svelte";
 
   // Get derived stores
-  const stats = adminStats;
+  const stats = appStats;
   const logs = filteredLogs;
   const selected = selectedLogs;
   const settings = settingsStore;
@@ -28,7 +29,7 @@
   // Load data on component mount
   onMount(() => {
     console.log('AdminPanel mounted, loading logs...');
-    adminActions.loadLogs();
+    appActions.loadLogs();
     
     // Set up auto-refresh if enabled
     setupAutoRefresh();
@@ -52,7 +53,7 @@
       const intervalMs = $settings.ui.autoRefreshInterval * 60 * 1000; // Convert minutes to ms
       autoRefreshTimer = setInterval(() => {
         console.log('Auto-refreshing admin data...');
-        adminActions.loadLogs();
+        appActions.loadLogs();
       }, intervalMs);
     }
   }
@@ -66,61 +67,26 @@
   function handleSearch(event: Event) {
     const target = event.target as HTMLInputElement;
     searchValue = target.value;
-    adminActions.setFilters({ search: searchValue });
+    appActions.setFilters({ search: searchValue });
   }
 
   // Handle clear all filters
   function handleClearFilters() {
     searchValue = '';
-    adminActions.clearFilters();
+    appActions.clearFilters();
   }
 
   // Handle refresh data
   function handleRefresh() {
-    adminActions.loadLogs();
+    appActions.loadLogs();
   }
 </script>
 
 <svelte:options customElement="teacher-induction-admin-app" />
+<ActionsBar {handleRefresh} />
 
 <div class="admin-panel" class:space-y-3={$settings.ui.compactView} class:space-y-6={!$settings.ui.compactView} data-testid="admin-panel">
-  <!-- Header with gradient background and improved styling -->
-  <div class="header-section">
-    <div class="header-container">
-      <div class="header-content">
-        <div class="header-left">
-          <div class="district-title">TREDYFFRIN/EASTTOWN SCHOOL DISTRICT</div>
-          <div class="separator">|</div>
-          <h1 class="app-title" 
-              class:text-xl={$settings.ui.compactView} 
-              class:text-2xl={!$settings.ui.compactView}>
-            Teacher Induction Log Administration
-          </h1>
-        </div>
-        <div class="header-actions">
-          <Button 
-            onclick={() => showSettings = true}
-            variant="default"
-            compact={true}
-          >
-            <span class="icon"><Settings size={16} /></span>
-            Settings
-          </Button>
-          <Button 
-            onclick={handleRefresh}
-            variant="default"
-            compact={true}
-            disabled={$adminStore.loading}
-          >
-            <span class="icon"><Renew size={16} /></span>
-            {$adminStore.loading ? 'Loading...' : 'Refresh'}
-          </Button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
+  <!-- ActionsBar now provides the header and actions -->
   <!-- Statistics Dashboard -->
   <div class="main-content">
     {#if $settings.sections.dashboard}
@@ -184,7 +150,7 @@
           <div class="bulk-info">
             <span class="selected-count">{$selected.length} selected</span>
             <Button 
-              onclick={adminActions.deselectAllLogs}
+              onclick={appActions.deselectAllLogs}
               variant="default"
               compact={true}
             >
@@ -200,13 +166,13 @@
     {/if}
 
     <!-- Error Display -->
-    {#if $adminStore.error}
+    {#if appActions.error}
       <div class="error-card" 
            class:compact={$settings.ui.compactView}>
         <div class="error-content">
           <div class="error-icon">❌</div>
           <div class="error-details">
-            <strong>Error:</strong> {$adminStore.error}
+            <strong>Error:</strong> {appActions.error}
           </div>
           <Button 
             onclick={handleRefresh}
@@ -221,17 +187,17 @@
 
     <!-- Main Content -->
     <div class="main-content-card">
-      {#if $adminStore.loading}
+      {#if appActions.loading}
         <div class="loading-state">
           <div class="loading-spinner"></div>
           <p class="loading-text">Loading teacher induction logs...</p>
         </div>
-      {:else if $logs.length === 0 && !$adminStore.error}
+      {:else if $logs.length === 0 && !appActions.error}
         <div class="empty-state">
           <div class="empty-icon">📋</div>
           <h3 class="empty-title">No logs found</h3>
           <p class="empty-description">No teacher induction logs match your current filters.</p>
-          {#if searchValue || $adminStore.filters.building.length > 0}
+          {#if searchValue || appActions.filters?.building?.length > 0}
             <Button 
               onclick={handleClearFilters} 
               variant="default"

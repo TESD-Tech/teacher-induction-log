@@ -2,7 +2,7 @@ import { writable, derived } from 'svelte/store';
 import type { FormData, JsonClobEntry, RawFormConfig } from './formStore';
 import { parseFormConfig } from './formStore';
 
-// Admin-specific interfaces
+// App-specific interfaces
 export interface ParsedLogEntry {
   id: string;
   data: FormData;
@@ -12,7 +12,7 @@ export interface ParsedLogEntry {
   missingVerifications: string[];
 }
 
-export interface AdminFilters {
+export interface AppFilters {
   building: string[];
   assignment: string[];
   schoolYear: string[];
@@ -24,17 +24,17 @@ export interface AdminFilters {
   };
 }
 
-export interface AdminState {
+export interface AppState {
   logs: ParsedLogEntry[];
   selectedLogIds: string[];
-  filters: AdminFilters;
+  filters: AppFilters;
   loading: boolean;
   error: string | null;
   rawConfig: RawFormConfig | null;
 }
 
 // Initial state
-const initialFilters: AdminFilters = {
+const initialFilters: AppFilters = {
   building: [],
   assignment: [],
   schoolYear: [],
@@ -46,7 +46,7 @@ const initialFilters: AdminFilters = {
   }
 };
 
-const initialState: AdminState = {
+const initialState: AppState = {
   logs: [],
   selectedLogIds: [],
   filters: initialFilters,
@@ -56,7 +56,7 @@ const initialState: AdminState = {
 };
 
 // Create stores
-export const adminStore = writable<AdminState>(initialState);
+export const appStore = writable<AppState>(initialState);
 
 // Helper functions
 function calculateCompletionStatus(data: FormData): 'complete' | 'pending' | 'incomplete' {
@@ -156,10 +156,10 @@ function parseLogEntry(jsonClob: JsonClobEntry, index: number): ParsedLogEntry {
 }
 
 // Actions
-export const adminActions = {
+export const appActions = {
   async loadLogs() {
-    console.log('adminActions.loadLogs() called');
-    adminStore.update(state => ({ ...state, loading: true, error: null }));
+    console.log('appActions.loadLogs() called');
+    appStore.update(state => ({ ...state, loading: true, error: null }));
     
     try {
       // For development, always use the simple path since Vite serves public files at root
@@ -179,7 +179,7 @@ export const adminActions = {
         }
       }
       
-      console.log('Loading admin logs from:', configUrl);
+      console.log('Loading app logs from:', configUrl);
       
       const response = await fetch(configUrl);
       if (!response.ok) {
@@ -207,7 +207,7 @@ export const adminActions = {
         logs = [singleLog];
       }
       
-      adminStore.update(state => ({
+      appStore.update(state => ({
         ...state,
         logs,
         rawConfig,
@@ -221,7 +221,7 @@ export const adminActions = {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       console.error('Error loading logs:', error);
       
-      adminStore.update(state => ({
+      appStore.update(state => ({
         ...state,
         loading: false,
         error: errorMessage
@@ -229,36 +229,36 @@ export const adminActions = {
     }
   },
   
-  setFilters(filters: Partial<AdminFilters>) {
-    adminStore.update(state => ({
+  setFilters(filters: Partial<AppFilters>) {
+    appStore.update(state => ({
       ...state,
       filters: { ...state.filters, ...filters }
     }));
   },
   
   clearFilters() {
-    adminStore.update(state => ({
+    appStore.update(state => ({
       ...state,
       filters: initialFilters
     }));
   },
   
   selectLog(logId: string) {
-    adminStore.update(state => ({
+    appStore.update(state => ({
       ...state,
       selectedLogIds: [...state.selectedLogIds, logId]
     }));
   },
   
   deselectLog(logId: string) {
-    adminStore.update(state => ({
+    appStore.update(state => ({
       ...state,
       selectedLogIds: state.selectedLogIds.filter(id => id !== logId)
     }));
   },
   
   toggleLogSelection(logId: string) {
-    adminStore.update(state => {
+    appStore.update(state => {
       const isSelected = state.selectedLogIds.includes(logId);
       return {
         ...state,
@@ -270,14 +270,14 @@ export const adminActions = {
   },
   
   selectAllLogs() {
-    adminStore.update(state => ({
+    appStore.update(state => ({
       ...state,
       selectedLogIds: state.logs.map(log => log.id)
     }));
   },
   
   deselectAllLogs() {
-    adminStore.update(state => ({
+    appStore.update(state => ({
       ...state,
       selectedLogIds: []
     }));
@@ -285,9 +285,9 @@ export const adminActions = {
 };
 
 // Derived stores for computed values
-export const filteredLogs = derived(adminStore, ($adminStore) => {
-  let filtered = $adminStore.logs;
-  const { filters } = $adminStore;
+export const filteredLogs = derived(appStore, ($appStore) => {
+  let filtered = $appStore.logs;
+  const { filters } = $appStore;
   
   // Apply search filter
   if (filters.search) {
@@ -330,8 +330,8 @@ export const filteredLogs = derived(adminStore, ($adminStore) => {
   return filtered;
 });
 
-export const adminStats = derived(adminStore, ($adminStore) => {
-  const { logs } = $adminStore;
+export const appStats = derived(appStore, ($appStore) => {
+  const { logs } = $appStore;
   
   const total = logs.length;
   const complete = logs.filter(log => log.completionStatus === 'complete').length;
@@ -352,8 +352,8 @@ export const adminStats = derived(adminStore, ($adminStore) => {
   };
 });
 
-export const selectedLogs = derived(adminStore, ($adminStore) => {
-  return $adminStore.logs.filter(log => 
-    $adminStore.selectedLogIds.includes(log.id)
+export const selectedLogs = derived(appStore, ($appStore) => {
+  return $appStore.logs.filter(log => 
+    $appStore.selectedLogIds.includes(log.id)
   );
 });

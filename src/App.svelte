@@ -6,6 +6,7 @@
   import type { FormConfig, RawFormConfig } from './lib/stores/formStore'; 
   import { setFormConfig } from './lib/stores/formStore';
   import { fetchWithUrlParams } from './lib/utils/urlParams';
+  import { isAdminView } from './lib/utils/nav';
   import './assets/global.css';
   import './assets/print.css';
   
@@ -22,18 +23,6 @@
       viewMode: urlParams.get('view'),
       frn: urlParams.get('frn')
     };
-  }
-
-  // Check if we should show admin panel based on URL
-  function isAdminView(): boolean {
-    const pathname = window.location.pathname;
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Check for admin in path or admin=true parameter
-    return pathname.includes('/admin') || 
-           pathname.includes('adminpanel') || 
-           urlParams.get('admin') === 'true' ||
-           urlParams.get('view') === 'admin';
   }
 
   // Determine the correct JSON endpoint based on the current URL

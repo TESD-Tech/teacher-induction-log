@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { adminStats } from '../../stores/adminStore';
+  import { appStats } from '../../stores/appStore';
   
   // Carbon Icons
   import Dashboard from "carbon-icons-svelte/lib/Dashboard.svelte";
@@ -10,7 +10,7 @@
   import View from "carbon-icons-svelte/lib/View.svelte";
 
   // Get the stats store
-  const stats = adminStats;
+  const stats = appStats;
 
   // Reactive calculations for display
   $: completionRateColor = $stats.completionRate >= 80 ? '#4CAF50' : 

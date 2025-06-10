@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { filteredLogs, adminActions, adminStore, type ParsedLogEntry } from '../../stores/adminStore';
+  import { filteredLogs, appActions, appStore, type ParsedLogEntry } from '../../stores/appStore';
   import { settingsStore } from '../../stores/settingsStore';
   import Button from '../ui/Button.svelte';
   import LogDetailsModal from './LogDetailsModal.svelte';
@@ -134,20 +134,20 @@
   
   // Selection handlers
   function handleRowSelect(logId: string) {
-    adminActions.toggleLogSelection(logId);
+    appActions.toggleLogSelection(logId);
   }
   
   function handleSelectAll() {
-    if ($adminStore.selectedLogIds.length === $logs.length) {
-      adminActions.deselectAllLogs();
+    if ($appStore.selectedLogIds.length === $logs.length) {
+      appActions.deselectAllLogs();
     } else {
-      adminActions.selectAllLogs();
+      appActions.selectAllLogs();
     }
   }
   
   // Check if all visible logs are selected
-  const allSelected = $derived($logs.length > 0 && $adminStore.selectedLogIds.length === $logs.length);
-  const someSelected = $derived($adminStore.selectedLogIds.length > 0 && $adminStore.selectedLogIds.length < $logs.length);
+  const allSelected = $derived($logs.length > 0 && $appStore.selectedLogIds.length === $logs.length);
+  const someSelected = $derived($appStore.selectedLogIds.length > 0 && $appStore.selectedLogIds.length < $logs.length);
   
   // Format date for display
   function formatDate(date: Date): string {
@@ -272,13 +272,13 @@
       <tbody>
         {#each sortedLogs as log (log.id)}
           <tr 
-            class="log-row {$adminStore.selectedLogIds.includes(log.id) ? 'selected' : ''}"
+            class="log-row {$appStore.selectedLogIds.includes(log.id) ? 'selected' : ''}"
             data-log-id={log.id}
           >
             <td class="select-cell">
               <input
                 type="checkbox"
-                checked={$adminStore.selectedLogIds.includes(log.id)}
+                checked={$appStore.selectedLogIds.includes(log.id)}
                 onchange={() => handleRowSelect(log.id)}
                 aria-label="Select {log.data.inductee || 'this log'}"
               />

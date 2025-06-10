@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ParsedLogEntry } from '../../stores/adminStore';
+  import type { ParsedLogEntry } from '../../stores/appStore';
   import Button from '../ui/Button.svelte';
 
   interface Props {

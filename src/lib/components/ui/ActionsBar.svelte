@@ -1,14 +1,27 @@
 <svelte:options customElement="ps-actions-bar" />
 
 <script lang="ts">
+  // Accept refresh handler from parent
+  export let handleRefresh: () => void;
+
   // Imports needed for button actions and notifications
   import { printForm, saveForm } from '../../stores/formStore';
+  import { appStore, appActions, appStats, filteredLogs, selectedLogs } from '../../stores/appStore';
+  import { isAdminView } from '../../utils/nav';
+
+
   import { manualSave } from '../../stores/saveManager'; // Note: initializeAutoSave might need to be called elsewhere if still used
   import { writable } from 'svelte/store';
   import Button from './Button.svelte';
   import Notification from './Notification.svelte';
   import Printer from "carbon-icons-svelte/lib/Printer.svelte";
   import Save from "carbon-icons-svelte/lib/Save.svelte";
+
+  // Carbon Icons
+  import Settings from "carbon-icons-svelte/lib/Settings.svelte";
+  import Renew from "carbon-icons-svelte/lib/Renew.svelte";
+  import Filter from "carbon-icons-svelte/lib/Filter.svelte";
+  import Close from "carbon-icons-svelte/lib/Close.svelte";
 
   // --- State for save notifications ---
   const showSaveNotification = writable(false);
@@ -62,12 +75,33 @@
       </div>
       
       <div class="action-buttons">
+        {#if isAdminView()}
+          <Button 
+              onclick={() => showSettings = true}
+              variant="default"
+              compact={true}
+            >
+            <span class="icon"><Settings size={16} /></span>
+            Settings
+          </Button>
+          <Button
+            onclick={handleRefresh}
+            variant="default"
+            compact={true}
+            disabled={$appStore.loading}
+          >
+            <span class="icon"><Renew size={16} /></span>
+            {$appStore.loading ? 'Loading...' : 'Refresh'}
+          </Button>
+        {:else}
         <Button on:click={printForm} variant="default" compact={true}>
           <span class="icon"><Printer size={16} /></span> Print Form
         </Button>
         <Button on:click={handleSave} variant="default" compact={true}>
           <span class="icon"><Save size={16} /></span> Save Form
         </Button>
+    {/if}
+
       </div>
     </div>
   </div>
