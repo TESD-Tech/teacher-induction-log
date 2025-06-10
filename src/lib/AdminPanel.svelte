@@ -6,6 +6,12 @@
   import LogsTable from './components/admin/LogsTable.svelte';
   import SettingsModal from './components/admin/SettingsModalSimple.svelte';
   import Button from './components/ui/Button.svelte';
+  
+  // Carbon Icons
+  import Settings from "carbon-icons-svelte/lib/Settings.svelte";
+  import Renew from "carbon-icons-svelte/lib/Renew.svelte";
+  import Filter from "carbon-icons-svelte/lib/Filter.svelte";
+  import Close from "carbon-icons-svelte/lib/Close.svelte";
 
   // Get derived stores
   const stats = adminStats;
@@ -96,7 +102,7 @@
             onclick={() => showSettings = true}
             class="action-button secondary"
           >
-            <span class="button-icon">⚙️</span>
+            <span class="button-icon"><Settings size={16} /></span>
             Settings
           </button>
           <button 
@@ -104,7 +110,7 @@
             class="action-button primary"
             disabled={$adminStore.loading}
           >
-            <span class="button-icon">{$adminStore.loading ? '⏳' : '🔄'}</span>
+            <span class="button-icon"><Renew size={16} /></span>
             {$adminStore.loading ? 'Loading...' : 'Refresh'}
           </button>
         </div>
@@ -139,7 +145,7 @@
               onclick={() => showFilters = !showFilters}
               class="filter-button"
             >
-              <span class="button-icon">🔍</span>
+              <span class="button-icon"><Filter size={16} /></span>
               {showFilters ? 'Hide Filters' : 'Show Filters'}
             </button>
             
@@ -147,7 +153,7 @@
               onclick={handleClearFilters}
               class="clear-button"
             >
-              <span class="button-icon">✨</span>
+              <span class="button-icon"><Close size={16} /></span>
               Clear All Filters
             </button>
           </div>
@@ -250,7 +256,7 @@
     padding: 0;
     min-height: 100vh;
     font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: linear-gradient(135deg, #fbca28 0%, #E99300 100%);
+    background-color: #fbca28;
     color: #333;
   }
 
@@ -262,7 +268,6 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   .header-container {
@@ -355,7 +360,13 @@
   }
 
   .button-icon {
-    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+  }
+  
+  .button-icon :global(svg) {
+    fill: currentColor;
   }
 
   /* Main Content Area */
@@ -371,10 +382,10 @@
   /* Content Cards */
   .content-card {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #ddd;
   }
 
   .content-card.compact {
@@ -383,10 +394,10 @@
 
   .main-content-card {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #ddd;
   }
 
   /* Search Section */
@@ -403,9 +414,9 @@
 
   .search-input {
     width: 100%;
-    padding: 0.875rem 1.25rem;
-    border: 2px solid #e1e5e9;
-    border-radius: 8px;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     font-size: 0.875rem;
     transition: all 0.2s ease;
     background: white;
@@ -413,8 +424,8 @@
 
   .search-input:focus {
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
   }
 
   .search-actions {
@@ -427,11 +438,11 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     background: white;
-    color: #4b5563;
+    color: #333;
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -439,9 +450,8 @@
   }
 
   .filter-button:hover, .clear-button:hover {
-    background: #f9fafb;
-    border-color: #9ca3af;
-    transform: translateY(-1px);
+    background: #f5f5f5;
+    border-color: #999;
   }
 
   /* Placeholder Content */
@@ -474,9 +484,9 @@
 
   /* Bulk Actions Bar */
   .bulk-actions-bar {
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    border: 2px solid #2196f3;
-    border-radius: 12px;
+    background: #e3f2fd;
+    border: 1px solid #2196f3;
+    border-radius: 4px;
     padding: 1rem 1.5rem;
   }
 
@@ -524,9 +534,9 @@
 
   /* Error Card */
   .error-card {
-    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-    border: 2px solid #f44336;
-    border-radius: 12px;
+    background: #ffebee;
+    border: 1px solid #f44336;
+    border-radius: 4px;
     padding: 1rem 1.5rem;
   }
 

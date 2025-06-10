@@ -134,7 +134,7 @@
       select.value = last;
       // Set attribute on custom element
       function updateUserType(val) {
-        const el = document.getElementById('induction-log-app') || document.querySelector('teacher-induction-log-app');
+        const el = document.getElementById('induction-admin-app') || document.querySelector('teacher-induction-admin-app');
         if (el) el.setAttribute('user-type', val);
         localStorage.setItem('devUserType', val);
       }
@@ -145,7 +145,7 @@
   </script>
   <!-- END DEV TOOLBAR -->
 
-  <teacher-induction-log-app id="induction-log-app"></teacher-induction-log-app>
+  <teacher-induction-admin-app id="induction-admin-app"></teacher-induction-admin-app>
 
   ~[if#directory.~[directory]=admin]
 			<form action="/admin/changesrecorded.white.html?frn=~(frn)" method="POST">
@@ -166,11 +166,14 @@
   <!-- Load the Svelte component -->
   <script type="module">
     // Import the custom element definition
-    import '/teacher-induction-log/app.js';
+    // In development, use the Vite dev server path
+    const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const scriptPath = isDev ? '/src/main.ts' : '/teacher-induction-log/app.js';
     
-    // Wait for the module to load and the DOM to be ready
-    document.addEventListener('DOMContentLoaded', () => {
+    import(scriptPath).then(() => {
       console.log('Teacher Induction Log initialized');
+    }).catch(error => {
+      console.error('Failed to load Teacher Induction Log:', error);
     });
   </script>
 

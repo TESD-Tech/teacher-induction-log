@@ -1,15 +1,26 @@
 <script lang="ts">
-  import { filteredLogs, adminActions, adminStore } from '../../stores/adminStore';
+  import { filteredLogs, adminActions, adminStore, type ParsedLogEntry } from '../../stores/adminStore';
   import { settingsStore } from '../../stores/settingsStore';
   import Button from '../ui/Button.svelte';
+  import LogDetailsModal from './LogDetailsModal.svelte';
+  
+  // Carbon Icons
+  import CheckmarkFilled from "carbon-icons-svelte/lib/CheckmarkFilled.svelte";
+  import Time from "carbon-icons-svelte/lib/Time.svelte";
+  import ErrorFilled from "carbon-icons-svelte/lib/ErrorFilled.svelte";
+  import Unknown from "carbon-icons-svelte/lib/Unknown.svelte";
   
   // Get the filtered logs store and settings
   const logs = filteredLogs;
-  const settings = settingsStore;
+    const settings = settingsStore;
   
   // Local state for sorting - initialize from settings
   let sortColumn = $state<string>($settings.table.defaultSort.column);
   let sortDirection = $state<'asc' | 'desc'>($settings.table.defaultSort.direction);
+  
+  // Modal state
+  let isModalOpen = $state(false);
+  let selectedLog = $state<ParsedLogEntry | null>(null);
   
   // Update sort from settings when they change
   $effect(() => {
@@ -36,16 +47,16 @@
     }
   }
   
-  function getStatusIcon(status: string): string {
+  function getStatusIcon(status: string): any {
     switch (status) {
       case 'complete':
-        return '✅';
+        return CheckmarkFilled;
       case 'pending':
-        return '⏳';
+        return Time;
       case 'incomplete':
-        return '❌';
+        return ErrorFilled;
       default:
-        return '❓';
+        return Unknown;
     }
   }
   
@@ -148,9 +159,17 @@
   }
   
   // View log details (placeholder for Phase 2)
-  function viewLogDetails(logId: string) {
-    console.log('View log details:', logId);
-    // TODO: Implement in Phase 2
+    function viewLogDetails(logId: string) {
+    const log = $logs.find(l => l.id === logId);
+    if (log) {
+      selectedLog = log;
+      isModalOpen = true;
+    }
+  }
+
+  function closeModal() {
+    isModalOpen = false;
+    selectedLog = null;
   }
 </script>
 
@@ -286,7 +305,9 @@
             {#if isColumnVisible('status')}
               <td class="status-cell">
                 <span class="status-badge {getStatusClass(log.completionStatus)}">
-                  <span class="status-icon">{getStatusIcon(log.completionStatus)}</span>
+                  <span class="status-icon">
+                    <svelte:component this={getStatusIcon(log.completionStatus)} size={14} />
+                  </span>
                   {getStatusText(log.completionStatus)}
                 </span>
               </td>
@@ -484,7 +505,13 @@
   }
 
   .status-icon {
-    font-size: 10px;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+  }
+  
+  .status-icon :global(svg) {
+    fill: currentColor;
   }
 
   .verification-info {
@@ -546,3 +573,12 @@
     accent-color: #FF9800;
   }
 </style>
+
+<!-- LogDetailsModal -->
+{#if selectedLog}
+  <LogDetailsModal 
+    log={selectedLog} 
+    isOpen={isModalOpen} 
+    onClose={closeModal} 
+  />
+{/if}

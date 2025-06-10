@@ -1,5 +1,13 @@
 <script lang="ts">
   import { adminStats } from '../../stores/adminStore';
+  
+  // Carbon Icons
+  import Dashboard from "carbon-icons-svelte/lib/Dashboard.svelte";
+  import CheckmarkFilled from "carbon-icons-svelte/lib/CheckmarkFilled.svelte";
+  import Time from "carbon-icons-svelte/lib/Time.svelte";
+  import ErrorFilled from "carbon-icons-svelte/lib/ErrorFilled.svelte";
+  import Analytics from "carbon-icons-svelte/lib/Analytics.svelte";
+  import View from "carbon-icons-svelte/lib/View.svelte";
 
   // Get the stats store
   const stats = adminStats;
@@ -18,7 +26,7 @@
   <div class="stats-grid">
     <!-- Total Logs -->
     <div class="stat-card total">
-      <div class="stat-icon">📊</div>
+      <div class="stat-icon"><Dashboard size={32} /></div>
       <div class="stat-content">
         <div class="stat-number">{$stats.total}</div>
         <div class="stat-label">Total Logs</div>
@@ -27,7 +35,7 @@
 
     <!-- Complete Logs -->
     <div class="stat-card complete">
-      <div class="stat-icon">✅</div>
+      <div class="stat-icon"><CheckmarkFilled size={32} /></div>
       <div class="stat-content">
         <div class="stat-number">{$stats.complete}</div>
         <div class="stat-label">Complete</div>
@@ -36,7 +44,7 @@
 
     <!-- Pending Logs -->
     <div class="stat-card pending">
-      <div class="stat-icon">⏳</div>
+      <div class="stat-icon"><Time size={32} /></div>
       <div class="stat-content">
         <div class="stat-number">{$stats.pending}</div>
         <div class="stat-label">Pending Review</div>
@@ -45,7 +53,7 @@
 
     <!-- Incomplete Logs -->
     <div class="stat-card incomplete">
-      <div class="stat-icon">❌</div>
+      <div class="stat-icon"><ErrorFilled size={32} /></div>
       <div class="stat-content">
         <div class="stat-number">{$stats.incomplete}</div>
         <div class="stat-label">Incomplete</div>
@@ -54,7 +62,7 @@
 
     <!-- Completion Rate -->
     <div class="stat-card completion">
-      <div class="stat-icon">📈</div>
+      <div class="stat-icon"><Analytics size={32} /></div>
       <div class="stat-content">
         <div class="stat-number" style="color: {completionRateColor}">
           {$stats.completionRate}%
@@ -65,7 +73,7 @@
 
     <!-- Total Verifications -->
     <div class="stat-card verifications">
-      <div class="stat-icon">🔍</div>
+      <div class="stat-icon"><View size={32} /></div>
       <div class="stat-content">
         <div class="stat-number">{$stats.totalVerifications}</div>
         <div class="stat-label">Total Verifications</div>
@@ -106,15 +114,15 @@
 <style>
   .dashboard {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
     padding: 0;
     overflow: hidden;
   }
 
   .dashboard-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #f8f9fa;
     padding: 1.5rem;
     border-bottom: 1px solid #e1e5e9;
   }
@@ -124,10 +132,6 @@
     color: #2c3e50;
     font-size: 1.5rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #2c3e50, #3498db);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
   .dashboard-header small {
@@ -148,64 +152,54 @@
     align-items: center;
     gap: 1rem;
     padding: 1.5rem;
-    border-radius: 12px;
-    border-left: 5px solid;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 6px;
+    border-left: 4px solid;
+    background: white;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-  }
-
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
-    border-radius: 0 12px 0 50px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
   }
 
   .stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .stat-card.total {
     border-left-color: #3498db;
-    background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%);
   }
 
   .stat-card.complete {
     border-left-color: #27ae60;
-    background: linear-gradient(135deg, #ffffff 0%, #e8f5e8 100%);
   }
 
   .stat-card.pending {
     border-left-color: #f39c12;
-    background: linear-gradient(135deg, #ffffff 0%, #fff3e0 100%);
   }
 
   .stat-card.incomplete {
     border-left-color: #e74c3c;
-    background: linear-gradient(135deg, #ffffff 0%, #ffebee 100%);
   }
 
   .stat-card.completion {
     border-left-color: #9b59b6;
-    background: linear-gradient(135deg, #ffffff 0%, #f3e5f5 100%);
   }
 
   .stat-card.verifications {
     border-left-color: #34495e;
-    background: linear-gradient(135deg, #ffffff 0%, #eceff1 100%);
   }
 
   .stat-icon {
-    font-size: 2rem;
+    display: inline-flex;
+    align-items: center;
     opacity: 0.8;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+  
+  .stat-icon :global(svg) {
+    fill: currentColor;
   }
 
   .stat-content {
@@ -238,7 +232,7 @@
   }
 
   .progress-section {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #f8f9fa;
     padding: 1.5rem;
     border-top: 1px solid #e1e5e9;
   }
@@ -256,44 +250,20 @@
   .progress-bar {
     width: 100%;
     height: 16px;
-    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-    border-radius: 12px;
+    background: #e9ecef;
+    border-radius: 8px;
     overflow: hidden;
     margin-bottom: 1.25rem;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #dee2e6;
   }
 
   .progress-fill {
     height: 100%;
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 12px;
-    background: linear-gradient(135deg, currentColor 0%, color-mix(in srgb, currentColor 80%, white) 100%);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: width 0.6s ease;
+    border-radius: 8px;
+    background: currentColor;
     position: relative;
     overflow: hidden;
-  }
-
-  .progress-fill::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, 
-      transparent 25%, 
-      rgba(255, 255, 255, 0.2) 25%, 
-      rgba(255, 255, 255, 0.2) 50%, 
-      transparent 50%, 
-      transparent 75%, 
-      rgba(255, 255, 255, 0.2) 75%);
-    background-size: 20px 20px;
-    animation: move-stripes 2s linear infinite;
-  }
-
-  @keyframes move-stripes {
-    0% { background-position: 0 0; }
-    100% { background-position: 20px 0; }
   }
 
   .progress-legend {
@@ -311,33 +281,32 @@
     color: #495057;
     font-weight: 500;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: 4px;
     background: rgba(255, 255, 255, 0.7);
     transition: all 0.2s ease;
   }
 
   .legend-item:hover {
     background: rgba(255, 255, 255, 0.9);
-    transform: translateY(-1px);
   }
 
   .legend-color {
     width: 16px;
     height: 16px;
     border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
   }
 
   .legend-item.complete .legend-color {
-    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    background: #27ae60;
   }
 
   .legend-item.pending .legend-color {
-    background: linear-gradient(135deg, #f39c12, #f1c40f);
+    background: #f39c12;
   }
 
   .legend-item.incomplete .legend-color {
-    background: linear-gradient(135deg, #e74c3c, #ec7063);
+    background: #e74c3c;
   }
 
   /* Responsive Design */
