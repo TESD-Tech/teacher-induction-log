@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { fetchWithUrlParams } from './utils/urlParams';
   
   // Define mentor dashboard specific data types
   interface Mentee {
@@ -52,7 +53,9 @@
       }
       
       console.log('Fetching mentor dashboard data from:', configUrl);
-      const response = await fetch(configUrl);
+      
+      // Use fetchWithUrlParams to automatically append URL parameters to .json endpoints
+      const response = await fetchWithUrlParams(configUrl);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch mentee data: ${response.status} ${response.statusText}`);

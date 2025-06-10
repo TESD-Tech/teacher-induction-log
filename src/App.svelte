@@ -4,6 +4,7 @@
   // Import both FormConfig and RawFormConfig for type safety
   import type { FormConfig, RawFormConfig } from './lib/stores/formStore'; 
   import { setFormConfig } from './lib/stores/formStore';
+  import { fetchWithUrlParams } from './lib/utils/urlParams';
   import './assets/global.css';
   import './assets/print.css';
   
@@ -26,7 +27,6 @@
   function getConfigUrl(): string {
     const pathname = window.location.pathname;
     const baseUrl = window.location.origin;
-    const queryString = window.location.search;
     const urlParams = parseUrlParameters();
     
     let configUrl = '';
@@ -46,12 +46,7 @@
       console.log(`[Dev Env] Using base URL: ${base}. Fetching from: ${configUrl}`);
     }
     
-    // Add query string if not in mentor view mode
-    if (!urlParams.menteeId && queryString) {
-      configUrl += queryString;
-    }
-    
-    console.log('Config URL:', configUrl);
+    console.log('Config URL (before params):', configUrl);
     return configUrl;
   }
   
@@ -62,8 +57,11 @@
     let loadedConfig: FormConfig; 
 
     try {
-      console.log('Fetching configuration from:', getConfigUrl());
-      const response = await fetch(getConfigUrl());
+      const configUrl = getConfigUrl();
+      console.log('Fetching configuration from:', configUrl);
+      
+      // Use fetchWithUrlParams to automatically append URL parameters to .json endpoints
+      const response = await fetchWithUrlParams(configUrl);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch configuration: ${response.status} ${response.statusText}`);

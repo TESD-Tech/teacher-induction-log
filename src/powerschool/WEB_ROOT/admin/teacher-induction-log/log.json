@@ -64,14 +64,17 @@ WHERE terms.ABBREVIATION LIKE '%-%'
 ) foo;]~(json_string)[/tlist_sql]
   },
   "data": ~[tlist_sql;
-    SELECT JSON_ARRAYAGG(
+  SELECT COALESCE( JSON_ARRAYAGG(
       JSON_OBJECT(
         'JSON_CLOB' VALUE json_clob
         RETURNING CLOB
       )
       RETURNING CLOB
-    ) obj
+    ), TO_CLOB(CHR(91) || CHR(93) ) ) obj
     FROM U_TESD_Teacher_Induction_Log
-    WHERE U_TESD_Teacher_Induction_Log.usersdcid = ( SELECT dcid FROM users WHERE teachernumber = '~(teachernumber)' )
+   ~[if#frn.~(gpv.frn)#]
+   INNER JOIN teachers ON teachers.USERS_DCID = U_TESD_Teacher_Induction_Log.USERSDCID
+    AND teachers.DCID = SUBSTR('~(gpv.frn)', 4 )
+   [/if#frn]
 ;]~(json_string)[/tlist_sql]
 }
