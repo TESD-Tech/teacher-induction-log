@@ -62,7 +62,7 @@
 
     <!-- Completion Rate -->
     <div class="stat-card completion">
-      <div class="stat-icon"><TrendUp size={32} /></div>
+      <div class="stat-icon"><Analytics size={32} /></div>
       <div class="stat-content">
         <div class="stat-number" style="color: {completionRateColor}">
           {$stats.completionRate}%

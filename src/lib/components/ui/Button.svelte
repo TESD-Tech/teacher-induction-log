@@ -2,7 +2,6 @@
 
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  // Svelte 5 Runes are compiler features, they are NOT imported.
 
   // All props, including regular ones, are declared within $props()
   // Destructure the result of $props() to declare your props.
@@ -11,13 +10,15 @@
     type = 'button',     // Regular prop with default value
     confirmMessage = 'Are you sure you want to delete this item?', // Regular prop with default value
     compact = false,     // Regular prop with default value
+    disabled = false,    // Regular prop with default value
     onclick = undefined, // Regular prop (function) with default value
     children            // Svelte 5 slot content
   } = $props<{ // Type annotation for the $props() declaration
-    variant?: 'default' | 'add' | 'remove'; // Using ? for optionality allows omitting the prop
+    variant?: 'default' | 'primary' | 'secondary' | 'add' | 'remove' | 'danger'; // Extended variants
     type?: 'button' | 'submit' | 'reset';
     confirmMessage?: string;
     compact?: boolean;
+    disabled?: boolean;
     onclick?: ((event: MouseEvent) => void) | undefined; // Type for the function prop
     children?: any;
   }>();
@@ -44,13 +45,13 @@
 
 <button
   {type}
+  {disabled}
   class={`${variant} ${compact ? 'compact' : ''}`}
   onclick={handleClick}
   data-testid="ps-button"
 >
   {@render children?.()}
 </button>
-
 
 <style>
   button {
@@ -109,6 +110,51 @@
   button.default:hover {
     background-color: #f0f0f0;
     border-color: #ccc;
+  }
+
+  button.primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+  }
+
+  button.primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+
+  button.secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+  }
+
+  button.secondary:hover {
+    background-color: #545b62;
+    border-color: #545b62;
+  }
+
+  button.danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+  }
+
+  button.danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+  }
+
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  button:disabled:hover {
+    background-color: inherit;
+    border-color: inherit;
+    transform: none;
+    box-shadow: none;
   }
 
   button.compact {

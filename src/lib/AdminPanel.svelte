@@ -98,21 +98,23 @@
           </h1>
         </div>
         <div class="header-actions">
-          <button 
+          <Button 
             onclick={() => showSettings = true}
-            class="action-button secondary"
+            variant="default"
+            compact={true}
           >
-            <span class="button-icon"><Settings size={16} /></span>
+            <span class="icon"><Settings size={16} /></span>
             Settings
-          </button>
-          <button 
+          </Button>
+          <Button 
             onclick={handleRefresh}
-            class="action-button primary"
+            variant="default"
+            compact={true}
             disabled={$adminStore.loading}
           >
-            <span class="button-icon"><Renew size={16} /></span>
+            <span class="icon"><Renew size={16} /></span>
             {$adminStore.loading ? 'Loading...' : 'Refresh'}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -141,21 +143,23 @@
           </div>
           
           <div class="search-actions">
-            <button 
+            <Button 
               onclick={() => showFilters = !showFilters}
-              class="filter-button"
+              variant="default"
+              compact={true}
             >
-              <span class="button-icon"><Filter size={16} /></span>
+              <span class="icon"><Filter size={16} /></span>
               {showFilters ? 'Hide Filters' : 'Show Filters'}
-            </button>
+            </Button>
             
-            <button 
+            <Button 
               onclick={handleClearFilters}
-              class="clear-button"
+              variant="default"
+              compact={true}
             >
-              <span class="button-icon"><Close size={16} /></span>
+              <span class="icon"><Close size={16} /></span>
               Clear All Filters
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -179,12 +183,13 @@
         <div class="bulk-actions-content">
           <div class="bulk-info">
             <span class="selected-count">{$selected.length} selected</span>
-            <button 
+            <Button 
               onclick={adminActions.deselectAllLogs}
-              class="clear-selection-btn"
+              variant="default"
+              compact={true}
             >
               Clear Selection
-            </button>
+            </Button>
           </div>
           
           <div class="bulk-operations">
@@ -203,12 +208,13 @@
           <div class="error-details">
             <strong>Error:</strong> {$adminStore.error}
           </div>
-          <button 
+          <Button 
             onclick={handleRefresh}
-            class="retry-button"
+            variant="default"
+            compact={true}
           >
             🔄 Retry
-          </button>
+          </Button>
         </div>
       </div>
     {/if}
@@ -226,13 +232,13 @@
           <h3 class="empty-title">No logs found</h3>
           <p class="empty-description">No teacher induction logs match your current filters.</p>
           {#if searchValue || $adminStore.filters.building.length > 0}
-            <button 
+            <Button 
               onclick={handleClearFilters} 
-              class="action-button primary"
+              variant="default"
             >
-              <span class="button-icon">✨</span>
+              <span class="icon">✨</span>
               Clear Filters
-            </button>
+            </Button>
           {/if}
         </div>
       {:else}
@@ -316,56 +322,14 @@
     align-items: center;
   }
 
-  /* Action Buttons */
-  .action-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    border: none;
-    text-decoration: none;
-  }
-
-  .action-button.primary {
-    background: #f8f8f8;
-    color: #444;
-    border: 1px solid #ddd;
-  }
-
-  .action-button.primary:hover:not(:disabled) {
-    background: #f0f0f0;
-    border-color: #ccc;
-    transform: translateY(-1px);
-  }
-
-  .action-button.secondary {
-    background: #f2f2f2;
-    color: #666;
-    border: 1px solid #ccc;
-  }
-
-  .action-button.secondary:hover {
-    background: #e0e0e0;
-    border-color: #bbb;
-  }
-
-  .action-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .button-icon {
+  .icon {
     display: inline-flex;
     align-items: center;
     vertical-align: middle;
+    margin-right: 0.25rem;
   }
   
-  .button-icon :global(svg) {
+  .icon :global(svg) {
     fill: currentColor;
   }
 
@@ -434,26 +398,6 @@
     flex-wrap: wrap;
   }
 
-  .filter-button, .clear-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: white;
-    color: #333;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .filter-button:hover, .clear-button:hover {
-    background: #f5f5f5;
-    border-color: #999;
-  }
-
   /* Placeholder Content */
   .placeholder-card {
     text-align: center;
@@ -513,19 +457,6 @@
     color: #1565c0;
   }
 
-  .clear-selection-btn {
-    color: #1976d2;
-    text-decoration: underline;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 0.875rem;
-  }
-
-  .clear-selection-btn:hover {
-    color: #0d47a1;
-  }
-
   .coming-soon {
     color: #616161;
     font-style: italic;
@@ -560,20 +491,6 @@
     flex: 1;
     color: #c62828;
     font-weight: 500;
-  }
-
-  .retry-button {
-    background: none;
-    border: none;
-    color: #d32f2f;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 0.875rem;
-    padding: 0.25rem 0.5rem;
-  }
-
-  .retry-button:hover {
-    color: #b71c1c;
   }
 
   /* Loading State */
@@ -680,11 +597,6 @@
 
     .app-title {
       font-size: 1.25rem;
-    }
-
-    .action-button {
-      padding: 0.625rem 1rem;
-      font-size: 0.8rem;
     }
   }
 </style>

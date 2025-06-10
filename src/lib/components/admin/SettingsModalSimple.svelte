@@ -1,5 +1,6 @@
 <script lang="ts">
   import { settingsStore, type AdminSettings } from '../../stores/settingsStore';
+  import Button from '../ui/Button.svelte';
 
   // Props
   interface Props {
@@ -105,7 +106,7 @@
         </div>
 
         <div class="modal-footer">
-          <button class="btn btn-secondary" onclick={onClose}>Close</button>
+          <Button onclick={onClose} variant="default">Close</Button>
         </div>
       </div>
     </div>
@@ -247,31 +248,6 @@
     gap: 0.75rem;
     padding-top: 1rem;
     border-top: 1px solid #e5e7eb;
-  }
-
-  /* Buttons */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    border: none;
-  }
-
-  .btn-secondary {
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
-  }
-
-  .btn-secondary:hover {
-    background: #e5e7eb;
   }
 
   /* Responsive Design */
