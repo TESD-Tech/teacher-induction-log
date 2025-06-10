@@ -105,199 +105,297 @@
 
 <style>
   .dashboard {
-    margin-bottom: 24px;
-    padding: 24px;
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0;
+    overflow: hidden;
   }
 
   .dashboard-header {
-    margin-bottom: 24px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1.5rem;
+    border-bottom: 1px solid #e1e5e9;
   }
 
   .dashboard-header h2 {
-    margin: 0 0 4px 0;
-    color: #2e7d32;
-    font-size: 20px;
-    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .dashboard-header small {
-    color: #666;
-    font-size: 14px;
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: 500;
   }
 
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 32px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem;
   }
 
   .stat-card {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 20px;
-    border-radius: 8px;
-    border-left: 4px solid;
-    background: #f9f9f9;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border-left: 5px solid;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+    border-radius: 0 12px 0 50px;
   }
 
   .stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
 
   .stat-card.total {
-    border-left-color: #2196f3;
+    border-left-color: #3498db;
+    background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%);
   }
 
   .stat-card.complete {
-    border-left-color: #4CAF50;
+    border-left-color: #27ae60;
+    background: linear-gradient(135deg, #ffffff 0%, #e8f5e8 100%);
   }
 
   .stat-card.pending {
-    border-left-color: #FF9800;
+    border-left-color: #f39c12;
+    background: linear-gradient(135deg, #ffffff 0%, #fff3e0 100%);
   }
 
   .stat-card.incomplete {
-    border-left-color: #f44336;
+    border-left-color: #e74c3c;
+    background: linear-gradient(135deg, #ffffff 0%, #ffebee 100%);
   }
 
   .stat-card.completion {
-    border-left-color: #9C27B0;
+    border-left-color: #9b59b6;
+    background: linear-gradient(135deg, #ffffff 0%, #f3e5f5 100%);
   }
 
   .stat-card.verifications {
-    border-left-color: #607D8B;
+    border-left-color: #34495e;
+    background: linear-gradient(135deg, #ffffff 0%, #eceff1 100%);
   }
 
   .stat-icon {
-    font-size: 24px;
+    font-size: 2rem;
     opacity: 0.8;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
   }
 
   .stat-content {
     flex: 1;
+    z-index: 1;
   }
 
   .stat-number {
-    font-size: 24px;
-    font-weight: 700;
-    color: #333;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #2c3e50;
     line-height: 1;
-    margin-bottom: 4px;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .stat-label {
-    font-size: 14px;
-    color: #666;
-    font-weight: 500;
+    font-size: 0.9rem;
+    color: #5a6c7d;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .stat-sublabel {
-    font-size: 12px;
-    color: #999;
-    margin-top: 2px;
+    font-size: 0.8rem;
+    color: #7b8794;
+    margin-top: 0.25rem;
+    font-style: italic;
   }
 
   .progress-section {
-    border-top: 1px solid #e0e0e0;
-    padding-top: 24px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1.5rem;
+    border-top: 1px solid #e1e5e9;
   }
 
   .progress-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
-    font-weight: 600;
-    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 1.1rem;
   }
 
   .progress-bar {
     width: 100%;
-    height: 12px;
-    background: #e0e0e0;
-    border-radius: 6px;
+    height: 16px;
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 16px;
+    margin-bottom: 1.25rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .progress-fill {
     height: 100%;
-    transition: width 0.3s ease;
-    border-radius: 6px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px;
+    background: linear-gradient(135deg, currentColor 0%, color-mix(in srgb, currentColor 80%, white) 100%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+      transparent 25%, 
+      rgba(255, 255, 255, 0.2) 25%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 50%, 
+      transparent 75%, 
+      rgba(255, 255, 255, 0.2) 75%);
+    background-size: 20px 20px;
+    animation: move-stripes 2s linear infinite;
+  }
+
+  @keyframes move-stripes {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 0; }
   }
 
   .progress-legend {
     display: flex;
-    gap: 24px;
+    gap: 2rem;
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   .legend-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #666;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: #495057;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s ease;
+  }
+
+  .legend-item:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
   }
 
   .legend-color {
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
   .legend-item.complete .legend-color {
-    background: #4CAF50;
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
   }
 
   .legend-item.pending .legend-color {
-    background: #FF9800;
+    background: linear-gradient(135deg, #f39c12, #f1c40f);
   }
 
   .legend-item.incomplete .legend-color {
-    background: #f44336;
+    background: linear-gradient(135deg, #e74c3c, #ec7063);
   }
 
   /* Responsive Design */
+  @media (max-width: 1024px) {
+    .stats-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+  }
+
   @media (max-width: 768px) {
     .stats-grid {
       grid-template-columns: 1fr;
+      padding: 1rem;
+    }
+
+    .dashboard-header {
+      padding: 1rem;
     }
 
     .stat-card {
-      padding: 16px;
+      padding: 1.25rem;
     }
 
     .stat-number {
-      font-size: 20px;
+      font-size: 1.75rem;
+    }
+
+    .progress-section {
+      padding: 1rem;
     }
 
     .progress-legend {
-      gap: 16px;
+      gap: 1rem;
+      flex-direction: column;
+      align-items: center;
     }
 
     .progress-header {
       flex-direction: column;
       align-items: flex-start;
-      gap: 4px;
+      gap: 0.5rem;
+      text-align: left;
     }
   }
 
   @media (max-width: 480px) {
-    .dashboard {
-      padding: 16px;
+    .legend-item {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8rem;
     }
 
-    .progress-legend {
-      flex-direction: column;
-      gap: 8px;
+    .stat-icon {
+      font-size: 1.5rem;
+    }
+
+    .stat-number {
+      font-size: 1.5rem;
     }
   }
 </style>

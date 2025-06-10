@@ -134,41 +134,41 @@
 
 {#if open}
   <div 
-    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" 
+    class="modal-backdrop" 
     onclick={handleBackdropClick}
     role="dialog"
     aria-modal="true"
     aria-labelledby="settings-modal-title"
   >
-    <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
-      <div class="flex justify-between items-center p-6 border-b border-gray-200">
-        <h2 id="settings-modal-title" class="text-2xl font-semibold text-green-600">Admin Panel Settings</h2>
-        <button class="text-gray-400 hover:text-gray-600 text-2xl leading-none p-1" onclick={onClose}>×</button>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="settings-modal-title" class="modal-title">Admin Panel Settings</h2>
+        <button class="modal-close" onclick={onClose}>×</button>
       </div>
 
-      <div class="flex-1 overflow-hidden flex flex-col">
+      <div class="modal-body">
         <!-- Tab Navigation -->
-        <div class="flex border-b border-gray-200 px-6">
+        <div class="tab-navigation">
           <button 
-            class="px-5 py-4 text-sm font-medium border-b-2 transition-colors {activeTab === 'sections' ? 'text-green-600 border-green-600' : 'text-gray-500 border-transparent hover:text-green-600 hover:bg-green-50'}"
+            class="tab-button {activeTab === 'sections' ? 'active' : ''}"
             onclick={() => activeTab = 'sections'}
           >
             📱 Sections
           </button>
           <button 
-            class="px-5 py-4 text-sm font-medium border-b-2 transition-colors {activeTab === 'table' ? 'text-green-600 border-green-600' : 'text-gray-500 border-transparent hover:text-green-600 hover:bg-green-50'}"
+            class="tab-button {activeTab === 'table' ? 'active' : ''}"
             onclick={() => activeTab = 'table'}
           >
             📊 Table
           </button>
           <button 
-            class="px-5 py-4 text-sm font-medium border-b-2 transition-colors {activeTab === 'ui' ? 'text-green-600 border-green-600' : 'text-gray-500 border-transparent hover:text-green-600 hover:bg-green-50'}"
+            class="tab-button {activeTab === 'ui' ? 'active' : ''}"
             onclick={() => activeTab = 'ui'}
           >
             🎨 Interface
           </button>
           <button 
-            class="px-5 py-4 text-sm font-medium border-b-2 transition-colors {activeTab === 'import-export' ? 'text-green-600 border-green-600' : 'text-gray-500 border-transparent hover:text-green-600 hover:bg-green-50'}"
+            class="tab-button {activeTab === 'import-export' ? 'active' : ''}"
             onclick={() => activeTab = 'import-export'}
           >
             💾 Import/Export
@@ -176,77 +176,77 @@
         </div>
 
         <!-- Tab Content -->
-        <div class="flex-1 overflow-y-auto p-6">
+        <div class="tab-content">
           {#if activeTab === 'sections'}
-            <div class="space-y-6">
-              <div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Section Visibility</h3>
-                <p class="text-gray-600 text-sm mb-6">Choose which sections to display in the admin panel</p>
+            <div class="sections-tab">
+              <div class="section-header">
+                <h3 class="section-title">Section Visibility</h3>
+                <p class="section-subtitle">Choose which sections to display in the admin panel</p>
               </div>
               
-              <div class="grid gap-4">
-                <label class="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 cursor-pointer transition-colors">
+              <div class="settings-grid">
+                <label class="setting-item">
                   <input 
                     type="checkbox" 
                     checked={settings.sections.dashboard}
                     onchange={() => toggleSection('dashboard')}
-                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    class="setting-checkbox"
                   />
-                  <div class="flex-1">
-                    <div class="font-medium text-gray-900">📈 Statistics Dashboard</div>
-                    <div class="text-sm text-gray-500">Overview cards with key metrics</div>
+                  <div class="setting-content">
+                    <div class="setting-label">📈 Statistics Dashboard</div>
+                    <div class="setting-description">Overview cards with key metrics</div>
                   </div>
                 </label>
 
-                <label class="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 cursor-pointer transition-colors">
+                <label class="setting-item">
                   <input 
                     type="checkbox" 
                     checked={settings.sections.quickSearch}
                     onchange={() => toggleSection('quickSearch')}
-                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    class="setting-checkbox"
                   />
-                  <div class="flex-1">
-                    <div class="font-medium text-gray-900">🔍 Quick Search</div>
-                    <div class="text-sm text-gray-500">Search bar and basic filters</div>
+                  <div class="setting-content">
+                    <div class="setting-label">🔍 Quick Search</div>
+                    <div class="setting-description">Search bar and basic filters</div>
                   </div>
                 </label>
 
-                <label class="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 cursor-pointer transition-colors">
+                <label class="setting-item">
                   <input 
                     type="checkbox" 
                     checked={settings.sections.advancedFilters}
                     onchange={() => toggleSection('advancedFilters')}
-                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    class="setting-checkbox"
                   />
-                  <div class="flex-1">
-                    <div class="font-medium text-gray-900">🎯 Advanced Filters</div>
-                    <div class="text-sm text-gray-500">Detailed filtering options</div>
+                  <div class="setting-content">
+                    <div class="setting-label">🎯 Advanced Filters</div>
+                    <div class="setting-description">Detailed filtering options</div>
                   </div>
                 </label>
 
-                <label class="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 cursor-pointer transition-colors">
+                <label class="setting-item">
                   <input 
                     type="checkbox" 
                     checked={settings.sections.bulkActions}
                     onchange={() => toggleSection('bulkActions')}
-                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    class="setting-checkbox"
                   />
-                  <div class="flex-1">
-                    <div class="font-medium text-gray-900">⚡ Bulk Actions</div>
-                    <div class="text-sm text-gray-500">Multi-select operations</div>
+                  <div class="setting-content">
+                    <div class="setting-label">⚡ Bulk Actions</div>
+                    <div class="setting-description">Multi-select operations</div>
                   </div>
                 </label>
 
-                <label class="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 cursor-pointer transition-colors">
+                <label class="setting-item">
                   <input 
                     type="checkbox" 
                     checked={settings.sections.statistics}
                     onchange={() => toggleSection('statistics')}
-                    class="mt-1 h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    class="setting-checkbox"
                   />
-                  <div class="flex-1">
-                    <div class="font-medium text-gray-900">📊 Detailed Statistics</div>
-                    <div class="text-sm text-gray-500">Expanded analytics and charts</div>
+                  <div class="setting-content">
+                    <div class="setting-label">📊 Detailed Statistics</div>
+                    <div class="setting-description">Expanded analytics and charts</div>
                   </div>
                 </label>
 
@@ -482,5 +482,303 @@
 {/if}
 
 <style>
-  /* All styling now done with Tailwind CSS classes */
+  /* Modal Backdrop and Layout */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1rem;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    max-width: 64rem;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Modal Header */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #16a34a;
+    margin: 0;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
+    transition: color 0.2s ease;
+  }
+
+  .modal-close:hover {
+    color: #4b5563;
+  }
+
+  /* Modal Body */
+  .modal-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Tab Navigation */
+  .tab-navigation {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0 1.5rem;
+  }
+
+  .tab-button {
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tab-button:hover {
+    color: #16a34a;
+    background: #f0fdf4;
+  }
+
+  .tab-button.active {
+    color: #16a34a;
+    border-bottom-color: #16a34a;
+  }
+
+  /* Tab Content */
+  .tab-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+  }
+
+  /* Sections Tab */
+  .sections-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .section-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .section-subtitle {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  .settings-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .setting-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .setting-item:hover {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+  }
+
+  .setting-checkbox {
+    margin-top: 0.25rem;
+    width: 1rem;
+    height: 1rem;
+    accent-color: #16a34a;
+    cursor: pointer;
+  }
+
+  .setting-content {
+    flex: 1;
+  }
+
+  .setting-label {
+    font-weight: 500;
+    color: #111827;
+    margin-bottom: 0.25rem;
+  }
+
+  .setting-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  /* Form Elements */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-select,
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease;
+  }
+
+  .form-select:focus,
+  .form-input:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 120px;
+    font-family: monospace;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+  }
+
+  .btn-primary {
+    background: #16a34a;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #15803d;
+  }
+
+  .btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+
+  .btn-secondary:hover {
+    background: #e5e7eb;
+  }
+
+  .btn-danger {
+    background: #dc2626;
+    color: white;
+  }
+
+  .btn-danger:hover {
+    background: #b91c1c;
+  }
+
+  /* Error Messages */
+  .error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Export Text */
+  .export-text {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 1rem;
+    font-family: monospace;
+    font-size: 0.875rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .modal-backdrop {
+      padding: 0.5rem;
+    }
+
+    .modal-content {
+      max-height: 95vh;
+    }
+
+    .modal-header {
+      padding: 1rem;
+    }
+
+    .tab-content {
+      padding: 1rem;
+    }
+
+    .tab-navigation {
+      padding: 0 1rem;
+      overflow-x: auto;
+    }
+
+    .tab-button {
+      white-space: nowrap;
+      padding: 0.75rem 1rem;
+    }
+  }
 </style>

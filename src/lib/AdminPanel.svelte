@@ -4,7 +4,7 @@
   import { settingsStore } from './stores/settingsStore';
   import AdminDashboard from './components/admin/AdminDashboard.svelte';
   import LogsTable from './components/admin/LogsTable.svelte';
-  import SettingsModal from './components/admin/SettingsModal.svelte';
+  import SettingsModal from './components/admin/SettingsModalSimple.svelte';
   import Button from './components/ui/Button.svelte';
 
   // Get derived stores
@@ -77,158 +77,163 @@
 
 <svelte:options customElement="teacher-induction-admin-app" />
 
-<div class="admin-panel bg-amber-50 min-h-screen font-sans" class:space-y-3={$settings.ui.compactView} class:space-y-6={!$settings.ui.compactView} data-testid="admin-panel">
-  <!-- Header -->
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200" 
-       class:p-3={$settings.ui.compactView} 
-       class:p-6={!$settings.ui.compactView}>
-    <div class="flex flex-col lg:flex-row justify-between lg:items-start gap-4">
-      <div>
-        <h1 class="text-green-600 font-semibold" 
-            class:text-xl={$settings.ui.compactView} 
-            class:text-3xl={!$settings.ui.compactView}>
-          Teacher Induction Log Administration
-        </h1>
-        <p class="text-gray-600 mt-1" 
-           class:text-sm={$settings.ui.compactView} 
-           class:text-base={!$settings.ui.compactView}>
-          Manage and monitor teacher induction programs
-        </p>
+<div class="admin-panel" class:space-y-3={$settings.ui.compactView} class:space-y-6={!$settings.ui.compactView} data-testid="admin-panel">
+  <!-- Header with gradient background and improved styling -->
+  <div class="header-section">
+    <div class="header-container">
+      <div class="header-content">
+        <div class="header-left">
+          <div class="district-title">TREDYFFRIN/EASTTOWN SCHOOL DISTRICT</div>
+          <div class="separator">|</div>
+          <h1 class="app-title" 
+              class:text-xl={$settings.ui.compactView} 
+              class:text-2xl={!$settings.ui.compactView}>
+            Teacher Induction Log Administration
+          </h1>
+        </div>
+        <div class="header-actions">
+          <button 
+            onclick={() => showSettings = true}
+            class="action-button secondary"
+          >
+            <span class="button-icon">⚙️</span>
+            Settings
+          </button>
+          <button 
+            onclick={handleRefresh}
+            class="action-button primary"
+            disabled={$adminStore.loading}
+          >
+            <span class="button-icon">{$adminStore.loading ? '⏳' : '🔄'}</span>
+            {$adminStore.loading ? 'Loading...' : 'Refresh'}
+          </button>
+        </div>
       </div>
-      <div class="flex gap-3">
-        <button 
-          onclick={() => showSettings = true}
-          class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
-        >
-          ⚙️ Settings
-        </button>
-        <button 
-          onclick={handleRefresh}
-          class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
-          disabled={$adminStore.loading}
-        >
-          {$adminStore.loading ? 'Loading...' : 'Refresh'}
-        </button>
-      </div>
+
     </div>
   </div>
 
   <!-- Statistics Dashboard -->
-  {#if $settings.sections.dashboard}
-    <AdminDashboard />
-  {/if}
-
-  <!-- Quick Filters and Search -->
-  {#if $settings.sections.quickSearch}
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200" 
-         class:p-3={$settings.ui.compactView} 
-         class:p-6={!$settings.ui.compactView}>
-      <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
-        <div class="flex-1 max-w-md">
-          <input
-            type="text"
-            placeholder="Search by inductee name, building, or assignment..."
-            bind:value={searchValue}
-            oninput={handleSearch}
-            class="w-full px-4 py-2 border-2 border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 transition-colors text-sm"
-          />
-        </div>
-        
-        <div class="flex gap-3">
-          <button 
-            onclick={() => showFilters = !showFilters}
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-          >
-            {showFilters ? 'Hide Filters' : 'Show Filters'}
-          </button>
-          
-          <button 
-            onclick={handleClearFilters}
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-          >
-            Clear All Filters
-          </button>
-        </div>
-      </div>
-    </div>
-  {/if}
-
-  <!-- Advanced Filters Panel (Phase 2) -->
-  {#if $settings.sections.advancedFilters && showFilters}
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div class="text-center py-12 text-gray-500">
-        <p class="text-lg mb-2">🚧 Advanced filtering will be implemented in Phase 2</p>
-        <p class="text-sm text-gray-400">Building, Assignment, School Year, and Status filters coming soon!</p>
-      </div>
-    </div>
-  {/if}
-
-  <!-- Bulk Actions Bar (shows when items are selected) -->
-  {#if $settings.sections.bulkActions && $selected.length > 0}
-    <div class="bg-blue-50 border-2 border-blue-200 rounded-lg" 
-         class:p-3={$settings.ui.compactView} 
-         class:p-4={!$settings.ui.compactView}>
-      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
-        <div class="flex items-center gap-3">
-          <span class="font-semibold text-blue-700">{$selected.length} selected</span>
-          <button 
-            onclick={adminActions.deselectAllLogs}
-            class="text-sm text-blue-600 hover:text-blue-800 underline"
-          >
-            Clear Selection
-          </button>
-        </div>
-        
-        <div class="text-gray-600 italic text-sm">
-          🚧 Bulk operations coming in Phase 2
-        </div>
-      </div>
-    </div>
-  {/if}
-
-  <!-- Error Display -->
-  {#if $adminStore.error}
-    <div class="bg-red-50 border-2 border-red-200 rounded-lg" 
-         class:p-3={$settings.ui.compactView} 
-         class:p-4={!$settings.ui.compactView}>
-      <div class="flex justify-between items-center">
-        <span class="text-red-800">
-          <strong>Error:</strong> {$adminStore.error}
-        </span>
-        <button 
-          onclick={handleRefresh}
-          class="text-sm text-red-600 hover:text-red-800 underline"
-        >
-          Retry
-        </button>
-      </div>
-    </div>
-  {/if}
-
-  <!-- Main Content -->
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-    {#if $adminStore.loading}
-      <div class="flex flex-col items-center justify-center py-24 text-center">
-        <div class="w-8 h-8 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin mb-4"></div>
-        <p class="text-gray-600">Loading teacher induction logs...</p>
-      </div>
-    {:else if $logs.length === 0 && !$adminStore.error}
-      <div class="text-center py-24">
-        <h3 class="text-xl text-gray-600 mb-3">No logs found</h3>
-        <p class="text-gray-500 mb-6">No teacher induction logs match your current filters.</p>
-        {#if searchValue || $adminStore.filters.building.length > 0}
-          <button 
-            onclick={handleClearFilters} 
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700 transition-colors"
-          >
-            Clear Filters
-          </button>
-        {/if}
-      </div>
-    {:else}
-      <!-- Logs Table -->
-      <LogsTable />
+  <div class="main-content">
+    {#if $settings.sections.dashboard}
+      <AdminDashboard />
     {/if}
+
+    <!-- Quick Filters and Search -->
+    {#if $settings.sections.quickSearch}
+      <div class="content-card" 
+           class:compact={$settings.ui.compactView}>
+        <div class="search-section">
+          <div class="search-input-container">
+            <input
+              type="text"
+              placeholder="Search by inductee name, building, or assignment..."
+              bind:value={searchValue}
+              oninput={handleSearch}
+              class="search-input"
+            />
+          </div>
+          
+          <div class="search-actions">
+            <button 
+              onclick={() => showFilters = !showFilters}
+              class="filter-button"
+            >
+              <span class="button-icon">🔍</span>
+              {showFilters ? 'Hide Filters' : 'Show Filters'}
+            </button>
+            
+            <button 
+              onclick={handleClearFilters}
+              class="clear-button"
+            >
+              <span class="button-icon">✨</span>
+              Clear All Filters
+            </button>
+          </div>
+        </div>
+      </div>
+    {/if}
+
+    <!-- Advanced Filters Panel (Phase 2) -->
+    {#if $settings.sections.advancedFilters && showFilters}
+      <div class="content-card placeholder-card">
+        <div class="placeholder-content">
+          <div class="placeholder-icon">🚧</div>
+          <h3 class="placeholder-title">Advanced Filtering Coming Soon</h3>
+          <p class="placeholder-text">Building, Assignment, School Year, and Status filters will be implemented in Phase 2</p>
+        </div>
+      </div>
+    {/if}
+
+    <!-- Bulk Actions Bar (shows when items are selected) -->
+    {#if $settings.sections.bulkActions && $selected.length > 0}
+      <div class="bulk-actions-bar" 
+           class:compact={$settings.ui.compactView}>
+        <div class="bulk-actions-content">
+          <div class="bulk-info">
+            <span class="selected-count">{$selected.length} selected</span>
+            <button 
+              onclick={adminActions.deselectAllLogs}
+              class="clear-selection-btn"
+            >
+              Clear Selection
+            </button>
+          </div>
+          
+          <div class="bulk-operations">
+            <span class="coming-soon">🚧 Bulk operations coming in Phase 2</span>
+          </div>
+        </div>
+      </div>
+    {/if}
+
+    <!-- Error Display -->
+    {#if $adminStore.error}
+      <div class="error-card" 
+           class:compact={$settings.ui.compactView}>
+        <div class="error-content">
+          <div class="error-icon">❌</div>
+          <div class="error-details">
+            <strong>Error:</strong> {$adminStore.error}
+          </div>
+          <button 
+            onclick={handleRefresh}
+            class="retry-button"
+          >
+            🔄 Retry
+          </button>
+        </div>
+      </div>
+    {/if}
+
+    <!-- Main Content -->
+    <div class="main-content-card">
+      {#if $adminStore.loading}
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Loading teacher induction logs...</p>
+        </div>
+      {:else if $logs.length === 0 && !$adminStore.error}
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <h3 class="empty-title">No logs found</h3>
+          <p class="empty-description">No teacher induction logs match your current filters.</p>
+          {#if searchValue || $adminStore.filters.building.length > 0}
+            <button 
+              onclick={handleClearFilters} 
+              class="action-button primary"
+            >
+              <span class="button-icon">✨</span>
+              Clear Filters
+            </button>
+          {/if}
+        </div>
+      {:else}
+        <!-- Logs Table -->
+        <LogsTable />
+      {/if}
+    </div>
   </div>
 
   <!-- Settings Modal -->
@@ -240,14 +245,436 @@
 
 <style>
   .admin-panel {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg, #fbca28 0%, #E99300 100%);
+    color: #333;
+  }
+
+  /* Header Section with Clean White Design */
+  .header-section {
+    background: #ffffff;
+    color: #333;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .header-container {
     max-width: 1400px;
     margin: 0 auto;
+    padding: 1rem 1.5rem;
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .district-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #666;
+  }
+
+  .separator {
+    color: #999;
+    font-weight: 300;
+  }
+
+  .app-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: #333;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  /* Action Buttons */
+  .action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+  }
+
+  .action-button.primary {
+    background: #f8f8f8;
+    color: #444;
+    border: 1px solid #ddd;
+  }
+
+  .action-button.primary:hover:not(:disabled) {
+    background: #f0f0f0;
+    border-color: #ccc;
+    transform: translateY(-1px);
+  }
+
+  .action-button.secondary {
+    background: #f2f2f2;
+    color: #666;
+    border: 1px solid #ccc;
+  }
+
+  .action-button.secondary:hover {
+    background: #e0e0e0;
+    border-color: #bbb;
+  }
+
+  .action-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .button-icon {
+    font-size: 1rem;
+  }
+
+  /* Main Content Area */
+  .main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* Content Cards */
+  .content-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .content-card.compact {
+    padding: 1rem;
+  }
+
+  .main-content-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Search Section */
+  .search-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .search-input-container {
+    flex: 1;
+    max-width: 500px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background: white;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  }
+
+  .search-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-button, .clear-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    color: #4b5563;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-button:hover, .clear-button:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+  }
+
+  /* Placeholder Content */
+  .placeholder-card {
+    text-align: center;
+    padding: 3rem 1.5rem;
+  }
+
+  .placeholder-content {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .placeholder-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .placeholder-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+  }
+
+  .placeholder-text {
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
+  /* Bulk Actions Bar */
+  .bulk-actions-bar {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid #2196f3;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+  }
+
+  .bulk-actions-bar.compact {
+    padding: 0.75rem 1rem;
+  }
+
+  .bulk-actions-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .bulk-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .selected-count {
+    font-weight: 600;
+    color: #1565c0;
+  }
+
+  .clear-selection-btn {
+    color: #1976d2;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+  }
+
+  .clear-selection-btn:hover {
+    color: #0d47a1;
+  }
+
+  .coming-soon {
+    color: #616161;
+    font-style: italic;
+    font-size: 0.875rem;
+  }
+
+  /* Error Card */
+  .error-card {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border: 2px solid #f44336;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+  }
+
+  .error-card.compact {
+    padding: 0.75rem 1rem;
+  }
+
+  .error-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .error-icon {
+    font-size: 1.25rem;
+  }
+
+  .error-details {
+    flex: 1;
+    color: #c62828;
+    font-weight: 500;
+  }
+
+  .retry-button {
+    background: none;
+    border: none;
+    color: #d32f2f;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .retry-button:hover {
+    color: #b71c1c;
+  }
+
+  /* Loading State */
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  .loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid #e1e5e9;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
+  }
+
+  .loading-text {
+    color: #6b7280;
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  /* Empty State */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+  }
+
+  .empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 0.75rem;
+  }
+
+  .empty-description {
+    color: #6b7280;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    max-width: 400px;
+  }
+
+  /* Animations */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .search-section {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .search-input-container {
+      max-width: none;
+    }
+
+    .header-content {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .header-left {
+      justify-content: center;
+      text-align: center;
+    }
+
+    .header-actions {
+      justify-content: center;
+    }
   }
 
   @media (max-width: 768px) {
-    .admin-panel {
-      padding: 0.75rem;
+    .main-content {
+      padding: 1rem;
+      gap: 1rem;
+    }
+
+    .header-container {
+      padding: 1rem;
+    }
+
+    .district-title {
+      font-size: 0.75rem;
+    }
+
+    .app-title {
+      font-size: 1.25rem;
+    }
+
+    .action-button {
+      padding: 0.625rem 1rem;
+      font-size: 0.8rem;
     }
   }
 </style>
