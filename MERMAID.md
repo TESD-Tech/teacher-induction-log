@@ -64,20 +64,103 @@ sequenceDiagram
     participant PowerSchool
     participant SvelteApp
     participant JSONFile as log.json
+    participant FormStore as formStore.ts
 
     PowerSchool->>SvelteApp: Loads <teacher-induction-log-app>
     SvelteApp->>JSONFile: Fetch config (admin/ or teachers/ path)
-    JSONFile-->>SvelteApp: Returns FormConfig JSON
-    SvelteApp->>SvelteApp: setFormConfig(config)
+    JSONFile-->>SvelteApp: Returns Raw JSON Data
+    SvelteApp->>FormStore: setFormConfig(rawData)
+    
+    alt JSON_CLOB Format
+        FormStore->>FormStore: isJsonClobFormat() → true
+        FormStore->>FormStore: parseFormConfig() → Parse JSON_CLOB
+        FormStore->>FormStore: JSON.parse(data[0].JSON_CLOB)
+    else Legacy Format
+        FormStore->>FormStore: isJsonClobFormat() → false
+        FormStore->>FormStore: Use data directly
+    end
+    
+    FormStore-->>SvelteApp: Processed FormConfig
     SvelteApp->>UI: Render CoverPage, Sections, Signatures
     UI->>User: Display & Edit Form
     User->>UI: Input Data
-    UI->>SvelteApp: Update Stores
+    UI->>FormStore: Update Stores
+    FormStore->>PowerSchool: saveForm() → Submit as JSON_CLOB
 ```
 
 - The app **fetches JSON config** based on URL.
+- **JSON_CLOB parsing** automatically handles both legacy and new data formats.
 - The config drives **dynamic rendering** of form sections.
 - User edits update Svelte stores.
+- Form submission uses **JSON_CLOB format** for PowerSchool integration.
+
+---
+
+## JSON_CLOB Data Format
+
+```mermaid
+flowchart TD
+    subgraph "PowerSchool Database"
+        A[u_tesd_teacher_induction Table]
+        A --> B[json_clob CLOB Field]
+    end
+
+    subgraph "JSON_CLOB Format"
+        B --> C["[{\"JSON_CLOB\": \"{...escaped JSON...}\"}]"]
+    end
+
+    subgraph "Legacy Format"
+        D["{\"inductee\": \"...\", \"building\": \"...\"}"]
+    end
+
+    subgraph "Parser Logic"
+        E[isJsonClobFormat()] --> F{Array with JSON_CLOB?}
+        F -->|Yes| G[Parse JSON_CLOB string]
+        F -->|No| H[Use legacy format]
+        G --> I[FormData Object]
+        H --> I
+    end
+
+    C --> E
+    D --> E
+```
+
+### JSON_CLOB Format Structure
+
+**New Format (PowerSchool JSON_CLOB):**
+```json
+{
+  "data": [
+    {
+      "JSON_CLOB": "{\"inductee\":\"Esther Tester\",\"building\":\"School Name\",\"assignment\":\"Mathematics\",\"mentorTeacher\":\"Jane Doe\",\"schoolYearOne\":\"2024-2025\",\"schoolYearTwo\":\"2025-2026\",\"summerAcademy\":[{\"day\":\"Day 1\",\"dateYearOne\":\"2024-08-15\",\"dateYearTwo\":\"\",\"verification\":\"BJK\"}],\"signatures\":{\"mentorTeacher\":\"\",\"buildingPrincipal\":\"\",\"superintendent\":\"\",\"date\":\"2025-06-10\"}}"
+    }
+  ]
+}
+```
+
+**Legacy Format (Still Supported):**
+```json
+{
+  "data": {
+    "inductee": "Jane Smith",
+    "building": "Elementary School",
+    "assignment": "Mathematics",
+    "mentorTeacher": "John Mentor",
+    "schoolYearOne": "2024-2025",
+    "schoolYearTwo": "2025-2026",
+    "summerAcademy": [...],
+    "signatures": {...}
+  }
+}
+```
+
+### Parser Features
+
+- **Automatic Detection**: `isJsonClobFormat()` detects data format
+- **Backward Compatibility**: Legacy format continues to work
+- **Error Handling**: Graceful fallback if JSON_CLOB parsing fails
+- **Type Safety**: Full TypeScript support with `JsonClobEntry` interface
+- **PowerSchool Integration**: Works with `JSON_ARRAYAGG(JSON_OBJECT('JSON_CLOB' VALUE json_clob))` SQL
 
 ---
 
@@ -98,5 +181,7 @@ sequenceDiagram
 
 - The plugin is a **Svelte app embedded as a custom element** in PowerSchool pages.
 - It **loads JSON data** for form configuration and content.
+- **JSON_CLOB format support** enables PowerSchool database integration with backward compatibility.
 - The UI is **modular, data-driven, and role-aware**.
 - PowerSchool integration is via **standard UI chrome and embedding**, **not via embedded SQL or global variables**.
+- **Data persistence** uses PowerSchool's JSON_CLOB field format for seamless database storage.

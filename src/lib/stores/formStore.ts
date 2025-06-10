@@ -91,6 +91,19 @@ export interface Editability {
 // --- User Role Type ---
 export type UserRole = 'admin' | 'mentor' | 'mentee';
 
+// --- JSON_CLOB Structure Interface ---
+export interface JsonClobEntry {
+  JSON_CLOB: string;
+}
+
+// --- Raw Configuration Interface (before parsing JSON_CLOB) ---
+export interface RawFormConfig {
+  userRole: UserRole;
+  options: FormOptions;
+  editable: Editability;
+  data: FormData | JsonClobEntry[]; // Support both old and new formats
+}
+
 // --- UPDATED: Combined Configuration Interface ---
 export interface FormConfig {
   data: FormData;
@@ -107,6 +120,58 @@ export function createEmptyActivity<T extends BaseActivity>(additionalProps: Omi
     verification: "",
     ...additionalProps
   } as T;
+}
+
+// --- JSON_CLOB Helper Functions ---
+
+/**
+ * Parse JSON_CLOB data from the raw configuration
+ * @param rawConfig - Raw configuration that may contain JSON_CLOB array
+ * @returns Parsed FormConfig with actual FormData
+ */
+export function parseFormConfig(rawConfig: RawFormConfig): FormConfig {
+  let formData: FormData;
+
+  // Check if data is in JSON_CLOB array format
+  if (Array.isArray(rawConfig.data) && rawConfig.data.length > 0 && 'JSON_CLOB' in rawConfig.data[0]) {
+    try {
+      // Parse the JSON_CLOB string from the first array element
+      const jsonClobEntry = rawConfig.data[0] as JsonClobEntry;
+      formData = JSON.parse(jsonClobEntry.JSON_CLOB) as FormData;
+      console.log('[parseFormConfig] Parsed JSON_CLOB data:', formData);
+    } catch (error) {
+      console.error('[parseFormConfig] Error parsing JSON_CLOB:', error);
+      // Fall back to initial empty data
+      formData = initialFormData;
+    }
+  } else if (typeof rawConfig.data === 'object' && !Array.isArray(rawConfig.data)) {
+    // Legacy format - data is already a FormData object
+    formData = rawConfig.data as FormData;
+    console.log('[parseFormConfig] Using legacy data format:', formData);
+  } else {
+    // Invalid format - use initial data
+    console.warn('[parseFormConfig] Invalid data format, using initial data');
+    formData = initialFormData;
+  }
+
+  return {
+    data: formData,
+    userRole: rawConfig.userRole,
+    options: rawConfig.options,
+    editable: rawConfig.editable
+  };
+}
+
+/**
+ * Check if the raw config contains JSON_CLOB format
+ * @param rawConfig - Raw configuration to check
+ * @returns true if using JSON_CLOB format
+ */
+export function isJsonClobFormat(rawConfig: RawFormConfig): boolean {
+  return Array.isArray(rawConfig.data) && 
+         rawConfig.data.length > 0 && 
+         typeof rawConfig.data[0] === 'object' && 
+         'JSON_CLOB' in rawConfig.data[0];
 }
 
 // --- Initial Values ---
@@ -316,15 +381,29 @@ export function saveForm(): void {
 }
 
 // Set Form Configuration
-export function setFormConfig(config: FormConfig, preserveVerifications = false): void {
-  // Add checks if necessary to ensure config has data, options, editable, userRole
-  if (config && config.data && config.options && config.editable && config.userRole) {
-     formConfigStore.set(config);
-     formStore.set(config.data);
+export function setFormConfig(config: FormConfig | RawFormConfig, preserveVerifications = false): void {
+  let processedConfig: FormConfig;
+
+  // Check if we need to parse JSON_CLOB format
+  if ('data' in config && Array.isArray(config.data)) {
+    // This is a RawFormConfig that needs parsing
+    processedConfig = parseFormConfig(config as RawFormConfig);
+    console.log('[setFormConfig] Parsed RawFormConfig to FormConfig:', processedConfig);
   } else {
-   console.error("Invalid config passed to setFormConfig", config);
-   // Handle error appropriately - maybe set to initial state?
-   // formConfigStore.set(initialFormConfig);
-   // formStore.set(initialFormData);
+    // This is already a FormConfig
+    processedConfig = config as FormConfig;
+    console.log('[setFormConfig] Using FormConfig directly:', processedConfig);
+  }
+
+  // Validate the processed config
+  if (processedConfig && processedConfig.data && processedConfig.options && processedConfig.editable && processedConfig.userRole) {
+    formConfigStore.set(processedConfig);
+    formStore.set(processedConfig.data);
+    console.log('[setFormConfig] Successfully set form configuration');
+  } else {
+    console.error("Invalid config passed to setFormConfig", processedConfig);
+    // Handle error appropriately - set to initial state
+    formConfigStore.set(initialFormConfig);
+    formStore.set(initialFormData);
   }
 }

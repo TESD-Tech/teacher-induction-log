@@ -66,9 +66,49 @@ This project is a Svelte 5 application packaged as a **custom element** for embe
 
 - PowerSchool page loads `<teacher-induction-log-app>`.
 - The app fetches JSON config.
+- **JSON_CLOB parsing** automatically handles both legacy and new data formats.
 - Config is stored in Svelte stores.
 - UI components bind to store data.
 - User edits update stores.
+- **Form submission** uses JSON_CLOB format for PowerSchool database integration.
+
+### JSON_CLOB Data Format Support
+
+The application supports **dual data formats** for seamless PowerSchool integration:
+
+#### New JSON_CLOB Format (PowerSchool Database)
+```json
+{
+  "data": [
+    {
+      "JSON_CLOB": "{\"inductee\":\"Teacher Name\",\"building\":\"School\",\"assignment\":\"Subject\",\"mentorTeacher\":\"Mentor Name\",\"schoolYearOne\":\"2024-2025\",\"schoolYearTwo\":\"2025-2026\",\"summerAcademy\":[...],\"signatures\":{...}}"
+    }
+  ]
+}
+```
+
+#### Legacy Format (Still Supported)
+```json
+{
+  "data": {
+    "inductee": "Teacher Name",
+    "building": "School Name",
+    "assignment": "Subject Area",
+    "mentorTeacher": "Mentor Name",
+    "schoolYearOne": "2024-2025",
+    "schoolYearTwo": "2025-2026",
+    "summerAcademy": [...],
+    "signatures": {...}
+  }
+}
+```
+
+#### Features
+- **Automatic Detection**: Parser automatically identifies data format
+- **Backward Compatibility**: Legacy JSON format continues to work
+- **Error Handling**: Graceful fallback if JSON_CLOB parsing fails
+- **Type Safety**: Full TypeScript support with proper interfaces
+- **PowerSchool Integration**: Compatible with `JSON_ARRAYAGG(JSON_OBJECT('JSON_CLOB' VALUE json_clob))` SQL queries
 
 ---
 

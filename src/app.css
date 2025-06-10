@@ -22,7 +22,7 @@
 /* Force light mode */
 :global(html) {
   color-scheme: light;
-  background-color: #FFD700; /* Gold background */
+  background-color:rgb(255, 196, 0); /* Gold background */
 }
 
 a {

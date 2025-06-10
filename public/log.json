@@ -42,43 +42,5 @@
       {"name": "2026-2027", "dcid": "2026-2027"}
     ]
   },
-  "data": {
-    "inductee": "Jane Smith",
-    "building": "Edison Elementary",
-    "assignment": "2nd Grade",
-    "mentorTeacher": "Robert Johnson",
-    "schoolYearOne": "2024-2025",
-    "schoolYearTwo": "2025-2026",
-    "summerAcademy": [
-      { "day": "Day 1", "dateYearOne": "2024-08-15", "dateYearTwo": "", "verification": "RJ" },
-      { "day": "Day 2", "dateYearOne": "2024-08-16", "dateYearTwo": "", "verification": "RJ" },
-      { "day": "Day 3", "dateYearOne": "2024-08-17", "dateYearTwo": "", "verification": "" },
-      { "day": "Day 4", "dateYearOne": "2024-08-18", "dateYearTwo": "", "verification": "" }
-    ],
-    "inductionSeminars": [
-      { "number": 1, "topic": "Classroom Management", "dateYearOne": "2024-09-10", "dateYearTwo": "", "verification": "RJ" },
-      { "number": 2, "topic": "Differentiated Instruction", "dateYearOne": "2024-10-15", "dateYearTwo": "", "verification": "" },
-      { "number": 3, "topic": "Assessment Strategies", "dateYearOne": "", "dateYearTwo": "", "verification": "" },
-      { "number": 4, "topic": "Technology Integration", "dateYearOne": "", "dateYearTwo": "", "verification": "" }
-    ],
-    "mentorMeetings": [
-      { "date": "2024-09-05", "topic": "First Week Reflection", "dateYearOne": "2024-09-05", "dateYearTwo": "", "verification": "RJ" },
-      { "date": "2024-10-03", "topic": "Parent-Teacher Conferences Prep", "dateYearOne": "2024-10-03", "dateYearTwo": "", "verification": "RJ" }
-    ],
-    "teamMeetings": [
-      { "date": "2024-09-12", "topic": "Grade Level Planning", "dateYearOne": "2024-09-12", "dateYearTwo": "", "verification": "RJ" }
-    ],
-    "classroomVisits": [
-      { "date": "2024-09-20", "teacher": "Sarah Williams", "subject": "Reading Workshop", "dateYearOne": "2024-09-20", "dateYearTwo": "", "verification": "RJ" }
-    ],
-    "otherActivities": [
-      { "date": "2024-09-25", "activity": "Parent Night", "dateYearOne": "2024-09-25", "dateYearTwo": "", "verification": "RJ" }
-    ],
-    "signatures": {
-      "mentorTeacher": "",
-      "buildingPrincipal": "",
-      "superintendent": "",
-      "date": ""
-    }
-  }
+  "data": [{"JSON_CLOB":"{\"inductee\":\"Esther Tester\",\"building\":\"Hillside Elementary School\",\"assignment\":\"Mathematics\",\"mentorTeacher\":\"Valerie Cunningham\",\"mentorNames\":[\"Robert Johnson\",\"Ada Lovelace\",\"Patti Smith\"],\"schoolYearOne\":\"2024-2025\",\"schoolYearTwo\":\"2025-2026\",\"summerAcademy\":[{\"day\":\"Day 1\",\"dateYearOne\":\"2024-08-15\",\"dateYearTwo\":\"\",\"verification\":\"BJK\"},{\"day\":\"Day 2\",\"dateYearOne\":\"2024-08-16\",\"dateYearTwo\":\"\",\"verification\":\"BJK\"},{\"day\":\"Day 3\",\"dateYearOne\":\"2024-08-17\",\"dateYearTwo\":\"\",\"verification\":\"\"},{\"day\":\"Day 4\",\"dateYearOne\":\"2024-08-18\",\"dateYearTwo\":\"\",\"verification\":\"\"}],\"inductionSeminars\":[{\"number\":1,\"topic\":\"Classroom Management\",\"dateYearOne\":\"2024-09-10\",\"dateYearTwo\":\"\",\"verification\":\"BJK\"},{\"number\":2,\"topic\":\"Differentiated Instruction\",\"dateYearOne\":\"2024-10-15\",\"dateYearTwo\":\"\",\"verification\":\"\"},{\"number\":3,\"topic\":\"Assessment Strategies\",\"dateYearOne\":\"\",\"dateYearTwo\":\"\",\"verification\":\"\"},{\"number\":4,\"topic\":\"Technology Integration\",\"dateYearOne\":\"\",\"dateYearTwo\":\"\",\"verification\":\"\"}],\"mentorMeetings\":[{\"date\":\"2024-09-05\",\"topic\":\"First Week Reflection\",\"dateYearOne\":\"2024-09-05\",\"dateYearTwo\":\"\",\"verification\":\"BJK\"},{\"date\":\"2024-10-03\",\"topic\":\"Parent-Teacher Conferences Prep\",\"dateYearOne\":\"2024-10-03\",\"dateYearTwo\":\"\",\"verification\":\"BJK\"}],\"teamMeetings\":[{\"date\":\"2024-09-12\",\"topic\":\"Math Department Planning\",\"dateYearOne\":\"2024-09-12\",\"dateYearTwo\":\"\",\"verification\":\"BJK\"}],\"classroomVisits\":[{\"date\":\"2024-09-20\",\"teacher\":\"Sarah Williams\",\"subject\":\"Algebra II\",\"dateYearOne\":\"2024-09-20\",\"dateYearTwo\":\"\",\"verification\":\"BJK\"}],\"otherActivities\":[{\"date\":\"2024-09-25\",\"activity\":\"Math Club Supervision\",\"dateYearOne\":\"2024-09-25\",\"dateYearTwo\":\"\",\"verification\":\"BJK\"}],\"signatures\":{\"mentorTeacher\":\"\",\"buildingPrincipal\":\"\",\"superintendent\":\"\",\"date\":\"2025-04-17\"}}"}]
 }

@@ -64,7 +64,14 @@ WHERE terms.ABBREVIATION LIKE '%-%'
 ) foo;]~(json_string)[/tlist_sql]
   },
   "data": ~[tlist_sql;
-    SELECT json_clob FROM U_TESD_Teacher_Induction_Log
+    SELECT JSON_ARRAYAGG(
+      JSON_OBJECT(
+        'JSON_CLOB' VALUE json_clob
+        RETURNING CLOB
+      )
+      RETURNING CLOB
+    ) obj
+    FROM U_TESD_Teacher_Induction_Log
     WHERE U_TESD_Teacher_Induction_Log.usersdcid = ( SELECT dcid FROM users WHERE teachernumber = '~(teachernumber)' )
 ;]~(json_string)[/tlist_sql]
 }

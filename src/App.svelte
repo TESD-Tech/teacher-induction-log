@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import InductionLog from './lib/InductionLog.svelte';
-  // Ensure this type import points to the updated FormConfig interface
-  import type { FormConfig } from './lib/stores/formStore'; 
+  // Import both FormConfig and RawFormConfig for type safety
+  import type { FormConfig, RawFormConfig } from './lib/stores/formStore'; 
   import { setFormConfig } from './lib/stores/formStore';
   import './assets/global.css';
   import './assets/print.css';
@@ -69,16 +69,22 @@
         throw new Error(`Failed to fetch configuration: ${response.status} ${response.statusText}`);
       }
       
-      const data = await response.json();
-      // Assume fetched data structure matches FormConfig (data, userRole, options, editable)
-      // Add runtime validation here if needed for extra safety
-      loadedConfig = data as FormConfig; 
+      const rawData = await response.json();
+      console.log('Raw fetched data:', rawData);
       
-      console.log('Successfully loaded configuration:', loadedConfig);
+      // The fetched data might be in RawFormConfig format (with JSON_CLOB array)
+      // setFormConfig will handle the parsing automatically
+      setFormConfig(rawData as RawFormConfig);
       
-      // Update the form store with the loaded configuration
-      setFormConfig(loadedConfig); // Pass the full config object
-      config = loadedConfig; // Update local state for conditional rendering
+      // Get the processed config from the store for local state
+      const { formConfigStore } = await import('./lib/stores/formStore');
+      const unsubscribe = formConfigStore.subscribe((value: FormConfig) => {
+        loadedConfig = value;
+        config = value;
+      });
+      unsubscribe(); // Immediately unsubscribe since we just need the current value
+      
+      console.log('Successfully loaded and processed configuration:', loadedConfig);
 
     } catch (err) {
       console.error('Error loading configuration:', err);
@@ -86,7 +92,7 @@
       
       // --- UPDATED Fallback Configuration ---
       // Create a complete hardcoded configuration matching FormConfig interface
-      loadedConfig = { 
+      const fallbackConfig: FormConfig = { 
         userRole: 'mentee', // Default role for fallback
         // Default options (can be empty or contain example values)
         options: { 
@@ -141,8 +147,8 @@
       };
       
       // Update the form store with the complete fallback configuration
-      setFormConfig(loadedConfig); 
-      config = loadedConfig; // Update local state for conditional rendering
+      setFormConfig(fallbackConfig); 
+      config = fallbackConfig; // Update local state for conditional rendering
       
     } finally {
       loading = false;
