@@ -1,5 +1,37 @@
-/* Import Open Sans font */
+/* Import Open Sans font - must come first */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
+/* Tailwind CSS v4 */
+@import "tailwindcss";
+
+/* Custom theme configuration */
+@theme {
+  --color-primary-50: #f0f8f0;
+  --color-primary-100: #dcefdc;
+  --color-primary-200: #bbe0bb;
+  --color-primary-300: #8cc88c;
+  --color-primary-400: #5aa55a;
+  --color-primary-500: #2e7d32;
+  --color-primary-600: #1b5e20;
+  --color-primary-700: #1a4f1b;
+  --color-primary-800: #1a3f1a;
+  --color-primary-900: #183418;
+  
+  --color-secondary-50: #fef7e0;
+  --color-secondary-100: #feebc7;
+  --color-secondary-200: #fcd34d;
+  --color-secondary-300: #f9a825;
+  --color-secondary-400: #f57f17;
+  --color-secondary-500: #e65100;
+  --color-secondary-600: #bf360c;
+  --color-secondary-700: #8d2b0b;
+  --color-secondary-800: #5d1f0a;
+  --color-secondary-900: #3e1308;
+  
+  --color-background: #F8F1E5;
+  
+  --font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
 
 /* Base styles */
 

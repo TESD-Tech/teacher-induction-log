@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import InductionLog from './lib/InductionLog.svelte';
+  import AdminPanel from './lib/AdminPanel.svelte';
   // Import both FormConfig and RawFormConfig for type safety
   import type { FormConfig, RawFormConfig } from './lib/stores/formStore'; 
   import { setFormConfig } from './lib/stores/formStore';
@@ -21,6 +22,18 @@
       viewMode: urlParams.get('view'),
       frn: urlParams.get('frn')
     };
+  }
+
+  // Check if we should show admin panel based on URL
+  function isAdminView(): boolean {
+    const pathname = window.location.pathname;
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Check for admin in path or admin=true parameter
+    return pathname.includes('/admin') || 
+           pathname.includes('adminpanel') || 
+           urlParams.get('admin') === 'true' ||
+           urlParams.get('view') === 'admin';
   }
 
   // Determine the correct JSON endpoint based on the current URL
@@ -179,16 +192,24 @@
 
 <main>
   {#if loading}
-    <p>Loading Induction Log...</p>
+    <p>Loading...</p>
   {:else if error}
-     <p style="color: red; text-align: center; padding: 1rem;">
+    <p style="color: red; text-align: center; padding: 1rem;">
       Error loading configuration. Displaying default/fallback data. Some options may be limited.
     </p>
-    <InductionLog userType={effectiveUserType()} /> 
+    {#if isAdminView()}
+      <AdminPanel />
+    {:else}
+      <InductionLog userType={effectiveUserType()} />
+    {/if}
   {:else if config}
-    <InductionLog userType={effectiveUserType()} /> 
+    {#if isAdminView()}
+      <AdminPanel />
+    {:else}
+      <InductionLog userType={effectiveUserType()} />
+    {/if}
   {:else}
-     <p>Cannot display Induction Log.</p>
+    <p>Cannot display application.</p>
   {/if}
 </main>
 

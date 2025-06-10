@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test - Custom Element Registration</title>
+    <style>
+        body {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .debug {
+            background: #f0f0f0;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Test - Custom Element Registration</h1>
+    
+    <div class="debug">
+        <h3>Before loading main.ts:</h3>
+        <p id="before-check">Checking...</p>
+    </div>
+    
+    <div class="debug">
+        <h3>Admin Panel Component:</h3>
+        <teacher-induction-admin-app id="admin-panel"></teacher-induction-admin-app>
+    </div>
+    
+    <div class="debug">
+        <h3>After loading main.ts:</h3>
+        <p id="after-check">Checking...</p>
+    </div>
+    
+    <script>
+        // Check before loading
+        document.getElementById('before-check').textContent = 
+            `teacher-induction-admin-app registered: ${!!customElements.get('teacher-induction-admin-app')}`;
+        
+        console.log('=== DEBUG TEST START ===');
+        console.log('Custom elements before import:', customElements.get('teacher-induction-admin-app'));
+    </script>
+    
+    <!-- Load the main application bundle -->
+    <script type="module" src="/src/main.ts"></script>
+    
+    <script type="module">
+        // Check after loading with a delay
+        setTimeout(() => {
+            console.log('Custom elements after import:', customElements.get('teacher-induction-admin-app'));
+            document.getElementById('after-check').textContent = 
+                `teacher-induction-admin-app registered: ${!!customElements.get('teacher-induction-admin-app')}`;
+            
+            // Check if the element has content
+            const adminPanel = document.getElementById('admin-panel');
+            console.log('Admin panel element:', adminPanel);
+            console.log('Admin panel innerHTML length:', adminPanel?.innerHTML?.length || 0);
+            console.log('=== DEBUG TEST END ===');
+        }, 500);
+    </script>
+</body>
+</html>

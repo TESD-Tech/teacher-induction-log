@@ -4,6 +4,9 @@ import App from './App.svelte'; // Your main app component
 
 console.log('Importing component modules to trigger custom element registration...');
 
+// Import AdminPanel specifically to register the custom element
+import './lib/AdminPanel.svelte';
+
 // Use import.meta.glob to find and eagerly import components
 // This ensures the code runs and <svelte:options customElement="tag-name"> takes effect.
 const componentModules = import.meta.glob('/src/lib/components/**/*.svelte', { eager: true });
@@ -12,6 +15,7 @@ const componentModules = import.meta.glob('/src/lib/components/**/*.svelte', { e
 setTimeout(() => {
   console.log('Checking registrations:');
   console.log('ps-cover-page registered:', !!customElements.get('ps-cover-page'));
+  console.log('teacher-induction-admin-app registered:', !!customElements.get('teacher-induction-admin-app'));
   // Add other elements you expect to be registered
 }, 100);
 
