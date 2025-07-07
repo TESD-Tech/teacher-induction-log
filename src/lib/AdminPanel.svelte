@@ -225,7 +225,7 @@
   .admin-panel {
     width: 100%;
     margin: 0;
-    padding: 0;
+    padding: 2rem;
     min-height: 100vh;
     font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: #fbca28;
@@ -243,9 +243,7 @@
   }
 
   .header-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 1rem 1.5rem;
+      padding: 1rem 1.5rem;
   }
 
   .header-content {
@@ -301,20 +299,19 @@
 
   /* Main Content Area */
   .main-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    width: 100%;
   }
 
   /* Content Cards */
   .content-card {
     background: white;
-    border-radius: 6px;
+    border-radius: 0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
+    padding: 2rem;
     border: 1px solid #ddd;
   }
 
@@ -324,10 +321,13 @@
 
   .main-content-card {
     background: white;
-    border-radius: 6px;
+    border-radius: 0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     border: 1px solid #ddd;
+    padding: 2rem;
+    width: 100%;
+    max-width: none;
   }
 
   /* Search Section */
@@ -339,7 +339,6 @@
 
   .search-input-container {
     flex: 1;
-    max-width: 500px;
   }
 
   .search-input {
@@ -371,8 +370,6 @@
   }
 
   .placeholder-content {
-    max-width: 400px;
-    margin: 0 auto;
   }
 
   .placeholder-icon {
@@ -396,8 +393,11 @@
   .bulk-actions-bar {
     background: #e3f2fd;
     border: 1px solid #2196f3;
-    border-radius: 4px;
-    padding: 1rem 1.5rem;
+    border-radius: 0;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .bulk-actions-bar.compact {
@@ -512,7 +512,6 @@
     color: #6b7280;
     margin-bottom: 2rem;
     line-height: 1.6;
-    max-width: 400px;
   }
 
   /* Animations */

@@ -73,15 +73,12 @@
   }
   
   .form-content {
-    max-width: 1400px;
     width: 100%;
-    margin: 0 auto;
     padding: 20px;
     padding-top: 65px; /* Increased top padding to account for fixed header */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: center;
   }
   
   .form-container {
@@ -92,7 +89,6 @@
     margin-bottom: 2rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
   }
   
   .log-content {
