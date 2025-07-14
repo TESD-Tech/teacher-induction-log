@@ -7,6 +7,14 @@
       "districtLevelContext": 0,
       "pageURL": "/admin/faculty/teacher-induction-log.html?frn=~(teacherfrn)",
       "parentHTMLID": "navStaffStaffDetails"
+    },
+    {
+      "htmlID": "navPsTeacherInductionLogAdmin",
+      "title": "Teacher Induction Log Administration",
+      "version": "25.06.07",
+      "districtLevelContext": 0,
+      "pageURL": "/admin/faculty/teacher-induction-log-admin.html",
+      "parentHTMLID": "navApplicationsSection"
     }
   ]
 }
