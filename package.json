@@ -1,7 +1,7 @@
 {
   "name": "teacher-induction-log",
   "private": true,
-  "version": "25.07.01",
+  "version": "25.07.04",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,25 +13,27 @@
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^5.1.0",
+    "@sveltejs/adapter-auto": "^6.0.1",
+    "@sveltejs/kit": "^2.24.0",
+    "@sveltejs/vite-plugin-svelte": "^6.0.0",
     "@tesd-tech/ps-package": "^24.11.9",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.8",
     "@testing-library/user-event": "^14.6.1",
     "@tsconfig/svelte": "^5.0.4",
-    "@types/node": "^22.15.30",
+    "@types/node": "^24.0.14",
     "@vitest/coverage-c8": "^0.33.0",
-    "@vitest/coverage-v8": "^3.2.2",
-    "@vitest/ui": "^3.2.2",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
     "autoprefixer": "^10.4.21",
     "jsdom": "^26.1.0",
-    "postcss": "^8.5.4",
-    "svelte": "^5.33.14",
-    "svelte-check": "^4.2.1",
+    "postcss": "^8.5.6",
+    "svelte": "^5.36.1",
+    "svelte-check": "^4.2.2",
     "typescript": "~5.8.3",
-    "vite": "^6.3.5",
-    "vitest": "^3.2.2"
+    "vite": "^7.0.4",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "carbon-icons-svelte": "^13.4.0"

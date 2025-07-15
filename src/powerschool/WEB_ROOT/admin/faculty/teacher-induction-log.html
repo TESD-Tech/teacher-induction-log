@@ -103,49 +103,7 @@
   <!-- breadcrumb end -->
   ~[wc:admin_navigation_frame_css]
 
-  <!-- DEV TOOLBAR: Only show in pnpm dev (localhost or 127.0.0.1) -->
-  <script>
-    (function() {
-      const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      if (!isDev) return;
-      // Create toolbar
-      const toolbar = document.createElement('div');
-      toolbar.id = 'dev-user-toolbar';
-      toolbar.style.cssText = `
-        position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-        background: #222; color: #fff; padding: 8px 16px; display: flex; align-items: center;
-        font-family: sans-serif; font-size: 15px; box-shadow: 0 2px 8px #0002;
-      `;
-      toolbar.innerHTML = `
-        <span style="margin-right: 12px; font-weight: bold;">User Type:</span>
-        <select id="dev-user-type-select" style="margin-right: 12px; font-size: 15px;">
-          <option value="admin">Admin</option>
-          <option value="mentor">Mentor</option>
-          <option value="mentee">Mentee</option>
-        </select>
-        <span style="opacity:0.7;">(Development Only)</span>
-      `;
-      document.body.prepend(toolbar);
-      // Offset page content
-      document.body.style.paddingTop = '48px';
-      // Restore last selection
-      const select = document.getElementById('dev-user-type-select');
-      const last = localStorage.getItem('devUserType') || 'admin';
-      select.value = last;
-      // Set attribute on custom element
-      function updateUserType(val) {
-        const el = document.getElementById('induction-admin-app') || document.querySelector('teacher-induction-admin-app');
-        if (el) el.setAttribute('user-type', val);
-        localStorage.setItem('devUserType', val);
-      }
-      select.addEventListener('change', e => updateUserType(e.target.value));
-      // Initial set
-      updateUserType(select.value);
-    })();
-  </script>
-  <!-- END DEV TOOLBAR -->
-
-  <teacher-induction-log-app id="induction-log-app"></teacher-induction-log-app>
+  <teacher-induction-log-app id="induction-log-app"></teacher-induction-log-app> 
 
   ~[if#directory.~[directory]=admin]
 			<form action="/admin/changesrecorded.white.html?frn=~(frn)" method="POST">

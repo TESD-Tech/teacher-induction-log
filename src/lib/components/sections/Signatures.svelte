@@ -7,7 +7,7 @@
   // import type { Signatures } from '../../stores/formStore'; 
   
   import { canEdit } from '../../permissions';
-  export let userType: string | undefined = undefined;
+  export const userType: string | undefined = undefined;
 </script>
 
 {#if $formStore.signatures}

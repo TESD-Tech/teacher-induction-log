@@ -35,11 +35,13 @@
   <div 
     class="modal-backdrop" 
     onclick={handleBackdropClick}
+    onkeydown={(e) => e.key === 'Escape' && onClose()}
     role="dialog"
     aria-modal="true"
     aria-labelledby="settings-modal-title"
+    tabindex="0"
   >
-    <div class="modal-content" onclick={(e) => e.stopPropagation()}>
+    <div class="modal-content" role="document">
       <div class="modal-header">
         <h2 id="settings-modal-title" class="modal-title">Admin Panel Settings</h2>
         <button class="modal-close" onclick={onClose}>×</button>

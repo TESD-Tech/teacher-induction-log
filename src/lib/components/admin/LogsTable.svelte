@@ -303,10 +303,11 @@
               <td class="school-year-cell">{log.data.schoolYearOne || '—'}</td>
             {/if}
             {#if isColumnVisible('status')}
+              {@const StatusIcon = getStatusIcon(log.completionStatus)}
               <td class="status-cell">
                 <span class="status-badge {getStatusClass(log.completionStatus)}">
                   <span class="status-icon">
-                    <svelte:component this={getStatusIcon(log.completionStatus)} size={14} />
+                    <StatusIcon size={14} />
                   </span>
                   {getStatusText(log.completionStatus)}
                 </span>

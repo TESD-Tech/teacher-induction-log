@@ -3,7 +3,7 @@
     {
       "htmlID": "navPsTeacherInductionLog",
       "title": "Teacher Induction Log",
-      "version": "25.07.01",
+      "version": "25.07.04",
       "districtLevelContext": 0,
       "pageURL": "/admin/faculty/teacher-induction-log.html?frn=~(teacherfrn)",
       "parentHTMLID": "navStaffStaffDetails"
@@ -11,9 +11,9 @@
     {
       "htmlID": "navPsTeacherInductionLogAdmin",
       "title": "Teacher Induction Log Administration",
-      "version": "25.07.01",
+      "version": "25.07.04",
       "districtLevelContext": 0,
-      "pageURL": "/admin/faculty/teacher-induction-log-admin.html",
+      "pageURL": "/admin/teacher-induction-log/teacher-induction-log-admin.html",
       "parentHTMLID": "navApplicationsSection"
     }
   ]
