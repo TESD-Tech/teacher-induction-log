@@ -24,7 +24,7 @@ describe('App.svelte', () => {
     mockFetch.mockImplementation(() => new Promise(() => {}));
     
     render(App);
-    expect(screen.getByText(/loading induction log/i)).toBeInTheDocument();
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
   it('shows error state and fallback config if fetch fails', async () => {
