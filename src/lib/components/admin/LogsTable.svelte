@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-logs-table" />
+
 <script lang="ts">
   import { filteredLogs, appActions, appStore, type ParsedLogEntry } from '../../stores/appStore';
   import { settingsStore } from '../../stores/settingsStore';

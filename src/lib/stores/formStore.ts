@@ -125,6 +125,47 @@ export function createEmptyActivity<T extends BaseActivity>(additionalProps: Omi
 // --- JSON_CLOB Helper Functions ---
 
 /**
+ * Migrate old data format with "verification" field to new format with separate initials fields
+ * @param data - FormData that may contain old format activities
+ * @returns FormData with migrated activities
+ */
+export function migrateFormData(data: FormData): FormData {
+  const migrateActivity = (activity: any): BaseActivity => {
+    // If activity has old "verification" field, migrate it
+    if (activity.verification !== undefined) {
+      const { verification, ...rest } = activity;
+      return {
+        ...rest,
+        initialsYearOne: verification || "",
+        initialsYearTwo: verification || "",
+        // Ensure all required fields exist
+        dateYearOne: activity.dateYearOne || "",
+        dateYearTwo: activity.dateYearTwo || ""
+      };
+    }
+    
+    // If activity already has new format, ensure all fields exist
+    return {
+      ...activity,
+      dateYearOne: activity.dateYearOne || "",
+      dateYearTwo: activity.dateYearTwo || "",
+      initialsYearOne: activity.initialsYearOne || "",
+      initialsYearTwo: activity.initialsYearTwo || ""
+    };
+  };
+
+  return {
+    ...data,
+    summerAcademy: data.summerAcademy?.map(migrateActivity) || [],
+    inductionSeminars: data.inductionSeminars?.map(migrateActivity) || [],
+    mentorMeetings: data.mentorMeetings?.map(migrateActivity) || [],
+    teamMeetings: data.teamMeetings?.map(migrateActivity) || [],
+    classroomVisits: data.classroomVisits?.map(migrateActivity) || [],
+    otherActivities: data.otherActivities?.map(migrateActivity) || []
+  };
+}
+
+/**
  * Parse JSON_CLOB data from the raw configuration
  * @param rawConfig - Raw configuration that may contain JSON_CLOB array
  * @returns Parsed FormConfig with actual FormData
@@ -137,21 +178,23 @@ export function parseFormConfig(rawConfig: RawFormConfig): FormConfig {
     try {
       // Parse the JSON_CLOB string from the first array element
       const jsonClobEntry = rawConfig.data[0] as JsonClobEntry;
-      formData = JSON.parse(jsonClobEntry.JSON_CLOB) as FormData;
-      console.log('[parseFormConfig] Parsed JSON_CLOB data:', formData);
+      const parsedData = JSON.parse(jsonClobEntry.JSON_CLOB) as FormData;
+      // Apply migration to handle old "verification" field format
+      formData = migrateFormData(parsedData);
+      console.log('[parseFormConfig] Parsed and migrated JSON_CLOB data:', formData);
     } catch (error) {
       console.error('[parseFormConfig] Error parsing JSON_CLOB:', error);
       // Fall back to initial empty data
       formData = initialFormData;
     }
   } else if (typeof rawConfig.data === 'object' && !Array.isArray(rawConfig.data)) {
-    // Legacy format - data is already a FormData object
-    formData = rawConfig.data as FormData;
-    console.log('[parseFormConfig] Using legacy data format:', formData);
+    // Legacy format - data is already a FormData object, but may need migration
+    formData = migrateFormData(rawConfig.data as FormData);
+    console.log('[parseFormConfig] Migrated legacy format data:', formData);
   } else {
-    // Invalid format - use initial data
-    console.warn('[parseFormConfig] Invalid data format, using initial data');
+    // No data or invalid format - use initial empty data
     formData = initialFormData;
+    console.log('[parseFormConfig] Using initial form data');
   }
 
   return {

@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-induction-log" />
+
 <script lang="ts">
   // Import section components
   import CoverPage from './components/sections/CoverPage.svelte';

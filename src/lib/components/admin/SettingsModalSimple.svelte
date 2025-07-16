@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-settings-modal-simple" />
+
 <script lang="ts">
   import { settingsStore, type AdminSettings } from '../../stores/settingsStore';
   import Button from '../ui/Button.svelte';

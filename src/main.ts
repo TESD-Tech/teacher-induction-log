@@ -1,55 +1,39 @@
 // src/main.ts (Revised Approach)
 import './app.css'; // Global styles
 import App from './App.svelte'; // Your main app component
+import AdminPanel from './lib/AdminPanel.svelte'; // Import AdminPanel directly
 
-console.log('Importing component modules to trigger custom element registration...');
-
-// Import AdminPanel specifically to register the custom element
-import './lib/AdminPanel.svelte';
+console.log('Registering Svelte custom elements...');
 
 // Use import.meta.glob to find and eagerly import components
-// This ensures the code runs and <svelte:options customElement="tag-name"> takes effect.
 const componentModules = import.meta.glob('/src/lib/components/**/*.svelte', { eager: true });
 
-// Log registered elements (might need a slight delay for registration to complete)
-setTimeout(() => {
-  console.log('Checking registrations:');
-  console.log('ps-cover-page registered:', !!customElements.get('ps-cover-page'));
-  console.log('teacher-induction-admin-app registered:', !!customElements.get('teacher-induction-admin-app'));
-  // Add other elements you expect to be registered
-}, 100);
-
-
-// --- Main Application Mounting ---
-// Keep your preferred method for mounting the main App
-// e.g., using the <ps-svelte-app> custom element wrapper class (if App itself doesn't use <svelte:options>)
-class PsSvelteApp extends HTMLElement {
-  private _appInstance: App | null = null;
-  connectedCallback() {
-    const shadow = this.attachShadow({ mode: 'open' });
-    this._appInstance = new App({ target: shadow });
-  }
-  disconnectedCallback() {
-    if (this._appInstance) {
-      this._appInstance.$destroy();
-      this._appInstance = null;
+// Register components found by glob
+for (const path in componentModules) {
+  const component = componentModules[path].default;
+  if (component && component.element) {
+    // Extract tag name from svelte:options customElement
+    // This assumes the customElement option is correctly set in each component
+    const tagName = component.element.tagName;
+    if (tagName && !customElements.get(tagName)) {
+      customElements.define(tagName, component.element);
+      console.log(`Registered <${tagName}>`);
     }
   }
 }
-// Only define ps-svelte-app if App.svelte doesn't define its own tag via <svelte:options>
-if (!customElements.get('ps-svelte-app')) {
-     customElements.define('ps-svelte-app', PsSvelteApp);
-     console.log('Registered <ps-svelte-app>');
+
+// Register App.svelte explicitly if it is a custom element
+if (App.element && !customElements.get(App.element.tagName)) {
+  customElements.define(App.element.tagName, App.element);
+  console.log(`Registered <${App.element.tagName}>`);
 }
 
+// AdminPanel is not a custom element, so we don't register it
+// The AdminPanel component is used as a regular Svelte component
 
-// OR mounting directly (if not using <ps-svelte-app>)
-/*
-const app = new App({
-  target: document.getElementById('app') || document.body,
-});
-export default app;
-*/
-
-// Note: No explicit `defineCustomElement` or `customElements.define` calls needed here
-// for components using <svelte:options customElement="tag-name">
+// --- Main Application Mounting ---
+// This part remains largely the same, but now relies on the custom elements being registered
+// by the above logic. The <ps-svelte-app> custom element is no longer needed as a wrapper
+// if App.svelte itself is a custom element.
+// The App.svelte component is now expected to be a custom element itself.
+// The main application will be mounted by the custom element in index.html.

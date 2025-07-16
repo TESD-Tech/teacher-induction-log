@@ -1,3 +1,5 @@
+<svelte:options customElement="ps-admin-dashboard" />
+
 <script lang="ts">
   import { appStats } from '../../stores/appStore';
   
