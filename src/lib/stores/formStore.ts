@@ -4,7 +4,8 @@ import { writable, get, type Writable } from 'svelte/store';
 export interface BaseActivity {
   dateYearOne: string;
   dateYearTwo: string;
-  verification: string;
+  initialsYearOne: string;
+  initialsYearTwo: string;
 }
 
 export interface SummerAcademyDay extends BaseActivity {
@@ -117,7 +118,8 @@ export function createEmptyActivity<T extends BaseActivity>(additionalProps: Omi
   return {
     dateYearOne: "",
     dateYearTwo: "",
-    verification: "",
+    initialsYearOne: "",
+    initialsYearTwo: "",
     ...additionalProps
   } as T;
 }

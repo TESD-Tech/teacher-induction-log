@@ -10,7 +10,7 @@ export function canEdit(
   }
 
   if (role === 'mentor') {
-    if (fieldKey === 'verification' || sectionId === 'signatures') {
+    if (fieldKey === 'initialsYearOne' || fieldKey === 'initialsYearTwo' || sectionId === 'signatures') {
       return true;
     }
     return false;
@@ -18,7 +18,7 @@ export function canEdit(
 
   // mentee
   if (role === 'mentee') {
-    if (fieldKey === 'verification' || sectionId === 'signatures') {
+    if (fieldKey === 'initialsYearOne' || fieldKey === 'initialsYearTwo' || sectionId === 'signatures') {
       return false;
     }
     return true;

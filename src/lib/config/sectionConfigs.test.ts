@@ -43,7 +43,7 @@ describe('sectionConfigs.ts', () => {
     });
 
     it('all fields have valid configurations', () => {
-      const validFieldTypes: FieldType[] = ['text', 'date', 'verification', 'static'];
+      const validFieldTypes = ['text', 'date', 'initialsYearOne', 'initialsYearTwo', 'static'];
       
       sectionConfigs.forEach(section => {
         section.fields.forEach(field => {
@@ -63,7 +63,7 @@ describe('sectionConfigs.ts', () => {
     it('has correct configuration', () => {
       expect(summerAcademy.title).toBe('I. Summer Academy');
       expect(summerAcademy.dataKey).toBe('summerAcademy');
-      expect(summerAcademy.headers).toEqual(['Activity', 'Date (Year 1)', 'Date (Year 2)', 'Verification']);
+      expect(summerAcademy.headers).toEqual(['Activity', 'Date (Year 1)', 'Date (Year 2)', 'Year 1 Initials', 'Year 2 Initials']);
     });
 
     it('has no actions (not dynamically editable)', () => {
@@ -74,7 +74,8 @@ describe('sectionConfigs.ts', () => {
       expect(summerAcademy.fields[0].type).toBe('static'); // day
       expect(summerAcademy.fields[1].type).toBe('date'); // dateYearOne
       expect(summerAcademy.fields[2].type).toBe('date'); // dateYearTwo
-      expect(summerAcademy.fields[3].type).toBe('verification'); // verification
+      expect(summerAcademy.fields[3].type).toBe('initialsYearOne');
+      expect(summerAcademy.fields[4].type).toBe('initialsYearTwo'); // verification
     });
   });
 

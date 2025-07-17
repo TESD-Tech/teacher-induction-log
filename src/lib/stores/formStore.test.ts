@@ -9,7 +9,7 @@ describe('formStore', () => {
     const formState = get(formStore);
     expect(formState.inductee).toBe('');
     expect(formState.summerAcademy.length).toBe(4);
-    expect(formState.mentorMeetings.length).toBe(1);
+    expect(formState.mentorMeetings.length).toBe(1); // Still 1, but now with new fields
   });
 
   it('should add a mentor meeting', () => {
@@ -49,7 +49,7 @@ describe('formStore', () => {
     mockGetElementById.mockRestore(); // Clean up the mock
     const formState = get(formStore);
     const jsonString = JSON.stringify(formState);
-    const expectedJson = '{"inductee":"","building":"","assignment":"","mentorTeacher":"","schoolYearOne":"","schoolYearTwo":"","summerAcademy":[{"dateYearOne":"","dateYearTwo":"","verification":"","day":"Day 1"},{"dateYearOne":"","dateYearTwo":"","verification":"","day":"Day 2"},{"dateYearOne":"","dateYearTwo":"","verification":"","day":"Day 3"},{"dateYearOne":"","dateYearTwo":"","verification":"","day":"Day 4"}],"inductionSeminars":[{"dateYearOne":"","dateYearTwo":"","verification":"","number":1,"topic":""},{"dateYearOne":"","dateYearTwo":"","verification":"","number":2,"topic":""},{"dateYearOne":"","dateYearTwo":"","verification":"","number":3,"topic":""},{"dateYearOne":"","dateYearTwo":"","verification":"","number":4,"topic":""}],"mentorMeetings":[],"teamMeetings":[{"dateYearOne":"","dateYearTwo":"","verification":"","date":"","topic":""}],"classroomVisits":[{"dateYearOne":"","dateYearTwo":"","verification":"","date":"","teacher":"","subject":""}],"otherActivities":[{"dateYearOne":"","dateYearTwo":"","verification":"","date":"","activity":""}],"signatures":{"mentorTeacher":"","buildingPrincipal":"","superintendent":"","date":""}}';
+    const expectedJson = '{"inductee":"","building":"","assignment":"","mentorTeacher":"","schoolYearOne":"","schoolYearTwo":"","summerAcademy":[{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","day":"Day 1"},{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","day":"Day 2"},{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","day":"Day 3"},{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","day":"Day 4"}],"inductionSeminars":[{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","number":1,"topic":""},{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","number":2,"topic":""},{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","number":3,"topic":""},{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","number":4,"topic":""}],"mentorMeetings":[],"teamMeetings":[{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","date":"","topic":""}],"classroomVisits":[{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","date":"","teacher":"","subject":""}],"otherActivities":[{"dateYearOne":"","dateYearTwo":"","initialsYearOne":"","initialsYearTwo":"","date":"","activity":""}],"signatures":{"mentorTeacher":"","buildingPrincipal":"","superintendent":"","date":""}}';
     expect(jsonString).toBe(expectedJson);
   });
 

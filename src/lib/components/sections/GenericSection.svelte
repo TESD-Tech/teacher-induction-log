@@ -65,16 +65,29 @@
               {:else}
                 <div class="readonly-field">{item[field.key]}</div>
               {/if}
-            {:else if field.type === 'verification'}
+            {:else if field.type === 'initialsYearOne'}
               {#if canEdit($formConfigStore.userRole, config.id, field.key)}
                 <input
                   type="text" 
                   bind:value={item[field.key]} 
-                  placeholder={field.placeholder || 'Initials'} 
+                  placeholder={field.placeholder || 'Initials'}
+                  maxlength="10"
                 />
               {:else}
                 <div class="readonly-field">{item[field.key]}</div>
               {/if}
+            {:else if field.type === 'initialsYearTwo'}
+              {#if canEdit($formConfigStore.userRole, config.id, field.key)}
+                <input
+                  type="text" 
+                  bind:value={item[field.key]} 
+                  placeholder={field.placeholder || 'Initials'}
+                  maxlength="10"
+                />
+              {:else}
+                <div class="readonly-field">{item[field.key]}</div>
+              {/if}
+            
             {/if}
           </td>
         {/each}

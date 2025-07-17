@@ -138,7 +138,8 @@ describe('JSON_CLOB Parsing', () => {
       expect(result.data.assignment).toBe('Mathematics');
       expect(result.data.summerAcademy).toHaveLength(1);
       expect(result.data.summerAcademy[0].day).toBe('Day 1');
-      expect(result.data.summerAcademy[0].verification).toBe('BJK');
+      expect(result.data.summerAcademy[0].initialsYearOne).toBe('BJK');
+      expect(result.data.summerAcademy[0].initialsYearTwo).toBe('BJK');
     });
 
     it('should handle legacy format correctly', () => {
@@ -248,7 +249,8 @@ describe('JSON_CLOB Parsing', () => {
       expect(formStoreValue.inductee).toBe('Test JSON_CLOB User');
       expect(formStoreValue.building).toBe('JSON_CLOB School');
       expect(formStoreValue.summerAcademy).toHaveLength(1);
-      expect(formStoreValue.summerAcademy[0].verification).toBe('TEST');
+      expect(formStoreValue.summerAcademy[0].initialsYearOne).toBe('TEST');
+      expect(formStoreValue.summerAcademy[0].initialsYearTwo).toBe('TEST');
     });
 
     it('should handle legacy format in setFormConfig', () => {

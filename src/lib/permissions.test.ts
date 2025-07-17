@@ -15,9 +15,12 @@ describe('permissions.ts', () => {
 
     describe('mentor role', () => {
       it('allows editing verification fields', () => {
-        expect(canEdit('mentor', 'summerAcademy', 'verification')).toBe(true);
-        expect(canEdit('mentor', 'inductionSeminars', 'verification')).toBe(true);
-        expect(canEdit('mentor', 'mentorMeetings', 'verification')).toBe(true);
+        expect(canEdit('mentor', 'summerAcademy', 'initialsYearOne')).toBe(true);
+        expect(canEdit('mentor', 'inductionSeminars', 'initialsYearOne')).toBe(true);
+        expect(canEdit('mentor', 'mentorMeetings', 'initialsYearOne')).toBe(true);
+        expect(canEdit('mentor', 'summerAcademy', 'initialsYearTwo')).toBe(true);
+        expect(canEdit('mentor', 'inductionSeminars', 'initialsYearTwo')).toBe(true);
+        expect(canEdit('mentor', 'mentorMeetings', 'initialsYearTwo')).toBe(true);
       });
 
       it('allows editing signatures section', () => {
@@ -43,9 +46,12 @@ describe('permissions.ts', () => {
       });
 
       it('denies editing verification fields', () => {
-        expect(canEdit('mentee', 'summerAcademy', 'verification')).toBe(false);
-        expect(canEdit('mentee', 'inductionSeminars', 'verification')).toBe(false);
-        expect(canEdit('mentee', 'mentorMeetings', 'verification')).toBe(false);
+        expect(canEdit('mentee', 'summerAcademy', 'initialsYearOne')).toBe(false);
+        expect(canEdit('mentee', 'inductionSeminars', 'initialsYearOne')).toBe(false);
+        expect(canEdit('mentee', 'mentorMeetings', 'initialsYearOne')).toBe(false);
+        expect(canEdit('mentee', 'summerAcademy', 'initialsYearTwo')).toBe(false);
+        expect(canEdit('mentee', 'inductionSeminars', 'initialsYearTwo')).toBe(false);
+        expect(canEdit('mentee', 'mentorMeetings', 'initialsYearTwo')).toBe(false);
       });
 
       it('denies editing signatures section', () => {
@@ -63,7 +69,7 @@ describe('permissions.ts', () => {
 
       it('handles empty section and field strings', () => {
         expect(canEdit('admin', '', '')).toBe(true);
-        expect(canEdit('mentor', '', 'verification')).toBe(true);
+        expect(canEdit('mentor', '', 'initialsYearOne')).toBe(true);
         expect(canEdit('mentor', 'signatures', '')).toBe(true);
         expect(canEdit('mentee', '', '')).toBe(true);
       });

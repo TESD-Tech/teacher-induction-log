@@ -1,7 +1,7 @@
 import type { SummerAcademyDay, InductionSeminar, MentorMeeting, TeamMeeting, ClassroomVisit, OtherActivity } from '../stores/formStore';
 
 // Define field types for the generic section
-export type FieldType = 'text' | 'date' | 'verification' | 'static';
+export type FieldType = 'text' | 'date' | 'initialsYearOne' | 'initialsYearTwo' | 'static';
 
 // Define a field configuration
 export interface FieldConfig {
@@ -39,13 +39,14 @@ export const config = {
       id: 'summerAcademy',
       title: 'I. Summer Academy',
       dataKey: 'summerAcademy',
-      headers: ['Activity', 'Date (Year 1)', 'Date (Year 2)', 'Verification'],
-      columnWidths: ['25%', '30%', '30%', '15%'],
+      headers: ['Activity', 'Date (Year 1)', 'Date (Year 2)', 'Year 1 Initials', 'Year 2 Initials'],
+      columnWidths: ['20%', '20%', '20%', '20%', '20%'],
       fields: [
         { type: 'static', key: 'day' },
         { type: 'date', key: 'dateYearOne' },
         { type: 'date', key: 'dateYearTwo' },
-        { type: 'verification', key: 'verification', placeholder: 'Initials' }
+        { type: 'initialsYearOne', key: 'initialsYearOne', placeholder: 'Initials' },
+        { type: 'initialsYearTwo', key: 'initialsYearTwo', placeholder: 'Initials' }
       ],
       actions: {} // No actions for Summer Academy
     },
@@ -53,14 +54,15 @@ export const config = {
       id: 'inductionSeminars',
       title: 'II. Induction Seminars',
       dataKey: 'inductionSeminars',
-      headers: ['Number', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Verification'],
-      columnWidths: ['10%', '45%', '17%', '17%', '11%'],
+      headers: ['Number', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Year 1 Initials', 'Year 2 Initials'],
+      columnWidths: ['10%', '35%', '15%', '15%', '12.5%', '12.5%'],
       fields: [
         { type: 'static', key: 'number' },
         { type: 'text', key: 'topic' },
         { type: 'date', key: 'dateYearOne' },
         { type: 'date', key: 'dateYearTwo' },
-        { type: 'verification', key: 'verification', placeholder: 'Initials' }
+        { type: 'initialsYearOne', key: 'initialsYearOne', placeholder: 'Initials' },
+        { type: 'initialsYearTwo', key: 'initialsYearTwo', placeholder: 'Initials' }
       ],
       actions: {} // No actions for Induction Seminars
     },
@@ -68,14 +70,15 @@ export const config = {
       id: 'mentorMeetings',
       title: 'III. Meetings with mentor teacher',
       dataKey: 'mentorMeetings',
-      headers: ['Date', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Verification', 'Actions'],
-      columnWidths: ['14%', '32%', '14%', '14%', '11%', '15%'],
+      headers: ['Date', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Year 1 Initials', 'Year 2 Initials', 'Actions'],
+      columnWidths: ['12%', '28%', '12%', '12%', '12%', '12%', '12%'],
       fields: [
         { type: 'date', key: 'date' },
         { type: 'text', key: 'topic' },
         { type: 'date', key: 'dateYearOne' },
         { type: 'date', key: 'dateYearTwo' },
-        { type: 'verification', key: 'verification', placeholder: 'Initials' }
+        { type: 'initialsYearOne', key: 'initialsYearOne', placeholder: 'Initials' },
+        { type: 'initialsYearTwo', key: 'initialsYearTwo', placeholder: 'Initials' }
       ],
       actions: {
         add: { handler: 'addMentorMeeting', label: 'Add Meeting' },
@@ -86,14 +89,15 @@ export const config = {
       id: 'teamMeetings',
       title: 'IV. Induction team meetings',
       dataKey: 'teamMeetings',
-      headers: ['Date', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Verification', 'Actions'],
-      columnWidths: ['14%', '32%', '14%', '14%', '11%', '15%'],
+      headers: ['Date', 'Topic', 'Date (Year 1)', 'Date (Year 2)', 'Year 1 Initials', 'Year 2 Initials', 'Actions'],
+      columnWidths: ['12%', '28%', '12%', '12%', '12%', '12%', '12%'],
       fields: [
         { type: 'date', key: 'date' },
         { type: 'text', key: 'topic' },
         { type: 'date', key: 'dateYearOne' },
         { type: 'date', key: 'dateYearTwo' },
-        { type: 'verification', key: 'verification', placeholder: 'Initials' }
+        { type: 'initialsYearOne', key: 'initialsYearOne', placeholder: 'Initials' },
+        { type: 'initialsYearTwo', key: 'initialsYearTwo', placeholder: 'Initials' }
       ],
       actions: {
         add: { handler: 'addTeamMeeting', label: 'Add Meeting' },
@@ -104,15 +108,16 @@ export const config = {
       id: 'classroomVisits',
       title: 'V. Visits to other classrooms',
       dataKey: 'classroomVisits',
-      headers: ['Date', 'Teacher', 'Subject', 'Date (Year 1)', 'Date (Year 2)', 'Verification', 'Actions'],
-      columnWidths: ['12%', '16%', '16%', '12%', '12%', '11%', '15%'],
+      headers: ['Date', 'Teacher', 'Subject', 'Date (Year 1)', 'Date (Year 2)', 'Year 1 Initials', 'Year 2 Initials', 'Actions'],
+      columnWidths: ['10%', '14%', '14%', '10%', '10%', '10%', '10%', '12%'],
       fields: [
         { type: 'date', key: 'date' },
         { type: 'text', key: 'teacher' },
         { type: 'text', key: 'subject' },
         { type: 'date', key: 'dateYearOne' },
         { type: 'date', key: 'dateYearTwo' },
-        { type: 'verification', key: 'verification', placeholder: 'Initials' }
+        { type: 'initialsYearOne', key: 'initialsYearOne', placeholder: 'Initials' },
+        { type: 'initialsYearTwo', key: 'initialsYearTwo', placeholder: 'Initials' }
       ],
       actions: {
         add: { handler: 'addClassroomVisit', label: 'Add Visit' },
@@ -123,14 +128,15 @@ export const config = {
       id: 'otherActivities',
       title: 'VI. Other: conferences, courses, etc.',
       dataKey: 'otherActivities',
-      headers: ['Date', 'Activity', 'Date (Year 1)', 'Date (Year 2)', 'Verification', 'Actions'],
-      columnWidths: ['14%', '32%', '14%', '14%', '11%', '15%'],
+      headers: ['Date', 'Activity', 'Date (Year 1)', 'Date (Year 2)', 'Year 1 Initials', 'Year 2 Initials', 'Actions'],
+      columnWidths: ['12%', '28%', '12%', '12%', '12%', '12%', '12%'],
       fields: [
         { type: 'date', key: 'date' },
         { type: 'text', key: 'activity' },
         { type: 'date', key: 'dateYearOne' },
         { type: 'date', key: 'dateYearTwo' },
-        { type: 'verification', key: 'verification', placeholder: 'Initials' }
+        { type: 'initialsYearOne', key: 'initialsYearOne', placeholder: 'Initials' },
+        { type: 'initialsYearTwo', key: 'initialsYearTwo', placeholder: 'Initials' }
       ],
       actions: {
         add: { handler: 'addOtherActivity', label: 'Add Activity' },

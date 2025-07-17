@@ -56,29 +56,29 @@ describe('GenericSection.svelte', () => {
     schoolYearOne: '2024-2025',
     schoolYearTwo: '2025-2026',
     summerAcademy: [
-      { day: 'Day 1', dateYearOne: '2024-07-01', dateYearTwo: '2025-07-01', verification: 'ABC' },
-      { day: 'Day 2', dateYearOne: '', dateYearTwo: '', verification: '' },
-      { day: 'Day 3', dateYearOne: '', dateYearTwo: '', verification: '' },
-      { day: 'Day 4', dateYearOne: '', dateYearTwo: '', verification: '' },
+      { day: 'Day 1', dateYearOne: '2024-07-01', dateYearTwo: '2025-07-01', initialsYearOne: 'ABC', initialsYearTwo: 'ABC' },
+      { day: 'Day 2', dateYearOne: '', dateYearTwo: '', initialsYearOne: '', initialsYearTwo: '' },
+      { day: 'Day 3', dateYearOne: '', dateYearTwo: '', initialsYearOne: '', initialsYearTwo: '' },
+      { day: 'Day 4', dateYearOne: '', dateYearTwo: '', initialsYearOne: '', initialsYearTwo: '' },
     ],
     inductionSeminars: [
-      { number: 1, topic: 'Orientation', dateYearOne: '2024-08-01', dateYearTwo: '', verification: 'DEF' },
-      { number: 2, topic: '', dateYearOne: '', dateYearTwo: '', verification: '' },
-      { number: 3, topic: '', dateYearOne: '', dateYearTwo: '', verification: '' },
-      { number: 4, topic: '', dateYearOne: '', dateYearTwo: '', verification: '' },
+      { number: 1, topic: 'Orientation', dateYearOne: '2024-08-01', dateYearTwo: '', initialsYearOne: 'DEF', initialsYearTwo: 'DEF' },
+      { number: 2, topic: '', dateYearOne: '', dateYearTwo: '', initialsYearOne: '', initialsYearTwo: '' },
+      { number: 3, topic: '', dateYearOne: '', dateYearTwo: '', initialsYearOne: '', initialsYearTwo: '' },
+      { number: 4, topic: '', dateYearOne: '', dateYearTwo: '', initialsYearOne: '', initialsYearTwo: '' },
     ],
     mentorMeetings: [
-      { date: '2024-09-01', topic: 'First Meeting', dateYearOne: '2024-09-01', dateYearTwo: '', verification: 'GHI' },
-      { date: '2024-10-01', topic: 'Second Meeting', dateYearOne: '2024-10-01', dateYearTwo: '', verification: 'JKL' },
+      { date: '2024-09-01', topic: 'First Meeting', dateYearOne: '2024-09-01', dateYearTwo: '', initialsYearOne: 'GHI', initialsYearTwo: 'GHI' },
+      { date: '2024-10-01', topic: 'Second Meeting', dateYearOne: '2024-10-01', dateYearTwo: '', initialsYearOne: 'JKL', initialsYearTwo: 'JKL' },
     ],
     teamMeetings: [
-      { date: '2024-09-15', topic: 'Team Collaboration', dateYearOne: '2024-09-15', dateYearTwo: '', verification: 'MNO' },
+      { date: '2024-09-15', topic: 'Team Collaboration', dateYearOne: '2024-09-15', dateYearTwo: '', initialsYearOne: 'MNO', initialsYearTwo: 'MNO' },
     ],
     classroomVisits: [
-      { date: '2024-10-15', teacher: 'Jane Smith', subject: 'Math', dateYearOne: '2024-10-15', dateYearTwo: '', verification: 'PQR' },
+      { date: '2024-10-15', teacher: 'Jane Smith', subject: 'Math', dateYearOne: '2024-10-15', dateYearTwo: '', initialsYearOne: 'PQR', initialsYearTwo: 'PQR' },
     ],
     otherActivities: [
-      { date: '2024-11-01', activity: 'Conference', dateYearOne: '2024-11-01', dateYearTwo: '', verification: 'STU' },
+      { date: '2024-11-01', activity: 'Conference', dateYearOne: '2024-11-01', dateYearTwo: '', initialsYearOne: 'STU', initialsYearTwo: 'STU' },
     ],
     signatures: {
       mentorTeacher: '',
@@ -136,12 +136,13 @@ describe('GenericSection.svelte', () => {
       expect(screen.getByText('Day 2')).toBeInTheDocument();
     });
 
-    it('should show verification header as "Initials"', () => {
+    it('should show initials headers correctly', () => {
       render(GenericSection, {
         props: { config: summerAcademyConfig as any },
       });
 
-      expect(screen.getByText('Initials')).toBeInTheDocument();
+      expect(screen.getByText('Year 1 Initials')).toBeInTheDocument();
+      expect(screen.getByText('Year 2 Initials')).toBeInTheDocument();
       expect(screen.queryByText('Verification')).not.toBeInTheDocument();
     });
 
@@ -155,15 +156,18 @@ describe('GenericSection.svelte', () => {
       expect(dateInputs.length).toBeGreaterThan(0);
     });
 
-    it('should render verification as readonly divs with correct values', () => {
+    it('should render initials as readonly divs with correct values', () => {
       render(GenericSection, {
         props: { config: summerAcademyConfig as any },
       });
 
-      // For non-editable verification/initials, expect a readonly div
-      const initialsDiv = screen.getByText('ABC');
-      expect(initialsDiv.tagName.toLowerCase()).toBe('div');
-      expect(initialsDiv).toHaveClass('readonly-field');
+      // For non-editable initials, expect a readonly div
+      const initialsDivs = screen.getAllByText('ABC');
+      expect(initialsDivs.length).toBe(2);
+      initialsDivs.forEach(div => {
+        expect(div.tagName.toLowerCase()).toBe('div');
+        expect(div).toHaveClass('readonly-field');
+      });
     });
 
     it('should not show actions column for summer academy', () => {
@@ -232,12 +236,18 @@ describe('GenericSection.svelte', () => {
       expect(screen.getByDisplayValue('Second Meeting').tagName.toLowerCase()).toBe('input');
 
       // Verification/initials is readonly, should be a div
-      const initialsDiv1 = screen.getByText('GHI');
-      expect(initialsDiv1.tagName.toLowerCase()).toBe('div');
-      expect(initialsDiv1).toHaveClass('readonly-field');
-      const initialsDiv2 = screen.getByText('JKL');
-      expect(initialsDiv2.tagName.toLowerCase()).toBe('div');
-      expect(initialsDiv2).toHaveClass('readonly-field');
+      const initialsDivsGHI = screen.getAllByText('GHI');
+      expect(initialsDivsGHI.length).toBe(2);
+      initialsDivsGHI.forEach(div => {
+        expect(div.tagName.toLowerCase()).toBe('div');
+        expect(div).toHaveClass('readonly-field');
+      });
+      const initialsDivsJKL = screen.getAllByText('JKL');
+      expect(initialsDivsJKL.length).toBe(2);
+      initialsDivsJKL.forEach(div => {
+        expect(div.tagName.toLowerCase()).toBe('div');
+        expect(div).toHaveClass('readonly-field');
+      });
     });
 
     it('should call addMentorMeeting when Add Meeting button is clicked', async () => {
@@ -438,15 +448,18 @@ describe('GenericSection.svelte', () => {
       });
     });
 
-    it('should render verification fields as readonly divs when not editable', () => {
+    it('should render initials fields as readonly divs when not editable', () => {
       render(GenericSection, {
         props: { config: mentorMeetingsConfig as any },
       });
 
-      // Verification/initials is readonly, should be a div
-      const initialsDiv = screen.getByText('GHI');
-      expect(initialsDiv.tagName.toLowerCase()).toBe('div');
-      expect(initialsDiv).toHaveClass('readonly-field');
+      // Initials fields are readonly, should be a div
+      const initialsDivs = screen.getAllByText('GHI');
+      expect(initialsDivs.length).toBe(2);
+      initialsDivs.forEach(div => {
+        expect(div.tagName.toLowerCase()).toBe('div');
+        expect(div).toHaveClass('readonly-field');
+      });
     });
 
     it('should render readonly fields when user lacks permission', () => {
@@ -557,7 +570,8 @@ describe('GenericSection.svelte', () => {
       });
 
       // Verify that headers are properly modified (Verification -> Initials)
-      expect(screen.getByText('Initials')).toBeInTheDocument();
+      expect(screen.getAllByText('Year 1 Initials').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Year 2 Initials').length).toBeGreaterThan(0);
       expect(screen.queryByText('Verification')).not.toBeInTheDocument();
 
       // Verify showActions is properly set
