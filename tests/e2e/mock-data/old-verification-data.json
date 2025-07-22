@@ -1,0 +1,7 @@
+{
+  "data": [
+    {
+      "JSON_CLOB": "{\"inductee\":\"Test User\",\"building\":\"Test School\",\"assignment\":\"Test Subject\",\"mentorTeacher\":\"Test Mentor\",\"schoolYearOne\":\"2024-2025\",\"schoolYearTwo\":\"2025-2026\",\"summerAcademy\":        [{\"day\":\"Day 1\",\"dateYearOne\":\"2024-08-15\",\"dateYearTwo\":\"\",\"verification\":\"Old Verification 1\"}],        \"inductionSeminars\":        [{\"number\":1,\"topic\":\"Test Seminar\",\"dateYearOne\":\"2024-09-10\",\"dateYearTwo\":\"\",\"verification\":\"Old Verification 2\"}],        \"mentorMeetings\":        [{\"date\":\"2024-09-05\",\"topic\":\"Test Meeting\",\"dateYearOne\":\"2024-09-05\",\"dateYearTwo\":\"\",\"verification\":\"Old Verification 3\"}],        \"teamMeetings\":        [{\"date\":\"2024-09-12\",\"topic\":\"Test Team Meeting\",\"dateYearOne\":\"2024-09-12\",\"dateYearTwo\":\"\",\"verification\":\"Old Verification 4\"}],        \"classroomVisits\":        [{\"date\":\"2024-09-20\",\"teacher\":\"Test Teacher\",\"subject\":\"Test Subject\",\"dateYearOne\":\"2024-09-20\",\"dateYearTwo\":\"\",\"verification\":\"Old Verification 5\"}],        \"otherActivities\":        [{\"date\":\"2024-09-25\",\"activity\":\"Test Activity\",\"dateYearOne\":\"2024-09-25\",\"dateYearTwo\":\"\",\"verification\":\"Old Verification 6\"}],        \"signatures\":{\"mentorTeacher\":\"\",\"buildingPrincipal\":\"\",\"superintendent\":\"\",\"date\":\"\"}"}
+    }
+  ]
+}
